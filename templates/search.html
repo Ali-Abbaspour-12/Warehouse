@@ -1,0 +1,68 @@
+
+<body>
+
+  <div >
+    <input type="text" id="searchInput" placeholder="جستجو..." oninput="searchTable()">
+  </div>
+
+  <div>
+    <button id="searchButton">جستجو</button>
+  </div>
+
+  <div id="recordsSection">
+      <ul>ali</ul>
+      <ul>ali</ul>
+      <ul>ali</ul>
+      <ul>ali</ul>
+  </div>
+
+<style>
+
+
+#searchInput {
+  width: 50%;
+  height: 5vh;
+  border-radius: 5px;
+  font-family: sans-serif;
+  float: right;
+  text-align: center;
+  font-weight: bold;
+  border-width: 2px;
+}
+
+#searchButton {
+  font-family: sans-serif;
+  background-color: rgb(44, 171, 255);
+  float: right;
+  margin-right: 1%;
+  width: 10%;
+  height: 6vh;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+#recordsSection{
+  float: right;
+  width:100%;
+
+  border-radius: 5px;
+  border: 5px solid black;
+}
+
+
+</style>
+
+<script>
+  
+function searchTable() {
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  const rows = document.querySelectorAll("table tbody tr");
+
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(q) ? "" : "none";
+  });
+}
+</script>
+</body>
+
