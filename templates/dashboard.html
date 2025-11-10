@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}داشبورد - سیستم مدیریت انبار{% endblock %}
+
+{% block page_title %}داشبورد{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h3>وضعیت انبار</h3>
+    <div class="date-filter">
+        <select>
+            <option>امروز</option>
+            <option>هفته جاری</option>
+            <option>ماه جاری</option>
+            <option>سه ماهه</option>
+        </select>
+    </div>
+</div>
+
+<div class="dashboard-cards">
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h4>کالاهای موجود</h4>
+            <i class="fas fa-box-open"></i>
+        </div>
+        <div class="card-value">۱۵۰ قلم</div>
+        <div class="card-change positive">
+            <i class="fas fa-arrow-up"></i>
+            <span>۵ مورد جدید</span>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h4>موجودی کل</h4>
+            <i class="fas fa-cubes"></i>
+        </div>
+        <div class="card-value">۴,۵۰۰ عدد</div>
+        <div class="card-change positive">
+            <i class="fas fa-arrow-up"></i>
+            <span>۱۲% افزایش</span>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h4>کمبود موجودی</h4>
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="card-value">۸ قلم</div>
+        <div class="card-change negative">
+            <i class="fas fa-arrow-down"></i>
+            <span>۲ مورد جدید</span>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h4>ارزش موجودی</h4>
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="card-value">۲۵۰ میلیون</div>
+        <div class="card-change positive">
+            <i class="fas fa-arrow-up"></i>
+            <span>۵% افزایش</span>
+        </div>
+    </div>
+</div>
+
+<div class="recent-products">
+    <h3>آخرین کالاها</h3>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>شناسه</th>
+                    <th>نام کالا</th>
+                    <th>دسته‌بندی</th>
+                    <th>موجودی</th>
+                    <th>قیمت (تومان)</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ "{:,}".format(product.price) }}</td>
+                    <td>
+                        <button class="btn-action"><i class="fas fa-edit"></i></button>
+                        <button class="btn-action"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

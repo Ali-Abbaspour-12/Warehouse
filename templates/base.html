@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}سیستم مدیریت انبار{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- نوار کناری -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-warehouse"></i>
+                <h1>مدیریت انبار</h1>
+            </div>
+            <ul class="menu">
+                <li class="menu-item {% if request.path == '/' or request.path == '/dashboard' %}active{% endif %}">
+                    <a href="{{ url_for('dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>داشبورد</span>
+                    </a>
+                </li>
+                <li class="menu-item {% if request.path == '/search' %}active{% endif %}">
+                    <a href="{{ url_for('search') }}">
+                        <i class="fas fa-search"></i>
+                        <span>جستجوی رکورد</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#">
+                        <i class="fas fa-boxes"></i>
+                        <span>مدیریت موجودی</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>گزارش‌ها</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#">
+                        <i class="fas fa-cog"></i>
+                        <span>تنظیمات</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- محتوای اصلی -->
+        <div class="main-content">
+            <div class="header">
+                <h2>{% block page_title %}صفحه اصلی{% endblock %}</h2>
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>مدیر سیستم</span>
+                </div>
+            </div>
+
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
