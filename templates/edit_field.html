@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}ویرایش فیلد - سیستم مدیریت انبار{% endblock %}
+
+{% block page_title %}ویرایش فیلد{% endblock %}
+
+{% block content %}
+<style>
+    .form-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+    }
+
+    .form-card {
+        background-color: var(--white);
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+    }
+
+    .form-help-card {
+        background-color: var(--white);
+        padding: 25px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        align-self: start;
+    }
+
+    .form-help-card h4 {
+        margin-bottom: 15px;
+        color: var(--primary-color);
+    }
+
+    .form-help-card ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .form-help-card li {
+        margin-bottom: 10px;
+        padding-right: 15px;
+        position: relative;
+    }
+
+    .form-help-card li:before {
+        content: "•";
+        color: var(--primary-color);
+        position: absolute;
+        right: 0;
+    }
+
+    .field-info p {
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .field-info p:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--text-color);
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        margin-left: 10px;
+        width: 18px;
+        height: 18px;
+    }
+
+    .checkbox-group label {
+        margin-bottom: 0;
+        cursor: pointer;
+    }
+
+    .form-help {
+        display: block;
+        margin-top: 5px;
+        font-size: 12px;
+        color: var(--text-light);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn i {
+        margin-left: 8px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+    }
+
+    .btn-secondary {
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+    }
+
+    .btn-secondary:hover {
+        background-color: #e0e0e0;
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-card">
+        <form method="POST" class="field-form">
+            <div class="form-group">
+                <label>نام جدول</label>
+                <input type="text" value="محصولات (products)" readonly style="background-color: #f8f9fa;">
+            </div>
+
+            <div class="form-group">
+                <label for="field_name">نام فیلد (انگلیسی) *</label>
+                <input type="text" id="field_name" name="field_name" required 
+                       value="{{ field.field_name }}" readonly
+                       title="نام فیلد پس از ایجاد قابل تغییر نیست">
+                <small class="form-help">نام فیلد پس از ایجاد قابل تغییر نیست</small>
+            </div>
+
+            <div class="form-group">
+                <label for="display_name">عنوان نمایشی (فارسی) *</label>
+                <input type="text" id="display_name" name="display_name" required 
+                       value="{{ field.display_name }}"
+                       placeholder="مثال: کد محصول">
+            </div>
+
+            <div class="form-group">
+                <label for="field_type">نوع فیلد *</label>
+                <select id="field_type" name="field_type" required>
+                    <option value="">-- انتخاب نوع فیلد --</option>
+                    <option value="TEXT" {% if field.field_type == 'TEXT' %}selected{% endif %}>متن (TEXT)</option>
+                    <option value="INTEGER" {% if field.field_type == 'INTEGER' %}selected{% endif %}>عدد صحیح (INTEGER)</option>
+                    <option value="REAL" {% if field.field_type == 'REAL' %}selected{% endif %}>عدد اعشاری (REAL)</option>
+                    <option value="BOOLEAN" {% if field.field_type == 'BOOLEAN' %}selected{% endif %}>صحیح/غلط (BOOLEAN)</option>
+                    <option value="DATE" {% if field.field_type == 'DATE' %}selected{% endif %}>تاریخ (DATE)</option>
+                    <option value="DATETIME" {% if field.field_type == 'DATETIME' %}selected{% endif %}>تاریخ و زمان (DATETIME)</option>
+                </select>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="is_required" name="is_required" {% if field.is_required %}checked{% endif %}>
+                <label for="is_required">فیلد اجباری است</label>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="is_searchable" name="is_searchable" {% if field.is_searchable %}checked{% endif %}>
+                <label for="is_searchable">قابل جستجو باشد</label>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="is_filterable" name="is_filterable" {% if field.is_filterable %}checked{% endif %}>
+                <label for="is_filterable">قابل فیلتر باشد</label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    بروزرسانی فیلد
+                </button>
+                <a href="{{ url_for('settings.manage_fields') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    انصراف
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-help-card">
+        <h4>اطلاعات فیلد</h4>
+        <div class="field-info">
+            <p><strong>تاریخ ایجاد:</strong> {{ field.created_at }}</p>
+            <p><strong>نام فیلد در دیتابیس:</strong> {{ field.field_name }}</p>
+            <p><strong>جدول:</strong> {{ field.table_name }}</p>
+        </div>
+
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+            <h5>نکات:</h5>
+            <ul>
+                <li>نام فیلد پس از ایجاد قابل تغییر نیست</li>
+                <li>عنوان نمایشی می‌تواند فارسی باشد</li>
+                <li>فیلدهای قابل جستجو در بخش جستجو نمایش داده می‌شوند</li>
+                <li>فیلدهای قابل فیلتر در فیلترهای پیشرفته نمایش داده می‌شوند</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

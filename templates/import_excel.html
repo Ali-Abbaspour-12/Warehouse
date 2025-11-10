@@ -1,0 +1,366 @@
+{% extends "base.html" %}
+
+{% block title %}ایمپورت از اکسل - سیستم مدیریت انبار{% endblock %}
+
+{% block page_title %}ایمپورت از اکسل{% endblock %}
+
+{% block content %}
+<style>
+    .import-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .upload-section {
+        background-color: var(--white);
+        padding: 25px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 30px;
+    }
+
+    .file-upload {
+        border: 2px dashed #ddd;
+        border-radius: var(--border-radius);
+        padding: 40px;
+        text-align: center;
+        transition: border-color 0.3s;
+        margin-bottom: 20px;
+    }
+
+    .file-upload:hover {
+        border-color: var(--primary-color);
+    }
+
+    .file-upload i {
+        font-size: 48px;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    .file-label {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .file-label:hover {
+        background-color: var(--primary-dark);
+    }
+
+    .preview-section {
+        background-color: var(--white);
+        padding: 25px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 30px;
+        display: none;
+    }
+
+    .mapping-section {
+        background-color: var(--white);
+        padding: 25px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 30px;
+        display: none;
+    }
+
+    .mapping-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .mapping-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: var(--border-radius);
+    }
+
+    .excel-column {
+        font-weight: 500;
+        color: var(--primary-color);
+        min-width: 150px;
+    }
+
+    .mapping-select {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+    }
+
+    .preview-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    .preview-table th,
+    .preview-table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: right;
+    }
+
+    .preview-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn i {
+        margin-left: 8px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+    }
+
+    .btn-secondary {
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+    }
+
+    .btn-secondary:hover {
+        background-color: #e0e0e0;
+    }
+
+    .btn-success {
+        background-color: var(--success);
+        color: var(--white);
+    }
+
+    .btn-success:hover {
+        background-color: #388e3c;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: var(--border-radius);
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .stat-label {
+        color: var(--text-light);
+        font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+        .mapping-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="import-container">
+    <div class="upload-section">
+        <h3 style="margin-bottom: 20px;">آپلود فایل اکسل</h3>
+        
+        <div class="file-upload" id="fileUploadArea">
+            <i class="fas fa-file-excel"></i>
+            <h4>فایل اکسل یا CSV خود را اینجا رها کنید</h4>
+            <p>یا</p>
+            <label for="fileInput" class="file-label">
+                <i class="fas fa-upload"></i>
+                انتخاب فایل
+            </label>
+            <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.csv">
+        </div>
+        
+        <div id="fileInfo" style="display: none;">
+            <p><strong>فایل انتخاب شده:</strong> <span id="fileName"></span></p>
+            <p><strong>تعداد رکوردها:</strong> <span id="fileRecords"></span></p>
+        </div>
+    </div>
+
+    <div class="preview-section" id="previewSection">
+        <h3 style="margin-bottom: 20px;">پیش‌نمایش داده‌ها</h3>
+        <div id="previewTable"></div>
+    </div>
+
+    <div class="mapping-section" id="mappingSection">
+        <h3 style="margin-bottom: 20px;">تنظیمات mapping</h3>
+        <p style="margin-bottom: 20px; color: var(--text-light);">
+            ستون‌های فایل اکسل خود را به فیلدهای دیتابیس مرتبط کنید.
+        </p>
+        
+        <form method="POST" id="importForm">
+            <div class="mapping-grid" id="mappingGrid"></div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-play"></i>
+                    شروع ایمپورت
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetImport()">
+                    <i class="fas fa-redo"></i>
+                    شروع مجدد
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+    
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        // نمایش loading
+        document.getElementById('fileUploadArea').innerHTML = '<i class="fas fa-spinner fa-spin"></i><p>در حال پردازش فایل...</p>';
+        
+        fetch('/api/import/preview', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('خطا: ' + data.error);
+                resetFileInput();
+                return;
+            }
+            
+            // نمایش اطلاعات فایل
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileRecords').textContent = data.total_rows;
+            document.getElementById('fileInfo').style.display = 'block';
+            
+            // نمایش پیش‌نمایش
+            showPreview(data.preview, data.columns);
+            
+            // نمایش بخش mapping
+            showMapping(data.columns);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('خطا در پردازش فایل');
+            resetFileInput();
+        });
+    }
+    
+    function showPreview(preview, columns) {
+        let html = '<table class="preview-table"><thead><tr>';
+        
+        // هدر جدول
+        columns.forEach(col => {
+            html += `<th>${col}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+        
+        // داده‌ها
+        preview.forEach(row => {
+            html += '<tr>';
+            columns.forEach(col => {
+                html += `<td>${row[col] || ''}</td>`;
+            });
+            html += '</tr>';
+        });
+        
+        html += '</tbody></table>';
+        
+        document.getElementById('previewTable').innerHTML = html;
+        document.getElementById('previewSection').style.display = 'block';
+    }
+    
+    function showMapping(columns) {
+        let html = '';
+        const fields = {{ fields | tojson }};
+        
+        columns.forEach(col => {
+            html += `
+                <div class="mapping-item">
+                    <span class="excel-column">${col}</span>
+                    <select name="map_${col}" class="mapping-select" required>
+                        <option value="">-- انتخاب فیلد --</option>
+                        ${fields.map(field => `<option value="${field}">${field}</option>`).join('')}
+                    </select>
+                </div>
+            `;
+        });
+        
+        document.getElementById('mappingGrid').innerHTML = html;
+        document.getElementById('mappingSection').style.display = 'block';
+    }
+    
+    function resetFileInput() {
+        document.getElementById('fileInput').value = '';
+        document.getElementById('fileUploadArea').innerHTML = `
+            <i class="fas fa-file-excel"></i>
+            <h4>فایل اکسل یا CSV خود را اینجا رها کنید</h4>
+            <p>یا</p>
+            <label for="fileInput" class="file-label">
+                <i class="fas fa-upload"></i>
+                انتخاب فایل
+            </label>
+        `;
+    }
+    
+    function resetImport() {
+        resetFileInput();
+        document.getElementById('fileInfo').style.display = 'none';
+        document.getElementById('previewSection').style.display = 'none';
+        document.getElementById('mappingSection').style.display = 'none';
+    }
+</script>
+{% endblock %}

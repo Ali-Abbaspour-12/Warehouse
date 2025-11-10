@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}ویرایش پروفایل جستجو - سیستم مدیریت انبار{% endblock %}
+
+{% block page_title %}ویرایش پروفایل جستجو{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <form method="POST" class="search-setting-form">
+            <div class="form-group">
+                <label for="name">نام پروفایل *</label>
+                <input type="text" id="name" name="name" required 
+                       value="{{ setting.name }}"
+                       placeholder="مثال: جستجوی پیشرفته محصولات">
+            </div>
+
+            <div class="form-group">
+                <label for="table_name">جدول مورد نظر *</label>
+                <select id="table_name" name="table_name" required>
+                    <option value="">-- انتخاب جدول --</option>
+                    <option value="products" {% if setting.table_name == 'products' %}selected{% endif %}>محصولات (products)</option>
+                    <option value="categories" {% if setting.table_name == 'categories' %}selected{% endif %}>دسته‌بندی‌ها (categories)</option>
+                    <option value="suppliers" {% if setting.table_name == 'suppliers' %}selected{% endif %}>تأمین‌کنندگان (suppliers)</option>
+                    <option value="transactions" {% if setting.table_name == 'transactions' %}selected{% endif %}>تراکنش‌ها (transactions)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="search_fields">فیلدهای جستجو *</label>
+                <input type="text" id="search_fields" name="search_fields" required 
+                       value="{{ setting.search_fields }}"
+                       placeholder="مثال: name,category,description">
+                <small class="form-help">فیلدهایی که در جستجوی متنی بررسی می‌شوند (با کاما جدا شوند)</small>
+            </div>
+
+            <div class="form-group">
+                <label for="filter_fields">فیلدهای فیلتر</label>
+                <input type="text" id="filter_fields" name="filter_fields" 
+                       value="{{ setting.filter_fields or '' }}"
+                       placeholder="مثال: category,quantity,price">
+                <small class="form-help">فیلدهایی که به عنوان فیلتر در دسترس هستند (با کاما جدا شوند)</small>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sort_field">فیلد مرتب‌سازی</label>
+                    <input type="text" id="sort_field" name="sort_field" 
+                           value="{{ setting.sort_field or '' }}"
+                           placeholder="مثال: created_at">
+                </div>
+                <div class="form-group">
+                    <label for="sort_order">ترتیب مرتب‌سازی</label>
+                    <select id="sort_order" name="sort_order">
+                        <option value="DESC" {% if setting.sort_order == 'DESC' %}selected{% endif %}>نزولی (DESC)</option>
+                        <option value="ASC" {% if setting.sort_order == 'ASC' %}selected{% endif %}>صعودی (ASC)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="is_active" name="is_active" {% if setting.is_active %}checked{% endif %}>
+                <label for="is_active">این پروفایل فعال باشد</label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    بروزرسانی پروفایل
+                </button>
+                <a href="{{ url_for('manage_search') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    انصراف
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-help-card">
+        <h4>اطلاعات پروفایل</h4>
+        <div class="field-info">
+            <p><strong>تاریخ ایجاد:</strong> {{ setting.created_at }}</p>
+            <p><strong>وضعیت فعلی:</strong> 
+                {% if setting.is_active %}
+                <span class="status-active">فعال</span>
+                {% else %}
+                <span class="status-inactive">غیرفعال</span>
+                {% endif %}
+            </p>
+        </div>
+        
+        <div class="usage-tips">
+            <h5>نکات استفاده:</h5>
+            <ul>
+                <li>فقط یک پروفایل می‌تواند فعال باشد</li>
+                <li>پروفایل فعال به عنوان پیش‌فرض استفاده می‌شود</li>
+                <li>می‌توانید بین پروفایل‌ها سوئیچ کنید</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

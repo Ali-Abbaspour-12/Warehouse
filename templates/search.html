@@ -1,87 +1,15 @@
-{% extends "base.html" %}
-
-{% block title %}جستجوی رکورد - سیستم مدیریت انبار{% endblock %}
-
-{% block page_title %}جستجوی رکورد{% endblock %}
-
-{% block content %}
-<div class="search-section">
-    <div class="search-box">
-        <form method="GET" action="{{ url_for('search') }}">
-            <div class="search-input">
-                <input type="text" name="q" placeholder="جستجوی کالا..." value="{{ query }}">
-                <button type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <div class="filters">
-        <div class="filter-group">
-            <label>دسته‌بندی:</label>
-            <select>
-                <option>همه</option>
-                <option>الکترونیکی</option>
-                <option>اداری</option>
-                <option>خانگی</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label>وضعیت موجودی:</label>
-            <select>
-                <option>همه</option>
-                <option>موجود</option>
-                <option>ناموجود</option>
-                <option>کمبود</option>
-            </select>
-        </div>
-        <button class="btn btn-primary">
-            <i class="fas fa-filter"></i>
-            اعمال فیلتر
-        </button>
-    </div>
+<!-- در بخش search-actions تغییر دهید: -->
+<div class="search-actions">
+    <a href="{{ url_for('products.add_product') }}" class="btn btn-success">
+        <i class="fas fa-plus"></i>
+        افزودن رکورد جدید
+    </a>
+    <a href="{{ url_for('excel_import.import_excel') }}" class="btn btn-primary">
+        <i class="fas fa-file-excel"></i>
+        ایمپورت از اکسل
+    </a>
+    <a href="{{ url_for('settings.manage_search') }}" class="btn btn-outline">
+        <i class="fas fa-cog"></i>
+        تنظیمات جستجو
+    </a>
 </div>
-
-<div class="search-results">
-    <h3>نتایج جستجو {% if query %}برای "{{ query }}"{% endif %}</h3>
-    
-    {% if products %}
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>شناسه</th>
-                    <th>نام کالا</th>
-                    <th>دسته‌بندی</th>
-                    <th>موجودی</th>
-                    <th>قیمت (تومان)</th>
-                    <th>عملیات</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                <tr>
-                    <td>{{ product.id }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.category }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ "{:,}".format(product.price) }}</td>
-                    <td>
-                        <button class="btn-action"><i class="fas fa-edit"></i></button>
-                        <button class="btn-action"><i class="fas fa-trash"></i></button>
-                        <button class="btn-action"><i class="fas fa-eye"></i></button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <div class="no-results">
-        <i class="fas fa-search"></i>
-        <p>هیچ نتیجه‌ای یافت نشد.</p>
-    </div>
-    {% endif %}
-</div>
-{% endblock %}

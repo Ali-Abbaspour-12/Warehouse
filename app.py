@@ -1,32 +1,26 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask
+from config import Config
+from models.database import init_db
+from routes.main import main_bp
+from routes.search import search_bp
+from routes.settings import settings_bp
+from routes.products import products_bp
+from routes.excel_import import excel_import_bp
 
 app = Flask(__name__)
+app.config.from_object(Config)
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
-# داده‌های نمونه برای نمایش
-sample_products = [
-    {"id": 1, "name": "لپ‌تاپ ایسوس", "category": "الکترونیکی", "quantity": 15, "price": 12000000},
-    {"id": 2, "name": "ماوس بی‌سیم", "category": "الکترونیکی", "quantity": 42, "price": 350000},
-    {"id": 3, "name": "صندلی اداری", "category": "اداری", "quantity": 8, "price": 2500000},
-    {"id": 4, "name": "کاغذ A4", "category": "اداری", "quantity": 120, "price": 80000},
-    {"id": 5, "name": "پرینتر HP", "category": "الکترونیکی", "quantity": 5, "price": 8500000},
-]
+# ثبت blueprint ها
+app.register_blueprint(main_bp)
+app.register_blueprint(search_bp)
+app.register_blueprint(settings_bp)
+app.register_blueprint(products_bp)
+app.register_blueprint(excel_import_bp)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html', products=sample_products)
-
-@app.route('/search')
-def search():
-    query = request.args.get('q', '')
-    if query:
-        results = [p for p in sample_products if query.lower() in p['name'].lower()]
-    else:
-        results = sample_products
-    return render_template('search.html', products=results, query=query)
+# راه‌اندازی دیتابیس
+init_db()
 
 if __name__ == '__main__':
     app.run(debug=True)
