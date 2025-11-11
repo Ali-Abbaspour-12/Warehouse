@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form action="#" style="float: right;display: contents;">
+<form action="#" style="display: contents;">
 
     
     <input type="text" id="project_code" name="project_code" placeholder="کد پروژه"><br>
@@ -25,9 +25,9 @@
     <input type="text" id="warehouse_location" name="warehouse_location" placeholder="محل"><br>
     <input type="text" id="warehouse_location" name="warehouse_location" placeholder="محل"><br>
 
-    <button type="submit" style="background-color: gray;border: none;">ثبت</button><br>
+    <button type="submit">ثبت</button><br>
 
 </form>
-<a href="{{url_for('excel_import')}}" style="background-color: gray;border-radius: 5px;padding: 10px;display: block;">وارد کردن دسته جمعی از اکسل</a>
+<a href="{{url_for('excel_import')}}" style="display: block;">وارد کردن دسته جمعی از اکسل</a>
 
 {% endblock %}
