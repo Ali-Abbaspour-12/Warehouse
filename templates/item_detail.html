@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <ul>
+        <li>{{item.id}}</li>
+        <li>{{item.project_code}}</li>
+        <li>{{item.warehouse_location}}</li>
+        <li>{{item.row}}</li>
+        <li>{{item.first_recipient_delivery}}</li>
+        <li>{{item.company}}</li>
+        <li>{{item.unit}}</li>
+        <li>{{item.personnel_code}}</li>
+        <li>{{item.current_location}}</li>
+        <li>{{item.system_identification_code}}</li>
+        <li>{{item.category}}</li>
+        <li>{{item.model}}</li>
+        <li>{{item.serial_number}}</li>
+        <li>{{item.property_code}}</li>
+        <li>{{item.second_recipient_delivery}}</li>
+        <li>{{item.third_recipient_delivery}}</li>
+        <li>{{item.forth_recipient_delivery}}</li>
+        <li>{{item.description}}</li>
+        <li>{{item.closed}}</li>
+        <li>{{item.closed_time}}</li>
+        
+    </ul><br>
+    <a href="{{url_for('search_bp.edit_item',item_id=item.id)}}">ویرایش آیتم</a>
+
+{% endblock %}

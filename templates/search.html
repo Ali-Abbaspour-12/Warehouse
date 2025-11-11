@@ -13,7 +13,7 @@
 
     <ul>
     {% for item in items %}
-        <li>{{ item.property_code }} - {{ item.model }} - {{item.id}}</li>
+        <li>{{ item.property_code }} - {{ item.model }} - {{item.id}} - <a href="{{url_for('search_bp.item_detail',item_id=item.id)}}">جزییات</a></li>
     {% endfor %}
 </ul>
     

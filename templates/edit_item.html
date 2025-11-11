@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>ویرایش آیتم</h2>
+
+<form method="POST">
+
+    <label>project_code</label>
+    <input name="project_code" value="{{ item.project_code }}">
+    <br>
+    <label>warehouse_location</label>
+    <input name="warehouse_location" value="{{ item.warehouse_location }}">
+    <br>
+    <label>row</label>
+    <input name="row" value="{{ item.row }}">
+<br>
+    <label>first_recipient_delivery</label>
+    <input name="first_recipient_delivery" value="{{ item.first_recipient_delivery }}">
+<br>
+    <label>company</label>
+    <input name="company" value="{{ item.company }}">
+<br>
+    <label>unit</label>
+    <input name="unit" value="{{ item.unit }}">
+<br>
+    <label>personnel_code</label>
+    <input name="personnel_code" value="{{ item.personnel_code }}">
+<br>
+    <label>current_location</label>
+    <input name="current_location" value="{{ item.current_location }}">
+<br>
+    <label>system_identification_code</label>
+    <input name="system_identification_code" value="{{ item.system_identification_code }}">
+<br>
+    <label>category</label>
+    <input name="category" value="{{ item.category }}">
+<br>
+    <label>model</label>
+    <input name="model" value="{{ item.model }}">
+<br>
+    <label>serial_number</label>
+    <input name="serial_number" value="{{ item.serial_number }}">
+<br>
+    <label>property_code</label>
+    <input name="property_code" value="{{ item.property_code }}">
+<br>
+    <label>second_recipient_delivery</label>
+    <input name="second_recipient_delivery" value="{{ item.second_recipient_delivery }}">
+<br>
+    <label>third_recipient_delivery</label>
+    <input name="third_recipient_delivery" value="{{ item.third_recipient_delivery }}">
+<br>
+    <label>forth_recipient_delivery</label>
+    <input name="forth_recipient_delivery" value="{{ item.forth_recipient_delivery }}">
+<br>
+    <label>description</label>
+    <textarea name="description">{{ item.description }}</textarea>
+<br>
+    <label>closed</label>
+    <input name="closed" value="{{ item.closed }}">
+<br>
+    <label>closed_time</label>
+    <input name="closed_time" value="{{ item.closed_time }}">
+<br>
+    <button type="submit">ذخیره تغییرات</button>
+
+</form>
+
+<a href="{{ url_for('search_bp.item_detail', item_id=item.id) }}">بازگشت</a>
+{% endblock %}
