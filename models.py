@@ -1,14 +1,13 @@
-# models.py
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-
 
 class Item(db.Model):
     __tablename__ = 'items'
 
     id = db.Column(db.Integer,primary_key=True)
-    project_code = db.Column(db.String(120))
+    project_code = db.Column(db.String(80))
     warehouse_location = db.Column(db.String(80))
     row = db.Column(db.String(80))
     first_recipient_delivery = db.Column(db.String(80))
@@ -23,7 +22,8 @@ class Item(db.Model):
     property_code = db.Column(db.String(80))
     second_recipient_delivery = db.Column(db.String(80))
     third_recipient_delivery = db.Column(db.String(80))
-    description = db.Column(db.String(255))   
+    forth_recipient_delivery = db.Column(db.String(80))
+    description = db.Column(db.String(512))   
     closed = db.Column(db.String(80))
     closed_time = db.Column(db.String(80))
 

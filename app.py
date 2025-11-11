@@ -1,40 +1,25 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from models import db, Item
+from flask import Flask
+from models import db
+from routes import dashboard_bp,add_item_bp,search_bp,settings_bp,report_bp
 
 app = Flask(__name__)
 
-
+app.secret_key = "your_secret_key"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+db.init_app(app)
 
-with app.app_context():
-    db.create_all()
+app.register_blueprint(dashboard_bp)
+app.register_blueprint(add_item_bp)
+app.register_blueprint(search_bp)
+app.register_blueprint(settings_bp)
+app.register_blueprint(report_bp)
 
-@app.route('/')
-def dashboard():
-    return render_template('dashboard.html')
-
-@app.route("/search")
-def search():
-    return render_template("search.html")
-
-@app.route("/add_item")
-def add_item():
-    return render_template("add_item.html")
-
-
-@app.route('/settings')
-def settings():
-    return render_template('settings.html')
-
-@app.route('/excel_import')
-def excel_import():
-    return render_template('excel_import.html')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    with app.app_context():
+        db.create_all()
+    app.run(host="0.0.0.0",debug=True)

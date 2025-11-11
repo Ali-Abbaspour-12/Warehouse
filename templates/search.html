@@ -2,14 +2,20 @@
 
 
 {% block content %}
-<div id="searchbar">
-    <form action="/search" method="post" >
+
+    <a href="{{url_for('search_bp.show_all_records')}}">نمایش همه ریکورد ها</a>
+    <form method="get" >
         
-        <input type="text" name="query"><br>
-        <button type="submit">جستجو</button>
+        <input type="text" name="q"><br>
+        <button type="submit">جستجو</button><br>
         
-    </form>
-</div>
+    </form><br>
+
+    <ul>
+    {% for item in items %}
+        <li>{{ item.property_code }} - {{ item.model }} - {{item.id}}</li>
+    {% endfor %}
+</ul>
     
 {% endblock %}
 

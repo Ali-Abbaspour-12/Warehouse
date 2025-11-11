@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <a href="{{url_for('search_bp.search')}}">بازگشت</a>
+
+    {% for item in items %}
+            <li>{{ item.id }} - {{ item.property_code }}</li>
+    {% endfor %}
+{% endblock %}

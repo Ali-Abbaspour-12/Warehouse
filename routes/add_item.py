@@ -1,0 +1,86 @@
+from flask import Flask, render_template,render_template_string, request, redirect, url_for,Blueprint,flash
+from models import db, Item
+import pandas as pd
+
+add_item_bp = Blueprint("add_item_bp", __name__)
+
+@add_item_bp.route("/add_item",methods=['GET', 'POST'])
+def add_item():
+    if request.method == 'POST':
+        record = Item(
+
+                project_code = request.form.get('project_code'),
+                warehouse_location = request.form.get('warehouse_location'),
+                row = request.form.get('row'),
+                first_recipient_delivery = request.form.get('first_recipient_delivery'),
+                company = request.form.get('company'),
+                unit = request.form.get('unit'),
+                personnel_code = request.form.get('personnel_code'),
+                current_location = request.form.get('current_location'),
+                system_identification_code = request.form.get('system_identification_code'),
+                category = request.form.get('category'),
+                model = request.form.get('model'),
+                serial_number = request.form.get('serial_number'),
+                property_code = request.form.get('property_code'),
+                second_recipient_delivery = request.form.get('second_recipient_delivery'),
+                third_recipient_delivery = request.form.get('third_recipient_delivery'),
+                forth_recipient_delivery = request.form.get('forth_recipient_delivery'),
+                description =  request.form.get('description'), 
+                closed = request.form.get('closed'),
+                closed_time = request.form.get('closed_time'),
+
+        )
+        db.session.add(record)
+        db.session.commit()
+        flash("آیتم با موفقیت اضافه شد!", "success")
+        return redirect(url_for("add_item_bp.add_item"))
+
+    return render_template("add_item.html")
+
+
+
+
+
+@add_item_bp.route('/excel_import')
+def excel_import():
+    return render_template('excel_import.html')
+
+
+
+@add_item_bp.route("/excel_import/import_to_database")
+def import_to_database():
+
+    excelFile = pd.read_excel("./excel/data.xlsx")
+
+    for _,excelRow in excelFile.iterrows():
+        record = Item(
+
+                project_code = excelRow["project_code"],
+                warehouse_location = excelRow["warehouse_location"],
+                row = excelRow["row"],
+                first_recipient_delivery = excelRow["first_recipient_delivery"],
+                company = excelRow["company"],
+                unit = excelRow["unit"],
+                personnel_code = excelRow["personnel_code"],
+                current_location = excelRow["current_location"],
+                system_identification_code = excelRow["system_identification_code"],
+                category = excelRow["category"],
+                model = excelRow["model"],
+                serial_number = excelRow["serial_number"],
+                property_code = excelRow["property_code"],
+                second_recipient_delivery = excelRow["second_recipient_delivery"],
+                third_recipient_delivery = excelRow["third_recipient_delivery"],
+                forth_recipient_delivery = excelRow["forth_recipient_delivery"],
+                description =  excelRow["description"], 
+                closed = excelRow["closed"],
+                closed_time = excelRow["closed_time"],
+
+        )
+        db.session.add(record)
+
+    
+    db.session.commit()
+
+    flash("آیتم با موفقیت اضافه شد!", "success")
+    return redirect(url_for("add_item_bp.excel_import"))
+    

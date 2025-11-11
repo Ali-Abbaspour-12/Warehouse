@@ -1,1 +1,18 @@
-<h1>settings</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul>
+      {% for category, message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+<a href="{{url_for('settings_bp.delete_all_records')}}">حذف همه ریکورد ها</a>
+
+{% endblock %}
