@@ -25,6 +25,11 @@
         <li>{{item.closed_time}}</li>
         
     </ul><br>
+    <ul>
+        {% for history in item.item_history %}
+            <li>{{history.id}} <a href="{{url_for('search_bp.history_detail',item_id=item.id,history_id=history.id)}}">جزییات تاریخچه</a></li>
+        {% endfor %}
+    </ul>
     <a href="{{url_for('search_bp.edit_item',item_id=item.id)}}">ویرایش آیتم</a>
 
 {% endblock %}

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template,request,redirect,url_for
-from models import Item,db
+from models import Item,db,ItemHistory
 
 
 search_bp = Blueprint("search_bp", __name__)
@@ -24,7 +24,7 @@ def show_all_records():
 @search_bp.route('/item_detail_<int:item_id>')
 def item_detail(item_id):
     item = Item.query.get_or_404(item_id)
-
+    
     return render_template('item_detail.html',item=item)
 
 @search_bp.route('/item_detail_<int:item_id>/edit',methods=['GET','POST'])
@@ -33,6 +33,32 @@ def edit_item(item_id):
 
     if request.method == "POST":
         
+        itemHistory = ItemHistory(
+            
+            project_code = item.project_code,
+            warehouse_location = item.warehouse_location,
+            row = item.row,
+            first_recipient_delivery = item.first_recipient_delivery,
+            company = item.company,
+            unit = item.unit,
+            personnel_code = item.personnel_code,
+            current_location = item.current_location,
+            system_identification_code = item.system_identification_code,
+            category = item.category,
+            model = item.model,
+            serial_number = item.serial_number,
+            property_code = item.property_code,
+            second_recipient_delivery = item.second_recipient_delivery,
+            third_recipient_delivery = item.third_recipient_delivery,
+            forth_recipient_delivery = item.forth_recipient_delivery,
+            description = item.description,
+            closed = item.closed,
+            closed_time = item.closed_time,
+            item_id = item.id
+        )
+
+        db.session.add(itemHistory)
+
         item.project_code = request.form.get("project_code")
         item.warehouse_location = request.form.get("warehouse_location")
         item.row = request.form.get("row")
@@ -59,3 +85,9 @@ def edit_item(item_id):
 
     return render_template("edit_item.html", item=item)
     
+
+@search_bp.route('/item_detail_<int:item_id>_history_<int:history_id>')
+def history_detail(item_id,history_id):
+    history = ItemHistory.query.get_or_404(history_id)
+    item = Item.query.get_or_404(item_id)
+    return render_template('history_detail.html',history=history,item=item)

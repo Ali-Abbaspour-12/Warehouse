@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+     <ul>
+        
+        <li>{{history.id}}</li>
+        <li>{{history.project_code}}</li>
+        <li>{{history.warehouse_location}}</li>
+        <li>{{history.row}}</li>
+        <li>{{history.first_recipient_delivery}}</li>
+        <li>{{history.company}}</li>
+        <li>{{history.unit}}</li>
+        <li>{{history.personnel_code}}</li>
+        <li>{{history.current_location}}</li>
+        <li>{{history.system_identification_code}}</li>
+        <li>{{history.category}}</li>
+        <li>{{history.model}}</li>
+        <li>{{history.serial_number}}</li>
+        <li>{{history.property_code}}</li>
+        <li>{{history.second_recipient_delivery}}</li>
+        <li>{{history.third_recipient_delivery}}</li>
+        <li>{{history.forth_recipient_delivery}}</li>
+        <li>{{history.description}}</li>
+        <li>{{history.closed}}</li>
+        <li>{{history.closed_time}}</li>
+        <li>{{history.changed_at}}</li>
+        
+    </ul><br>
+    <a href="{{url_for('search_bp.item_detail',item_id=item.id)}}">بازگشت</a>
+{% endblock %}
