@@ -4,18 +4,38 @@
 {% block content %}
 
     <a href="{{url_for('search_bp.show_all_records')}}">نمایش همه ریکورد ها</a>
-    <form method="get" >
+    <form method="get" ><br>
         
-        <input type="text" name="q"><br>
+        <input type="text" name="q">
         <button type="submit">جستجو</button><br>
         
     </form><br>
+
+    <form method="get">
+
+        <input list="project_code" name="project_code" id="" placeholder="کد پروژه">
+        <datalist id="project_code">
+                 <option value="362">
+                <option value="392">
+                <option value="290">
+        </datalist>
+
+        <input list="category" name="category" id="" placeholder="گروه بندی">
+        <datalist id="category">
+                 <option value="کیس">
+                <option value="مانیتور">
+                <option value="سوییچ">
+        </datalist>
+
+        <button type="submit">فیلتر کردن</button>
+        
+    </form>
 
     <ul>
     {% for item in items %}
         <li>{{ item.property_code }} - {{ item.model }} - {{item.id}} - <a href="{{url_for('search_bp.item_detail',item_id=item.id)}}">جزییات</a></li>
     {% endfor %}
-</ul>
+    </ul>
     
 {% endblock %}
 

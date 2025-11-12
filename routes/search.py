@@ -8,9 +8,7 @@ search_bp = Blueprint("search_bp", __name__)
 def search():
     q = request.args.get("q")
 
-    if not q:
-        return render_template("search.html",items=[])
-
+    
     items = Item.query.filter(Item.property_code.contains(q)).all()
     return render_template("search.html",items=items)
 
