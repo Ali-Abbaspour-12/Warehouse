@@ -32,7 +32,7 @@ html{
 #navbar{
     display: flex;
     flex-direction: row;
-    background-color: black;
+    background-color: #EEF1FF;
     height: 60px;
     border-radius: 5px;
     align-items: center;
@@ -42,5 +42,5 @@ html{
 
 }
 html{
-    background-color: black;
+    background-color: #97D2EC;
 }
