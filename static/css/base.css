@@ -23,9 +23,9 @@ html{
 }
 #navbar a:hover {
     font-size: 18px;
-    color: #18c0eb83;
+    color: white;
     border: 10px;
-    background-color: aliceblue;
+    background-color: #06283D;
     transition: 0.1s;
     border-radius: 2px;
 }
