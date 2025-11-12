@@ -14,7 +14,10 @@
 
 
 <form method="post">
-<div id="add_item">
+  <a href="{{url_for('add_item_bp.excel_import')}}" style="display: block;">وارد کردن دسته جمعی از اکسل</a>
+<div id="base_add">
+
+  <div id="add_item">
    <div>
     <input type="text" id="warehouse_location" name="warehouse_location" placeholder="محل">
     <input type="text" id="row" name="row" placeholder="ردیف">
@@ -22,7 +25,7 @@
     <div>
       <input type="text" id="project_code" name="project_code" placeholder="کد پروژه">
     <input type="text" id="first_recipient_delivery" name="first_recipient_delivery" placeholder="تحویل گیرنده اول">
-    <input type="text" id="company" name="company" placeholder="شرکت">
+  
     </div>
     <div>
       <input type="text" id="unit" name="unit" placeholder="واحد">
@@ -52,11 +55,22 @@
        <input type="text" id="forth_recipient_delivery" name="forth_recipient_delivery" placeholder="تحویل گیرنده 2">
     <input type="text" id="description" name="description" placeholder="توضیحات">
     </div>
-    <button type="submit">ثبت</button>
+    <div>
+       <input type="text" id="company" name="company" placeholder="شرکت">
+    </div>
+    <div>
+          <button type="submit">ثبت</button>
+    </div>
 </div>
+<div id="capi">
+  <h4>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit consequatur sequi laborum distinctio aperiam adipisci aut labore error corporis odit blanditiis iure doloremque, laboriosam excepturi officiis a fugiat ea tempora!
+  </h4>
+</div>
+
     
 
 </form>
-<a href="{{url_for('add_item_bp.excel_import')}}" style="display: block;">وارد کردن دسته جمعی از اکسل</a>
+
 
 {% endblock %}
