@@ -1,11 +1,11 @@
 #navbar a{
     text-decoration: none;
-    color: white;
+    color: #1D546C;
     padding: 6.6px;
     transition: 0.1s;
     font-size: 16px;
     margin-right: 50px;
-    
+        
 
 
 }
@@ -20,11 +20,15 @@
 #navbar{
     display: flex;
     flex-direction: row;
-    background-color: #1D546C;
+    background-color: black;
     height: 60px;
-    border-radius: 2px;
+    border-radius: 5px;
     align-items: center;
-    box-shadow: 0px 0px 1px 0px #18c0eb83;
+    box-shadow: 0px 0px 10px 0px white;
+    margin-top: 20px;
     
 
+}
+html{
+    background-color: black;
 }
