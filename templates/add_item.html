@@ -14,28 +14,29 @@
 
 
 <form method="post">
-
-    <input type="text" id="project_code" name="project_code" placeholder="کد پروژه"><br>
-    <input type="text" id="warehouse_location" name="warehouse_location" placeholder="محل"><br>
-    <input type="text" id="row" name="row" placeholder="ردیف"><br>
-    <input type="text" id="first_recipient_delivery" name="first_recipient_delivery" placeholder="تحویل گیرنده اول"><br>
-    <input type="text" id="company" name="company" placeholder="شرکت"><br>
-    <input type="text" id="unit" name="unit" placeholder="واحد"><br>
-    <input type="text" id="personnel_code" name="personnel_code" placeholder="کد پرسنلی"><br>
-    <input type="text" id="current_location" name="current_location" placeholder="محل استقرار"><br>
-    <input type="text" id="system_identification_code" name="system_identification_code" placeholder="کد شناسایی سیستم"><br>
-    <input type="text" id="category" name="category" placeholder="گروه بندی"><br>
-    <input type="text" id="model" name="model" placeholder="مدل"><br>
-    <input type="text" id="serial_number" name="serial_number" placeholder="سریال"><br>
-    <input type="text" id="property_code" name="property_code" placeholder="کد اموال"><br>
-    <input type="text" id="second_recipient_delivery" name="second_recipient_delivery" placeholder="تحویل گیرنده دوم"><br>
-    <input type="text" id="third_recipient_delivery" name="third_recipient_delivery" placeholder="تحویل گیرنده 1"><br>
-    <input type="text" id="forth_recipient_delivery" name="forth_recipient_delivery" placeholder="تحویل گیرنده 2"><br>
-    <input type="text" id="description" name="description" placeholder="توضیحات"><br>
-    <input type="text" id="closed" name="closed" placeholder="مختوم شده"><br>
-    <input type="text" id="closed_time" name="closed_time" placeholder="تاریخ اختتام"><br>
-
-    <button type="submit">ثبت</button><br>
+<div id="add_item">
+  <input type="text" id="project_code" name="project_code" placeholder="کد پروژه">
+    <input type="text" id="warehouse_location" name="warehouse_location" placeholder="محل">
+    <input type="text" id="row" name="row" placeholder="ردیف">
+    <input type="text" id="first_recipient_delivery" name="first_recipient_delivery" placeholder="تحویل گیرنده اول">
+    <input type="text" id="company" name="company" placeholder="شرکت">
+    <input type="text" id="unit" name="unit" placeholder="واحد">
+    <input type="text" id="personnel_code" name="personnel_code" placeholder="کد پرسنلی">
+    <input type="text" id="current_location" name="current_location" placeholder="محل استقرار">
+    <input type="text" id="system_identification_code" name="system_identification_code" placeholder="کد شناسایی سیستم">
+    <input type="text" id="category" name="category" placeholder="گروه بندی">
+    <input type="text" id="model" name="model" placeholder="مدل">
+    <input type="text" id="serial_number" name="serial_number" placeholder="سریال">
+    <input type="text" id="property_code" name="property_code" placeholder="کد اموال">
+    <input type="text" id="second_recipient_delivery" name="second_recipient_delivery" placeholder="تحویل گیرنده دوم">
+    <input type="text" id="third_recipient_delivery" name="third_recipient_delivery" placeholder="تحویل گیرنده 1">
+    <input type="text" id="forth_recipient_delivery" name="forth_recipient_delivery" placeholder="تحویل گیرنده 2">
+    <input type="text" id="description" name="description" placeholder="توضیحات">
+    <input type="text" id="closed" name="closed" placeholder="مختوم شده">
+    <input type="text" id="closed_time" name="closed_time" placeholder="تاریخ اختتام">
+    <button type="submit">ثبت</button>
+</div>
+    
 
 </form>
 <a href="{{url_for('add_item_bp.excel_import')}}" style="display: block;">وارد کردن دسته جمعی از اکسل</a>

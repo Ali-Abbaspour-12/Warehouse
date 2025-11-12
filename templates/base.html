@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/base.css')}}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/search.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/add_item.css')}}">
+
     <script src="{{ url_for('static',filename='js/base.js')}}"></script>
     <title>Document</title>
 </head>
 <body>
     <header>
-        <nav>
+        <nav id="navbar">
             
-            <a href="{{url_for('dashboard_bp.dashboard')}}" >داشبورد</a>
+            <a id="dashboard" href="{{url_for('dashboard_bp.dashboard')}}" >داشبورد</a>
             
             <a href="{{url_for('search_bp.search')}}">جستجو</a>
             <a href="{{url_for('add_item_bp.add_item')}}">افزودن آیتم</a>
@@ -23,7 +25,6 @@
            
         </nav>
     </header>
-    <hr>
     <main>
         {% block content %}
 

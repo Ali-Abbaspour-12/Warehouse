@@ -1,0 +1,21 @@
+#add_item{
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+    border: 2px solid #1D546C;
+    background-color: #1D546C;
+    width: fit-content;
+    padding: 4px;
+    box-shadow: 0px 0px 2px 0px #1D546C ;
+    
+}
+#add_item input{
+    margin-top: 6px;
+    width: 400px;
+    padding: 5px;
+    border: none;
+}
+#add_item button{
+    margin-top: 6px;
+    width: 410px;
+}
