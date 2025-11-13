@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نمونه رابط کاربری — سیستم مدیریت انبار (مکعبی)</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1b2b;
+      --accent:#1ea7fd;
+      --muted:#9aa7b2;
+      --glass: rgba(255,255,255,0.03);
+      --radius:12px;
+      --cube-size:220px;
+      --gap:18px;
+      font-family: "Vazirmatn", system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071122 0%, #061820 60%);color:#e6f0f6;direction:rtl}
+    a{color:var(--accent);text-decoration:none}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);backdrop-filter: blur(6px)}
+    .brand{display:flex;gap:12px;align-items:center;flex-direction:row-reverse}
+    .brand .logo{width:48px;height:48px;background:linear-gradient(135deg,var(--accent),#7af0c7);border-radius:10px;display:grid;place-items:center;color:#022; font-weight:700}
+    main{display:flex;flex-direction:column;gap:var(--gap);padding:18px}
+
+    /* تب‌ها در بالا */
+    .tabs{display:flex;justify-content:flex-end;gap:12px;margin-bottom:var(--gap)}
+    .tab{padding:10px 16px;background:var(--card);border-radius:10px;cursor:pointer;transition:0.2s}
+    .tab:hover{background:var(--glass)}
+    .tab.active{background:var(--accent);color:#022;font-weight:700}
+
+    .dashboard{display:flex;gap:var(--gap)}
+    nav.sidebar{width:260px;background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 6px 18px rgba(4,8,12,0.6)}
+    nav.sidebar ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+    nav.sidebar li{padding:10px;border-radius:10px;display:flex;align-items:center;gap:10px;cursor:pointer}
+    nav.sidebar li:hover{background:var(--glass)}
+    .content{flex:1;display:flex;flex-direction:column;gap:var(--gap)}
+
+    .top-grid{display:flex;gap:var(--gap);align-items:stretch;flex-direction:row-reverse}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:14px;box-shadow:0 8px 20px rgba(2,6,12,0.6)}
+    .kpi{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .kpi .num{font-size:24px;font-weight:700}
+    .kpi .label{color:var(--muted);font-size:13px}
+
+    .cube-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--cube-size),1fr));gap:20px;justify-items:center}
+    .cube{width:var(--cube-size);height:var(--cube-size);position:relative;transform-style:preserve-3d;perspective:900px}
+    .cube .face{position:absolute;inset:0;border-radius:12px;background:linear-gradient(180deg,#0f2a3c, #08304b);display:flex;flex-direction:column;padding:16px;backface-visibility:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.03), 0 10px 30px rgba(2,6,12,0.6)}
+    .cube .front{transform:translateZ(28px)}
+    .cube .right{transform:rotateY(90deg) translateZ(28px);width:28px;right:-28px;top:0;border-radius:6px}
+    .cube .top{transform:rotateX(90deg) translateZ(28px);height:28px;top:-28px;left:0;border-radius:6px}
+    .cube:hover{transform:translateY(-8px) rotateX(6deg) rotateY(-6deg)}
+
+    form{display:flex;flex-direction:column;gap:12px}
+    fieldset{border-radius:10px;border:1px solid rgba(255,255,255,0.04);padding:12px}
+    label{font-size:13px;color:var(--muted)}
+    input,select,textarea,button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:8px;color:inherit}
+    table{width:100%;border-collapse:collapse;background:transparent}
+    th,td{padding:10px;border-bottom:1px dashed rgba(255,255,255,0.03);text-align:right}
+
+    .btn{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),#7af0c7);color:#022;font-weight:700;cursor:pointer}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    footer{text-align:center;color:var(--muted);font-size:13px;padding:12px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">IM</div>
+      <div>
+        <div style="font-weight:800">انبارداری مکعبی</div>
+        <div style="font-size:12px;color:var(--muted)">نسخهٔ نمایش</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <input type="search" placeholder="جستجو..." />
+      <button class="btn">آیتم جدید</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <div class="tab active">داشبورد</div>
+      <div class="tab">محصولات</div>
+      <div class="tab">سفارش‌ها</div>
+      <div class="tab">تامین‌کنندگان</div>
+      <div class="tab">گزارشات</div>
+      <div class="tab">تنظیمات</div>
+    </div>
+
+    <div class="dashboard">
+      <nav class="sidebar">
+        <ul>
+          <li>دسته‌بندی‌ها</li>
+          <li>انبار مرکزی</li>
+          <li>انبار تهران</li>
+          <li>انبار اصفهان</li>
+        </ul>
+      </nav>
+
+      <section class="content">
+        <div class="top-grid">
+          <div class="card" style="flex:1">
+            <div class="kpi">
+              <div>
+                <div class="label">موجودی کل</div>
+                <div class="num">12,340</div>
+              </div>
+              <div>
+                <div class="label">هزینه انبار</div>
+                <div class="num">₩ 1,234,560</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="width:320px">
+            <form>
+              <fieldset>
+                <legend>آیتم جدید</legend>
+                <label>نام کالا</label>
+                <input type="text" placeholder="مثال: موتور" />
+                <label>تعداد</label>
+                <input type="number" min="0" />
+                <label>قیمت</label>
+                <input type="number" />
+                <button class="btn" type="submit">ذخیره</button>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>محصولات</h3>
+          <div class="cube-grid">
+            <div class="cube">
+              <div class="face front">
+                <div class="badge">کد: SKU-1001</div>
+                <div class="product-title">پمپ آب صنعتی</div>
+                <div class="label">تعداد: 24</div>
+                <button class="btn">جزئیات</button>
+              </div>
+              <div class="face right"></div>
+              <div class="face top"></div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="card">
+          <small>© 2025 — طراحی شده جهت نمایش المان‌های راست‌چین و تب‌های بالا</small>
+        </footer>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

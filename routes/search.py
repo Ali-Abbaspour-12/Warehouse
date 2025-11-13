@@ -4,20 +4,18 @@ from models import Item,db
 
 search_bp = Blueprint("search_bp", __name__)
 
-@search_bp.route("/search_<string:search_type>")
-def search(search_type):
+@search_bp.route("/search")
+def search():
 
     q = request.args.get("q")
+    if not q:
+        return render_template("search.html",items=[])
+    
+    
 
-    if search_type == 'search':
-        if not q:
-            return render_template("search.html",items=[])
+    items = Item.query.filter(Item.property_code.contains(q)).all()
+    return render_template("search.html",items=items)
 
-        items = Item.query.filter(Item.property_code.contains(q)).all()
-        return render_template("search.html",items=items)
-
-    else:
-        return render_template()
 
 
 

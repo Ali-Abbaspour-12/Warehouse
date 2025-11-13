@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="fa">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نمونه رابط کاربری — سیستم مدیریت انبار (مکعبی)</title>
+  <style>
+    /* تنظیمات پایه */
+    :root{
+      --bg:#0f1724;
+      --card:#0b1b2b;
+      --accent:#1ea7fd;
+      --muted:#9aa7b2;
+      --glass: rgba(255,255,255,0.03);
+      --radius:12px;
+      --cube-size:220px; /* اندازه مکعب */
+      --gap:18px;
+      font-family: "Vazirmatn", system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071122 0%, #061820 60%);color:#e6f0f6}
+    a{color:var(--accent);text-decoration:none}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);backdrop-filter: blur(6px)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand .logo{width:48px;height:48px;background:linear-gradient(135deg,var(--accent),#7af0c7);border-radius:10px;display:grid;place-items:center;color:#022; font-weight:700}
+    main{display:flex;gap:var(--gap);padding:18px}
+    nav.sidebar{width:260px;background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 6px 18px rgba(4,8,12,0.6)}
+    nav.sidebar ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+    nav.sidebar li{padding:10px;border-radius:10px;display:flex;align-items:center;gap:10px;cursor:pointer}
+    nav.sidebar li:hover{background:var(--glass)}
+    .content{flex:1;display:flex;flex-direction:column;gap:var(--gap)}
+
+    /* بخش بالای داشبورد */
+    .top-grid{display:flex;gap:var(--gap);align-items:stretch}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:14px;box-shadow:0 8px 20px rgba(2,6,12,0.6)}
+    .kpi{display:flex;gap:12px;align-items:center}
+    .kpi .num{font-size:24px;font-weight:700}
+    .kpi .label{color:var(--muted);font-size:13px}
+
+    /* شبکه مکعب‌ها (کارت‌های محصولات با ظاهر مکعبی 3D) */
+    .cube-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--cube-size),1fr));gap:20px}
+    .cube{
+      width:var(--cube-size);height:var(--cube-size);position:relative;transform-style:preserve-3d;perspective:900px;margin:auto;
+    }
+    .cube .face{
+      position:absolute;inset:0;border-radius:12px;background:linear-gradient(180deg,#0f2a3c, #08304b);display:flex;flex-direction:column;padding:16px;backface-visibility:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.03), 0 10px 30px rgba(2,6,12,0.6);
+    }
+    .cube .front{transform:translateZ(28px)}
+    .cube .right{transform:rotateY(90deg) translateZ(28px);width:28px;right:-28px;top:0;border-radius:6px}
+    .cube .top{transform:rotateX(90deg) translateZ(28px);height:28px;top:-28px;left:0;border-radius:6px}
+    .cube:hover{transform:translateY(-8px) rotateX(6deg) rotateY(-6deg)}
+    .product-title{font-weight:700;margin-top:6px}
+    .badge{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.25);font-size:12px}
+
+    /* فرم‌ها و لیست‌ها */
+    form{display:flex;flex-direction:column;gap:12px}
+    fieldset{border-radius:10px;border:1px solid rgba(255,255,255,0.04);padding:12px}
+    label{font-size:13px;color:var(--muted)}
+    input,select,textarea,button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:8px;color:inherit}
+    input:focus,select:focus,textarea:focus{outline:2px solid rgba(30,167,253,0.12);border-color:rgba(30,167,253,0.5)}
+    table{width:100%;border-collapse:collapse;background:transparent}
+    th,td{padding:10px;border-bottom:1px dashed rgba(255,255,255,0.03);text-align:left}
+
+    /* پاسخگو */
+    @media (max-width:980px){nav.sidebar{display:none} .cube{width:95%}}
+
+    /* دکمه‌ها */
+    .btn{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),#7af0c7);color:#022;font-weight:700;cursor:pointer}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    /* تایپوگرافی نمونه برای انواع تگ‌ها */
+    article h1,h2,h3{margin:6px 0}
+    pre{background:#021521;padding:12px;border-radius:8px;overflow:auto}
+    code{font-family:monospace;background:rgba(255,255,255,0.03);padding:2px 6px;border-radius:4px}
+
+    /* footer */
+    footer{padding:12px;text-align:center;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">IM</div>
+      <div>
+        <div style="font-weight:800">انبارداری مکعبی</div>
+        <div style="font-size:12px;color:var(--muted)">نسخهٔ نمایش — نمونه رابط کاربری</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <input type="search" placeholder="جستجوی محصول یا کد" />
+      <button class="btn" onclick="document.getElementById('newItem').scrollIntoView({behavior:'smooth'})">آیتم جدید</button>
+    </div>
+  </header>
+
+  <main>
+    <nav class="sidebar" aria-label="منوی اصلی">
+      <ul>
+        <li><strong>داشبورد</strong></li>
+        <li>موجودی</li>
+        <li>سفارش‌ها</li>
+        <li>تامین‌کنندگان</li>
+        <li>گزارشات</li>
+        <li>تنظیمات</li>
+      </ul>
+      <hr />
+      <details>
+        <summary>فیلترها</summary>
+        <form>
+          <label for="cat">دسته</label>
+          <select id="cat">
+            <option>همه</option>
+            <option>قطعات</option>
+            <option>لوازم جانبی</option>
+          </select>
+
+          <label for="status">وضعیت</label>
+          <div>
+            <label><input type="checkbox" checked /> در انبار</label><br>
+            <label><input type="checkbox" /> در راه</label>
+          </div>
+        </form>
+      </details>
+
+      <hr />
+      <address>
+        پشتیبانی: <a href="mailto:support@example.com">support@example.com</a><br>
+        تلفن: <a href="tel:+982123456789">+98 21 3456 789</a>
+      </address>
+    </nav>
+
+    <section class="content">
+      <div class="top-grid">
+        <div class="card" style="flex:1;min-width:260px">
+          <div class="kpi">
+            <div>
+              <div class="label">موجودی کل</div>
+              <div class="num">12,340</div>
+            </div>
+            <div style="margin-left:auto;text-align:left">
+              <div class="label">هزینه انبار</div>
+              <div class="num">₩ 1,234,560</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="width:320px">
+          <form>
+            <fieldset>
+              <legend>ایجاد / ویرایش آیتم</legend>
+              <label for="sku">کد کالا (SKU)</label>
+              <input id="sku" type="text" placeholder="مثال: SKU-0001" />
+
+              <label for="name">نام کالا</label>
+              <input id="name" type="text" />
+
+              <label for="qty">تعداد</label>
+              <input id="qty" type="number" min="0" value="10" />
+
+              <label for="price">قیمت واحد</label>
+              <input id="price" type="number" step="0.01" />
+
+              <label>تاریخ ورود</label>
+              <input type="date" />
+
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button type="button" class="btn" onclick="alert('آیتم ذخیره شد')">ذخیره</button>
+                <button type="reset" class="ghost">بازنشانی</button>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+
+      <!-- شبکهٔ محصولات به شکل مکعب -->
+      <div class="card">
+        <h3>نمونه محصولات</h3>
+        <div class="cube-grid" role="list">
+
+          <!-- کارت محصول (شامل انواع تگ‌ها) -->
+          <article class="cube" role="listitem" aria-label="محصول ۱">
+            <div class="face front">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div class="badge">کد: SKU-1001</div>
+                <div title="موجودی">●</div>
+              </div>
+
+              <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='80'><rect rx='8' width='100%' height='100%' fill='%23083b4e'/><text x='50%' y='50%' fill='%23aee9ff' font-size='12' dominant-baseline='middle' text-anchor='middle'>تصویر</text></svg>" alt="تصویر محصول" style="width:100%;height:110px;object-fit:contain;border-radius:6px;margin-top:8px" />
+
+              <div class="product-title">پمپ آب صنعتی</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto">
+                <div class="label">تعداد: <strong>24</strong></div>
+                <div>
+                  <button class="btn" onclick="openDetails('SKU-1001')">جزئیات</button>
+                </div>
+              </div>
+            </div>
+            <div class="face right"></div>
+            <div class="face top"></div>
+          </article>
+
+          <!-- کارت دیگر شامل ویدئو و تگ‌های متنی -->
+          <article class="cube" role="listitem" aria-label="محصول ۲">
+            <div class="face front">
+              <small class="label">کد: SKU-2002</small>
+              <h4>سنسور دما</h4>
+              <p class="muted">توضیحات کوتاه: سنسور برای اندازه‌گیری دما تا 150°C.</p>
+
+              <video controls width="100%" style="border-radius:6px;margin-top:8px">
+                <source src="" type="video/mp4">
+                ویدئو پشتیبانی نمی‌شود.
+              </video>
+
+              <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center">
+                <div class="badge">قیمت: 120</div>
+                <div class="label">وضعیت: <em>در انبار</em></div>
+              </div>
+            </div>
+            <div class="face right"></div>
+            <div class="face top"></div>
+          </article>
+
+          <!-- کارت حاوی عنصر <progress> و <meter> و <svg> و <canvas> -->
+          <article class="cube" role="listitem" aria-label="محصول ۳">
+            <div class="face front">
+              <h4>سیستم باتری</h4>
+              <p>شارژ:</p>
+              <progress value="70" max="100">70%</progress>
+              <p>کیفیت:</p>
+              <meter value="0.8">80%</meter>
+
+              <svg viewBox="0 0 100 30" style="width:100%;height:50px;margin-top:8px">
+                <rect x="0" y="0" width="100" height="30" rx="6" fill="#03293c"></rect>
+                <text x="50" y="18" text-anchor="middle" fill="#8fdfff" font-size="8">نمودار کوچک</text>
+              </svg>
+
+              <canvas id="miniChart" width="200" height="70" style="width:100%;height:70px;border-radius:6px;margin-top:6px"></canvas>
+
+            </div>
+            <div class="face right"></div>
+            <div class="face top"></div>
+          </article>
+
+          <!-- کارت شامل فرم و انواع input -->
+          <article class="cube" role="listitem" aria-label="محصول ۴">
+            <div class="face front">
+              <h4>افزودن سریع</h4>
+              <form onsubmit="event.preventDefault(); alert('افزودن سریع')">
+                <label>نام</label>
+                <input type="text" placeholder="نام کالا" />
+                <label>رنگ</label>
+                <input type="color" value="#ff0000" />
+                <label>تعداد</label>
+                <input type="range" min="0" max="500" value="50" />
+                <label>تاریخ تحویل</label>
+                <input type="datetime-local" />
+
+                <button class="btn" type="submit" style="margin-top:8px">افزودن</button>
+              </form>
+            </div>
+            <div class="face right"></div>
+            <div class="face top"></div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- جدول نمونه -->
+      <div class="card">
+        <h3>لیست آیتم‌ها (جدول)</h3>
+        <table aria-describedby="table-desc">
+          <caption id="table-desc">جدول نمونه از محصولات در انبار</caption>
+          <thead>
+            <tr><th>کد</th><th>نام</th><th>تعداد</th><th>قیمت</th><th>اقدام</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>SKU-1001</td><td>پمپ آب</td><td>24</td><td>1,250,000</td><td><button class="ghost">ویرایش</button></td></tr>
+            <tr><td>SKU-2002</td><td>سنسور دما</td><td>86</td><td>120,000</td><td><button class="ghost">ویرایش</button></td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="3">جمع</td><td>1,370,000</td><td></td></tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- بخش مستندات با تقریبا همه تگ‌های متنی -->
+      <article class="card">
+        <h2>مستندات کوتاه عناصر HTML</h2>
+        <p>نمونهٔ استفاده از <strong>strong</strong>, <em>em</em>, <code>code()</code>, <mark>highlight</mark>، و <small>توضیحات ریز</small>.</p>
+
+        <pre><code>&lt;script&gt;console.log('نمونه');&lt;/script&gt;</code></pre>
+
+        <blockquote>نمونه نقل قول — اینجا می‌توانید نکات مهم را قرار دهید.</blockquote>
+
+        <details>
+          <summary>بخش قابل گسترش: اطلاعات فنی</summary>
+          <p>درون details می‌توانید متن‌های بلند یا تغییرپذیر قرار دهید.</p>
+        </details>
+
+        <dl>
+          <dt>ابتدا</dt>
+          <dd>تعریف اول</dd>
+          <dt>محدودیت</dt>
+          <dd>حداقل و حداکثر مقدار</dd>
+        </dl>
+
+        <p>نمونهٔ کوتاه از <abbr title="شماره شناسایی کالا">SKU</abbr> و <cite>مرجع محصول</cite>.</p>
+
+      </article>
+
+      <footer class="card">
+        <small>طراحی شده برای نمونه — تمام تگ‌های ممکن به صورت نمایشی گنجانده شده‌اند. © 2025</small>
+      </footer>
+
+    </section>
+  </main>
+
+  <!-- دیالوگ نمونه (تگ dialog) -->
+  <dialog id="detailDialog" aria-labelledby="dlgTitle">
+    <h3 id="dlgTitle">جزئیات آیتم</h3>
+    <p id="dlgBody">در حال بارگذاری...</p>
+    <menu>
+      <button onclick="document.getElementById('detailDialog').close()">بستن</button>
+    </menu>
+  </dialog>
+
+  <!-- نمونه چند تگ تکمیلی پایین صفحه -->
+  <template id="rowTemplate"><tr><td>SKU-XXXX</td><td>نمونه</td><td>0</td><td>0</td><td></td></tr></template>
+
+  <script>
+    // نمایش جزئیات ساده
+    function openDetails(sku){
+      const d = document.getElementById('detailDialog');
+      d.querySelector('#dlgBody').textContent = 'جزئیات مربوط به ' + sku + '\nتوضیحات نمونه.';
+      d.showModal();
+    }
+
+    // رسم نمودار کوچک روی canvas
+    (function(){
+      const c = document.getElementById('miniChart');
+      if(!c) return;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,c.width,c.height);
+      ctx.fillStyle = 'rgba(160,240,255,0.08)';
+      ctx.fillRect(0,0,c.width,c.height);
+      ctx.strokeStyle = 'rgba(120,220,255,0.9)';
+      ctx.beginPath();
+      const points = [10,30,20,60,50,40,80,30,100,50];
+      points.forEach((p,i)=>{
+        const x = i * (c.width/points.length) + 10;
+        const y = c.height - p;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+    })();
+
+  </script>
+</body>
+</html>
