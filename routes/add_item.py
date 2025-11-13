@@ -38,7 +38,38 @@ def add_item():
     return render_template("add_item.html")
 
 
+@add_item_bp.route('/show_all_items_wants_import_from_excel')
+def show_all_items_wants_import_from_excel():
 
+    excelFile = pd.read_excel("./excel/data.xlsx")
+
+    records = []
+    for _,excelRow in excelFile.iterrows():
+        record = (
+
+                excelRow["project_code"],
+                excelRow["warehouse_location"],
+                excelRow["row"],
+                excelRow["first_recipient_delivery"],
+                excelRow["company"],
+                excelRow["unit"],
+                excelRow["personnel_code"],
+                excelRow["current_location"],
+                excelRow["system_identification_code"],
+                excelRow["category"],
+                excelRow["model"],
+                excelRow["serial_number"],
+                excelRow["property_code"],
+                excelRow["second_recipient_delivery"],
+                excelRow["third_recipient_delivery"],
+                excelRow["forth_recipient_delivery"],
+                excelRow["description"], 
+                excelRow["closed"],
+                excelRow["closed_time"],
+
+        )
+        records.append(record)
+    return render_template("show_all_items_wants_import_from_excel.html",records=records)
 
 
 @add_item_bp.route('/excel_import')

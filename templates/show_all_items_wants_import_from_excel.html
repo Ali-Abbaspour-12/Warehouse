@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<ul>
+    {% for row in records %}
+        <li>{{row[0]}} - {{row[4]}} - {{row[12]}}</li>
+    {% endfor %}
+</ul>
+    <a href="{{url_for('add_item_bp.import_to_database')}}">وارد کردن به دیتابیس</a>
+{% endblock %}
