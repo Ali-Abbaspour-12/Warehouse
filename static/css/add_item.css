@@ -8,9 +8,11 @@
     display: flex;
     flex-direction: column;
     margin-top: 6px;
-    padding: 4px;
     border-radius: 10px;    
     margin-right: 10px;
+    background-color: #f7faff;
+    height: fit-content;
+    padding-bottom: 10px;
 }
 #base_add{
     display: flex;
@@ -18,11 +20,9 @@
     box-shadow: 0px 0px 20px 0px black ;
     border-radius: 5px;
     padding: 10px;
-    margin-right: 50px;
+    margin-right: 10px;
     margin-top: 30px;
     margin-left: 120px;
-    background-color: #f7faff;
-    width: 600px;
 
 }
 #add_item div{
@@ -37,11 +37,11 @@
 #add_item input{
     width: 300px;
     padding: 5px;
+    margin-top: 3px;
     border: 1px solid #44576d ;
     background-color: #EEF1FF;
     margin-right: 30px;
     margin-left: 20px;
-    margin-top: 1px;
 
     box-shadow: 0px 0px 5px 0px white;
     transition: 0.2s;
@@ -69,14 +69,15 @@
     margin-top: 8px;
     margin-bottom: 8px;    
     padding: 4px;
+    
 
 
 }
 #button button:hover{
     box-shadow: 0px 0px 10px 0px white;
-    color: white;
-    background-color: black;
+    background-color: #90caf933;
     transition: 0.3s;
+
 
 
 }
@@ -141,21 +142,22 @@
 
 }
 #capi{
-    width: 460px;
+    width: 360px;
     height: 560px;
-    background-color:#EEF1FF ;
-    margin-top: 8px;
+    margin-top: 28px;
     margin-right: 43px;
-    box-shadow: 0px 0px 8px 1px black;
     border-radius: 10px;
     margin-left: 30px;
     border: 10px;
+    box-shadow: 0px 0px 10px 0px black;
+    padding: 30px;
 
 
 }
 #capi h4{
-    padding-right: 20px;
-}
-#capi{
-    margin-left: 300px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px 0px black;
+    border-radius: 10px;
+
+
 }
