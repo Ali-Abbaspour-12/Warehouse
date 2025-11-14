@@ -14,12 +14,22 @@
     <header>
         <nav id="navbar">
             
-            <a id="dashboard" href="{{url_for('dashboard_bp.dashboard')}}" >داشبورد</a>
+           <div>
+             <a id="dashboard" href="{{url_for('dashboard_bp.dashboard')}}" >داشبورد</a>
+           </div>
             
-            <a href="{{url_for('search_bp.search')}}">جستجو</a>
-            <a href="{{url_for('add_item_bp.add_item')}}">افزودن آیتم</a>
-            <a href="{{url_for('report_bp.report')}}">گزارش گیری</a>
-            <a href="{{url_for('settings_bp.settings')}}">تنظیمات</a>
+            <div>
+                <a href="{{url_for('search_bp.search')}}">جستجو</a>
+            </div>
+           <div>
+             <a href="{{url_for('add_item_bp.add_item')}}">افزودن آیتم</a>
+           </div>
+            <div>
+                <a href="{{url_for('report_bp.report')}}">گزارش گیری</a>
+            </div>
+           <div>
+             <a href="{{url_for('settings_bp.settings')}}">تنظیمات</a>
+           </div>
             
            
            

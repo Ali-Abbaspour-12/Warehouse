@@ -8,36 +8,39 @@
 
 html{
     font-family: 'DigiHamisheRegular';
-    background-color: white;
+    background-color: #EAEFEF;
 }
 
 #navbar a{
     text-decoration: none;
-    color: #1D546C;
+    color: #44576d;
     padding: 6.6px;
     transition: 0.1s;
-    font-size: 16px;
+    font-size: 20px;
     margin-right: 50px;
+    background-color: #f7faff;
+
         
 
 
 }
+#navbar div{
+    background-color:  solid red;
+
+}
 #navbar a:hover {
-    font-size: 18px;
-    color: white;
+    font-size: 21px;
+    color: #44576d;
     border: 10px;
-    background-color: #06283D;
+    background-color: #90caf933;
     transition: 0.1s;
     border-radius: 2px;
 }
 #navbar{
     display: flex;
     flex-direction: row;
-    background-color: #EEF1FF;
     height: 60px;
-    border-radius: 5px;
     align-items: center;
-    box-shadow: 0px 0px 10px 0px white;
     margin-top: 20px;
     
 
