@@ -25,6 +25,7 @@
         <li>{{item.closed_time}}</li>
         
     </ul><br>
-    <a href="{{url_for('search_bp.edit_item',item_id=item.id)}}">ویرایش آیتم</a>
+    <a href="{{url_for('search_bp.edit_item',item_id=item.id)}}">ویرایش آیتم</a><br>
+    <a href="{{url_for('search_bp.search',**request.args)}}">بازگشت</a>
 
 {% endblock %}

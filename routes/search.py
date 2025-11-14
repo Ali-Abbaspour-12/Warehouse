@@ -6,15 +6,51 @@ search_bp = Blueprint("search_bp", __name__)
 
 @search_bp.route("/search")
 def search():
+    query_params_exist = any([
+        request.args.get('q'),
+        request.args.get('project_code'),
+        request.args.get('company'),
+        request.args.get('warehouse_locaiton'),
+        request.args.get('category'),
+    ])
 
-    q = request.args.get("q")
-    if not q:
-        return render_template("search.html",items=[])
-    
-    
 
-    items = Item.query.filter(Item.property_code.contains(q)).all()
-    return render_template("search.html",items=items)
+    if not query_params_exist:
+        return render_template('search.html',items=[])
+
+    query = Item.query
+
+    search = request.args.get("q")
+    if search:
+        query = query.filter(Item.property_code.ilike(f"%{search}%"))
+
+
+    project_code = request.args.get("project_code")
+    if project_code:
+        query = query.filter(Item.project_code.ilike(f'%{project_code}%'))
+
+    persian_equal = {}
+    company = request.args.get("company") 
+    if company:
+        query = query.filter(Item.company.ilike(f'%{company}%'))
+
+
+    category = request.args.get("category") 
+    if category:
+        query = query.filter(Item.category.ilike(f'%{category}%'))  
+
+
+
+    warehouse_location = request.args.get("warehouse_location") 
+    if warehouse_location:
+        query = query.filter(Item.warehouse_location.ilike(f'%{warehouse_location}%')) 
+
+
+        
+
+    items = query.all()
+
+    return render_template("search.html",items=items)          
 
 
 

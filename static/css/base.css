@@ -8,6 +8,7 @@
 
 html{
     font-family: 'DigiHamisheRegular';
+    background-color: white;
 }
 
 #navbar a{
@@ -40,7 +41,4 @@ html{
     margin-top: 20px;
     
 
-}
-html{
-    background-color: #06283D;
 }
