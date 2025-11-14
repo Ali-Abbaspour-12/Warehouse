@@ -14,91 +14,102 @@
 
 
 <form method="post">
-  <a href="{{url_for('add_item_bp.excel_import')}}" style="display: block;">وارد کردن دسته جمعی از اکسل</a>
-<div id="base_add">
+  
+<div id="all_base">
+  <div id="base_add">
+
 
   <div id="add_item">
    <div> 
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
     <input type="text" id="warehouse_location" name="warehouse_location" placeholder="محل">
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
     <input type="text" id="row" name="row" placeholder="ردیف">
    </div>
     <div>
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
+
       <input type="text" id="project_code" name="project_code" placeholder="کد پروژه">
-    <label for="ezxsw">jgvnn</label>
-    <input type="text" id="user" name="user" placeholder="کاربر">
+    <label for="22">22</label>
+
+    <input type="text" id="first_recipient_delivery" name="first_recipient_delivery" placeholder="تحویل گیرنده اول">
   
     </div>
     <div>
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
 
       <input type="text" id="unit" name="unit" placeholder="واحد">
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
+
     <input type="text" id="personnel_code" name="personnel_code" placeholder="کد پرسنلی">
     </div>
     <div>
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
 
       <input type="text" id="current_location" name="current_location" placeholder="محل استقرار">
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
 
     <input type="text" id="system_identification_code" name="system_identification_code" placeholder="کد شناسایی سیستم">
-
     </div>
    <div>
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
 
      <input type="text" id="category" name="category" placeholder="گروه بندی">
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
 
     <input type="text" id="model" name="model" placeholder="مدل">
    </div>
-    <div>
-    <label for="ezxsw">jgvnn</label>
+</div>
+<div>
+  <div id="add_item2">
+      <div>
+    <label for="22">22</label>
 
       <input type="text" id="serial_number" name="serial_number" placeholder="سریال">
-    <label for="ezxsw">jgvnn</label>
-
+    <label for="22">22</label>
     <input type="text" id="property_code" name="property_code" placeholder="کد اموال">
     </div>
    <div>
-    <label for="ezxsw">jgvnn</label>
-
-     <input type="text" id="recipient_delivery" name="recipient_delivery" placeholder="تحویل گیرنده">
-    
+    <label for="22">22</label>
+     <input type="text" id="second_recipient_delivery" name="second_recipient_delivery" placeholder="تحویل گیرنده دوم">
+    <label for="22">22</label>
+    <input type="text" id="third_recipient_delivery" name="third_recipient_delivery" placeholder="تحویل گیرنده 1">
    </div>
    <div>
-    
-    <label for="ezxsw">jgvnn</label>
+    <label for="22">22</label>
+
+     <input type="text" id="forth_recipient_delivery" name="forth_recipient_delivery" placeholder="تحویل گیرنده 2">
+    <label for="22">22</label>
 
     <input type="text" id="description" name="description" placeholder="توضیحات">
    </div>
     <div>
-   
-    <label for="ezxsw">jgvnn</label>
-
+    <label for="22">22</label>
+       <input type="text" id="forth_recipient_delivery" name="forth_recipient_delivery" placeholder="تحویل گیرنده 2">
+    <label for="22">22</label>
     <input type="text" id="description" name="description" placeholder="توضیحات">
     </div>
     <div>
-    <label for="ezxsw">jgvnn</label>
-
+    <label for="22">22</label>
        <input type="text" id="company" name="company" placeholder="شرکت">
     </div>
-    <div>
+</div>
+<div>
+   <div id="button">
           <button type="submit">ثبت</button>
     </div>
+</div>
+</div>
 </div>
 <div id="capi">
   <h4>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit consequatur sequi laborum distinctio aperiam adipisci aut labore error corporis odit blanditiis iure doloremque, laboriosam excepturi officiis a fugiat ea tempora!
   </h4>
+  <a href="{{url_for('add_item_bp.excel_import')}}" style="display: block;">وارد کردن دسته جمعی از اکسل</a>
 </div>
 
-    
-
 </form>
+
 
 
 {% endblock %}
