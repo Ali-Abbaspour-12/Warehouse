@@ -12,7 +12,7 @@ def add_item():
                 project_code = request.form.get('project_code'),
                 warehouse_location = request.form.get('warehouse_location'),
                 row = request.form.get('row'),
-                first_recipient_delivery = request.form.get('first_recipient_delivery'),
+                user = request.form.get('user'),
                 company = request.form.get('company'),
                 unit = request.form.get('unit'),
                 personnel_code = request.form.get('personnel_code'),
@@ -22,9 +22,7 @@ def add_item():
                 model = request.form.get('model'),
                 serial_number = request.form.get('serial_number'),
                 property_code = request.form.get('property_code'),
-                second_recipient_delivery = request.form.get('second_recipient_delivery'),
-                third_recipient_delivery = request.form.get('third_recipient_delivery'),
-                forth_recipient_delivery = request.form.get('forth_recipient_delivery'),
+                recipient_delivery = request.form.get('recipient_delivery'),
                 description =  request.form.get('description'), 
                 closed = request.form.get('closed'),
                 closed_time = request.form.get('closed_time'),
@@ -50,7 +48,7 @@ def show_all_items_wants_import_from_excel():
                 excelRow["project_code"],
                 excelRow["warehouse_location"],
                 excelRow["row"],
-                excelRow["first_recipient_delivery"],
+                excelRow["user"],
                 excelRow["company"],
                 excelRow["unit"],
                 excelRow["personnel_code"],
@@ -60,9 +58,7 @@ def show_all_items_wants_import_from_excel():
                 excelRow["model"],
                 excelRow["serial_number"],
                 excelRow["property_code"],
-                excelRow["second_recipient_delivery"],
-                excelRow["third_recipient_delivery"],
-                excelRow["forth_recipient_delivery"],
+                excelRow["recipient_delivery"],
                 excelRow["description"], 
                 excelRow["closed"],
                 excelRow["closed_time"],
@@ -81,7 +77,7 @@ def excel_import():
 @add_item_bp.route("/excel_import/import_to_database")
 def import_to_database():
 
-    excelFile = pd.read_excel("./excel/data.xlsx")
+    excelFile = pd.read_excel("./excel/data.xlsx").astype(str)
 
     for _,excelRow in excelFile.iterrows():
         record = Item(
@@ -89,7 +85,7 @@ def import_to_database():
                 project_code = excelRow["project_code"],
                 warehouse_location = excelRow["warehouse_location"],
                 row = excelRow["row"],
-                first_recipient_delivery = excelRow["first_recipient_delivery"],
+                user = excelRow["user"],
                 company = excelRow["company"],
                 unit = excelRow["unit"],
                 personnel_code = excelRow["personnel_code"],
@@ -99,9 +95,7 @@ def import_to_database():
                 model = excelRow["model"],
                 serial_number = excelRow["serial_number"],
                 property_code = excelRow["property_code"],
-                second_recipient_delivery = excelRow["second_recipient_delivery"],
-                third_recipient_delivery = excelRow["third_recipient_delivery"],
-                forth_recipient_delivery = excelRow["forth_recipient_delivery"],
+                recipient_delivery = excelRow["recipient_delivery"],
                 description =  excelRow["description"], 
                 closed = excelRow["closed"],
                 closed_time = excelRow["closed_time"],
