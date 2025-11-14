@@ -1,50 +1,138 @@
+#all_base{
+    display: flex;
+    flex-direction: row;
+}
+
+
 #add_item{
     display: flex;
     flex-direction: column;
     margin-top: 6px;
-    background-color: #06283D;
     padding: 4px;
-    
+    border-radius: 10px;    
+    margin-right: 10px;
 }
 #base_add{
     display: flex;
     flex-direction: row;
-    box-shadow: 0px 0px 20px 10px #EEF1FF ;
+    box-shadow: 0px 0px 20px 0px black ;
     border-radius: 5px;
-    padding-bottom: 20px;
+    padding: 10px;
+    margin-right: 50px;
+    margin-top: 30px;
+    margin-left: 120px;
+    background-color: #f7faff;
+    width: 600px;
 
 }
 #add_item div{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+}
+#add_item label{
+    margin-right: 10px;
+    color: #44576d;
+    
 }
 #add_item input{
-    margin-top: 30px;
-    width: 400px;
+    width: 300px;
     padding: 5px;
-    border: none;
+    border: 1px solid #44576d ;
     background-color: #EEF1FF;
     margin-right: 30px;
+    margin-left: 20px;
+    margin-top: 1px;
+
     box-shadow: 0px 0px 5px 0px white;
-    transition: 2s;
+    transition: 0.2s;
     border-radius: 4px;
 }
 #add_item input[type="text"]:hover {
     transition: 0.3s;
     box-shadow: 0px 0px 10px 0px white;
+    background-color: #90caf933;
+}
+#button{
+    background-color: #f7faff;
+    border-radius: 10px;
+    margin-top: 8px;
+    margin-right: 10px;
+    padding: 10px;
+
+
+}
+#button button{
+    width: 316px;
+    margin-right: 21px;
+    margin-left: 20px;
+    transition: 2s;
+    margin-top: 8px;
+    margin-bottom: 8px;    
+    padding: 4px;
+
+
+}
+#button button:hover{
+    box-shadow: 0px 0px 10px 0px white;
     color: white;
     background-color: black;
+    transition: 0.3s;
+
+
 }
-#add_item button{
+#add_item2{
+    display: flex;
+    flex-direction: column;
+    margin-top: 6px;
+    background-color: #f7faff;
+    padding: 4px;
+    padding-bottom: 10px;
+    border-radius: 10px;    
+    margin-right: 10px;
+    
+
+}
+#add_item2 div{
+    display: flex;
+    flex-direction: column;
+    
+}
+#add_item2 label{
+    margin-right: 10px;
+    color: #44576d;
+
+;
+    
+}
+#add_item2 input{
+    margin-top: 1px;
+    width: 300px;
+    padding: 5px;
+    border: 1px solid #44576d ;
+    background-color: #EEF1FF;
+    margin-right: 30px;
+    margin-top: 1px;
+    box-shadow: 0px 0px 5px 0px white;
+    transition: 2s;
+    border-radius: 4px;
+    margin-left: 20px;
+}
+#add_item2 input[type="text"]:hover {
+    transition: 0.3s;
+    box-shadow: 0px 0px 10px 0px white;
+    color: #44576d;
+    background-color: #90caf933;
+}
+#add_item2 button{
     margin-top: 20px;
-    width: 840px;
+    width: 300px;
     margin-right: 30px;
     padding: 5px;
     transition: 2s;
 
 
 }
-#add_item button:hover{
+#add_item2 button:hover{
     box-shadow: 0px 0px 10px 0px white;
     color: white;
     background-color: black;
@@ -53,17 +141,21 @@
 
 }
 #capi{
-    width: 600px;
-    height: 580px;
+    width: 460px;
+    height: 560px;
     background-color:#EEF1FF ;
-    margin-top: 30px;
-    margin-right: 33px;
-    box-shadow: 0px 0px 20px 0px white;
-    border-radius: 5px;
+    margin-top: 8px;
+    margin-right: 43px;
+    box-shadow: 0px 0px 8px 1px black;
+    border-radius: 10px;
     margin-left: 30px;
+    border: 10px;
 
 
 }
 #capi h4{
     padding-right: 20px;
+}
+#capi{
+    margin-left: 300px;
 }
