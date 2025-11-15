@@ -25,8 +25,8 @@
     </ul><br>
 
     <ul>
-        {% for history in item.item_history %}
-            <a href="{{url_for('search_bp.history_detail',history=history.id,item_id=item.id)}}"><li>{{history.id}}</li></a>
+        {% for history in item.item_history|reverse %}
+            <a href="{{url_for('search_bp.history_detail',history_id=history.id,item_id=item.id)}}"><li>{{history.property_code}}</li></a>
         {% endfor %}
     </ul>
 

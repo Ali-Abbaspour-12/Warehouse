@@ -4,60 +4,42 @@ from models import Item,db,ItemHistory
 
 search_bp = Blueprint("search_bp", __name__)
 
+#region /search
 @search_bp.route("/search")
 def search():
-    query_params_exist = any([
-        request.args.get('q'),
-        request.args.get('project_code'),
-        request.args.get('company'),
-        request.args.get('warehouse_locaiton'),
-        request.args.get('category'),
-    ])
+    args = request.args
 
-
-    if not query_params_exist:
-        return render_template('search.html',items=[])
+    field_mapping = {
+        "property_code": Item.property_code,
+        "project_code": Item.project_code,
+        "company": Item.company,
+        "category": Item.category,
+        "warehouse_location": Item.warehouse_location,
+    }
 
     query = Item.query
+    has_filter = False
 
-    search = request.args.get("q")
-    if search:
-        query = query.filter(Item.property_code.ilike(f"%{search}%"))
+    for arg_key, model_field in field_mapping.items():
+        value = args.get(arg_key)
+        if value:
+            has_filter = True
+            query = query.filter(model_field.ilike(f"%{value}%"))
 
-
-    project_code = request.args.get("project_code")
-    if project_code:
-        query = query.filter(Item.project_code.ilike(f'%{project_code}%'))
-
-    persian_equal = {}
-    company = request.args.get("company") 
-    if company:
-        query = query.filter(Item.company.ilike(f'%{company}%'))
-
-
-    category = request.args.get("category") 
-    if category:
-        query = query.filter(Item.category.ilike(f'%{category}%'))  
-
-
-
-    warehouse_location = request.args.get("warehouse_location") 
-    if warehouse_location:
-        query = query.filter(Item.warehouse_location.ilike(f'%{warehouse_location}%')) 
- 
+    if not has_filter:
+        return render_template("search.html", items=[])
 
     items = query.all()
-
-    return render_template("search.html",items=items)        
+    return render_template("search.html", items=items)
+#endregion
 
    
-
-
+#region /show_all_records
 @search_bp.route("/show_all_records")
 def show_all_records():
     items = Item.query.all()
     return render_template("show_all_records.html",items=items)
-
+#endregion
 
 @search_bp.route('/item_detail_<int:item_id>')
 def item_detail(item_id):
@@ -68,7 +50,7 @@ def item_detail(item_id):
 
 @search_bp.route('/history_detail_<int:item_id>_<int:history_id>')
 def history_detail(item_id,history_id):
-    history = ItemHistory.query.filter_by(id=history_id)
+    history = ItemHistory.query.get_or_404(history_id)
     return render_template('history_detail.html',history=history,item_id=item_id)
 
 
