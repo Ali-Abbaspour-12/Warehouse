@@ -13,12 +13,12 @@ html{
 
 #navbar a{
     text-decoration: none;
-    color: #44576d;
+    color: #EEF1FF;
     padding: 8px;
     transition: 0.1s;
     font-size: 20px;
     margin-right: 10px;
-    background-color: #f7faff;
+    background-color: #1B3C53;
     margin-left: 10px;
     padding-left: 20px;
     padding-right: 20px;
@@ -29,7 +29,6 @@ html{
 
 }
 #navbar div{
-    background-color:  solid red;
 
 }
 #navbar a:hover {
@@ -49,6 +48,10 @@ html{
     height: 60px;
     align-items: center;
     margin-top: 20px;
+    background-color: #EEF1FF;
+    padding: 10px;
+    border-radius: 10px;
+    margin-right: 10px;
     
 
 }

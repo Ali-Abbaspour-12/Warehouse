@@ -17,9 +17,8 @@
   
 <div id="all_base">
   <div id="base_add">
-
-
   <div id="add_item">
+
    <div> 
     <label for="22">22</label>
     <input type="text" id="warehouse_location" name="warehouse_location" placeholder="محل">
@@ -59,10 +58,7 @@
 
     <input type="text" id="model" name="model" placeholder="مدل">
    </div>
-</div>
-<div>
-  <div id="add_item2">
-      <div>
+   <div>
     <label for="22">22</label>
 
       <input type="text" id="serial_number" name="serial_number" placeholder="سریال">
@@ -91,23 +87,25 @@
     </div>
     <div>
     <label for="22">22</label>
-       <input type="text" id="company" name="company" placeholder="شرکت">
+       
+    <input type="text" id="company" name="company" placeholder="شرکت">
+     <button id="button_add" type="submit">ثبت</button>
     </div>
+
 </div>
 <div>
-   <div id="button">
-          <button type="submit">ثبت</button>
-    </div>
+
+<div>
 </div>
 </div>
 </div>
-<div id="capi">
-  <h4>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit consequatur sequi laborum distinctio aperiam adipisci aut labore error corporis odit blanditiis iure doloremque, laboriosam excepturi officiis a fugiat ea tempora!
-  </h4>
-  <a href="{{url_for('add_item_bp.excel_import')}}" style="display: block;">وارد کردن دسته جمعی از اکسل</a>
+<div id="axel_box">
+  <div>
+    <a href="{{url_for('add_item_bp.excel_import')}}" style="display: block;">وارد کردن دسته جمعی از اکسل</a>
+  </div>
 </div>
 
+ 
 </form>
 
 
