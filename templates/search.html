@@ -9,7 +9,7 @@
     <form method="get" autocomplete="off" ><br>
 
         <label for="property_code">کد اموال</label>
-        <input id="property_code" type="text" name="q">
+        <input id="property_code" type="text" name="property_code">
 
 
         <label for="project_code">کد پروژه</label>
@@ -46,14 +46,38 @@
 
     </form>
 
-    <ul>
+   
     {% if items|length == 0 %}
         <h1>موردی یافت نشد !</h1>
-    {% endif %}
+
+    {% else %}
+        <table>
+    <thead>
+        <tr>
+            <th>کد پروژه</th>
+            <th>کد اموال</th>
+            <th>کاربر</th>
+        </tr>
+    </thead>
+    <tbody>
     {% for item in items %}
-        <li>{{ item.property_code }} - {{ item.model }} - {{item.id}} - <a href="{{url_for('search_bp.item_detail',item_id=item.id,**request.args)}}">جزییات</a></li>
+   
+        <tr>
+            <td>{{item.project_code}}</td>
+           <td>{{item.property_code}}</td>
+            <td>{{item.user}}</td>
+            <td><a href="{{url_for('search_bp.item_detail',item_id=item.id,**request.args)}}">جزییات</a></td>
+        </tr>
+    
     {% endfor %}
-</ul>
+    </tbody>
+</table>
+    {% endif %}
+    
+
+
+
+
     
 {% endblock %}
 
