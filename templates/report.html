@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <a href="{{url_for('report_bp.export_report')}}">خروجی گرفتن کل دیتابیس به صورت اکسل</a>
+    
 
     <form method="get" autocomplete="off" ><br>
 
         <label for="property_code">کد اموال</label>
-        <input id="property_code" type="text" name="q">
+        <input id="property_code" type="text" name="property_code">
 
 
         <label for="project_code">کد پروژه</label>
@@ -15,30 +15,30 @@
             <option value="362">
             <option value="290">
             <option value="392">
-                
         </datalist>
+
+
+        <label for="user">کاربر</label>
+        <input type="text" list="uesr" name="user" id="user">
+        <datalist name="user" id="user">
+            </datalist>
 
         <label for="company">شرکت</label>
          <input type="text" list="company" name="company" id="company">
         <datalist name="company" id="company">
-                
+        </datalist>
+
+        <label for="serial_number">شماره سریال</label>
+        <input type="text" list="serial_number" name="serial_number">
+        <datalist name="serial_number" id="serial_number">
         </datalist>
 
         <label for="category">گروه بندی</label>
         <input type="text" list="category" name="category">
         <datalist name="category" id="category">
-                
         </datalist>
-
-        <label for="warehouse_location">محل</label>
-        <input type="text" list="warehouse_location" name="warehouse_location" id="warehouse_location">
-        <datalist name="warehouse_location" id="warehouse_location">
-                
-        </datalist>
-
 
         
-
         <button type="submit">جستجو</button><br>
 
     </form>
@@ -51,5 +51,7 @@
         <li>{{ item.property_code }} - {{ item.model }} - {{item.id}}</li>
     {% endfor %}
 </ul>
+
+<a href="{{url_for('report_bp.export_report')}}">خروجی گرفتن کل دیتابیس به صورت اکسل</a>
 
 {% endblock %}

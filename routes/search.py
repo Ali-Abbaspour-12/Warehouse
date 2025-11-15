@@ -14,7 +14,8 @@ def search():
         "project_code": Item.project_code,
         "company": Item.company,
         "category": Item.category,
-        "warehouse_location": Item.warehouse_location,
+        "user": Item.user,
+        "serial_number":Item.serial_number
     }
 
     query = Item.query

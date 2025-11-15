@@ -2,9 +2,38 @@
 
 {% block content %}
 
-    <a href="{{url_for('search_bp.search')}}">بازگشت</a>
+   
 
     {% for item in items %}
-            <li>{{ item.id }} - {{ item.property_code }}</li>
+            <table>
+    <thead>
+        <tr>
+            <th>کد اموال</th>
+            <th>کد پروژه</th>
+            <th>کاربر</th>
+            <th>تحویل گیرنده</th>
+            <th>شرکت</th>
+            <th>گروه یندی</th>
+            <th>کد شناسایی</th>
+        </tr>
+    </thead>
+    <tbody>
+   
+        <tr>
+            <td>{{item.property_code}}</td>
+            <td>{{item.project_code}}</td>
+            <td>{{item.user}}</td>
+            <td>{{item.recipient_delivery}}</td>
+            <td>{{item.company}}</td>
+            <td>{{item.category}}</td>
+            <td>{{item.system_identification_code}}</td>
+            
+            <td><a href="{{url_for('search_bp.item_detail',item_id=item.id,**request.args)}}">جزییات</a></td>
+        </tr>
+    
+    </tbody>
+</table>
     {% endfor %}
+
+     <a href="{{url_for('search_bp.search')}}">بازگشت</a>
 {% endblock %}
