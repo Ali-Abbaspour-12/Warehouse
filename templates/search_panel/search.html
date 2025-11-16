@@ -6,7 +6,7 @@
     
     
 
-    <form method="get"  autocomplete="off"><br>
+<form method="get"  autocomplete="off"><br>
 
 <div class="field-container">
     <label for="property_code">کد اموال</label>
@@ -46,6 +46,7 @@
            onclick="loadSuggestions('category')" 
            oninput="loadSuggestions('category')" name="category">
     <div class="suggest-box" id="category_box"></div>
+</div>
 
 <div class="field-container">
     <label for="personnel_code">کد پرسنلی</label>
@@ -53,6 +54,7 @@
            onclick="loadSuggestions('personnel_code')" 
            oninput="loadSuggestions('personnel_code')" name="personnel_code">
     <div class="suggest-box" id="personnel_code_box"></div>
+</div>
 
 <div class="field-container">
     <label for="current_location">محل استقرار</label>
@@ -60,6 +62,7 @@
            onclick="loadSuggestions('current_location')" 
            oninput="loadSuggestions('current_location')" name="current_location">
     <div class="suggest-box" id="current_location_box"></div>
+</div>
 
 <div class="field-container">
     <label for="system_identification_code">کد شناسایی سیستم</label>
@@ -67,6 +70,7 @@
            onclick="loadSuggestions('system_identification_code')" 
            oninput="loadSuggestions('system_identification_code')" name="system_identification_code">
     <div class="suggest-box" id="system_identification_code_box"></div>
+</div>
 
 <div class="field-container">
     <label for="model">مدل</label>
@@ -74,6 +78,7 @@
            onclick="loadSuggestions('model')" 
            oninput="loadSuggestions('model')" name="model">
     <div class="suggest-box" id="model_box"></div>
+</div>
 
 <div class="field-container">
     <label for="serial_number">شماره سریال</label>
@@ -81,6 +86,7 @@
            onclick="loadSuggestions('serial_number')" 
            oninput="loadSuggestions('serial_number')" name="serial_number">
     <div class="suggest-box" id="serial_number_box"></div>
+</div>
 
 <div class="field-container">
     <label for="recipient_delivery">تحویل گیرنده</label>
@@ -88,6 +94,7 @@
            onclick="loadSuggestions('recipient_delivery')" 
            oninput="loadSuggestions('recipient_delivery')" name="recipient_delivery">
     <div class="suggest-box" id="recipient_delivery_box"></div>
+</div>
 
 <div class="field-container">
     <label for="closed">مختوم شده</label>
@@ -95,7 +102,7 @@
            onclick="loadSuggestions('closed')" 
            oninput="loadSuggestions('closed')" name="closed">
     <div class="suggest-box" id="closed_box"></div>
-
+</div>
 
         
         <button type="submit">جستجو</button><br>
@@ -103,10 +110,8 @@
     </form>
 
    
-    {% if items|length == 0 %}
-        <h1>موردی یافت نشد !</h1>
-
-    {% else %}
+    {% if items|length > 0 %}
+       
         <table>
     <thead>
         <tr>

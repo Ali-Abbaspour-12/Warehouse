@@ -8,50 +8,6 @@
 
 html{
     font-family: 'DigiHamisheRegular';
-    background-color: #D3DAD9;
-}
-
-#navbar a{
-    text-decoration: none;
-    color: #EEF1FF;
-    padding: 8px;
-    transition: 0.1s;
-    font-size: 20px;
-    margin-right: 10px;
-    background-color: #1B3C53;
-    margin-left: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-radius: 10px;
-
-        
-
-
-}
-#navbar div{
-
-}
-#navbar a:hover {
-    color: #44576d;
-    border: 10px;
-    background-color: #90caf933;
-    transition: 0.1s;
-    border-radius: 10px;
-}
-#navbar a :active {
-    background-color: #0d47a1;
-    color: black;
-}
-#navbar{
-    display: flex;
-    flex-direction: row;
-    height: 60px;
-    align-items: center;
-    margin-top: 20px;
-    background-color: #EEF1FF;
-    padding: 10px;
-    border-radius: 10px;
-    margin-right: 10px;
     
-
 }
+

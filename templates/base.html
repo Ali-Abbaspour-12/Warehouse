@@ -6,36 +6,50 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='css/base.css')}}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/search.css')}}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/add_item.css')}}">
+    
 
     <script src="{{ url_for('static',filename='js/base.js')}}"></script>
     <script src="{{ url_for('static',filename='js/search.js')}}"></script>
+    <script src="{{ url_for('static',filename='js/add_item.js')}}"></script>
+
     <title>Document</title>
 </head>
 <body>
     <header>
-        <nav id="navbar">
-            
-           <div>
-             <a id="dashboard" href="{{url_for('dashboard_bp.dashboard')}}" >داشبورد</a>
-           </div>
-            
-            <div>
-                <a href="{{url_for('search_bp.search')}}">جستجو</a>
-            </div>
-           <div>
-             <a href="{{url_for('add_item_bp.add_item')}}">افزودن آیتم</a>
-           </div>
-            <div>
-                <a href="{{url_for('report_bp.report')}}">گزارش گیری</a>
-            </div>
-           <div>
-             <a href="{{url_for('settings_bp.settings')}}">تنظیمات</a>
-           </div>
-            
-           
-           
-        </nav>
-    </header>
+    <nav id="navbar">
+        
+        <div>
+            <a id="dashboard" href="{{ url_for('dashboard_bp.dashboard') }}" >داشبورد</a>
+        </div>
+        
+        <div>
+            <a href="{{ url_for('search_bp.search') }}">جستجو</a>
+        </div>
+
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <div>
+            <a href="{{ url_for('add_item_bp.add_item') }}">افزودن آیتم</a>
+        </div>
+        {% endif %}
+        
+
+        <div>
+            <a href="{{ url_for('report_bp.report') }}">گزارش گیری</a>
+        </div>
+
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <div>
+            <a href="{{ url_for('settings_bp.settings') }}">تنظیمات</a>
+        </div>
+        {% endif %}
+        
+        <!-- دکمه خروج -->
+        <div style="margin-left:auto;">
+            <a href="{{ url_for('login_bp.logout') }}">خروج</a>
+        </div>
+    </nav>
+</header>
+
     <main>
         {% block content %}
 

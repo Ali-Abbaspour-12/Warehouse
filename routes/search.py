@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template,request,redirect,url_for
-from models import Item,db,ItemHistory
+from models import Item,ItemHistory
+from extensions import db
+from .login import admin_required
 
 
 search_bp = Blueprint("search_bp", __name__,url_prefix="/search")
@@ -63,6 +65,7 @@ def history_detail(item_id,history_id):
 
 
 @search_bp.route('/item_detail_<int:item_id>/edit_item',methods=['GET','POST'])
+@admin_required
 def edit_item(item_id):
     item = Item.query.get_or_404(item_id)
 

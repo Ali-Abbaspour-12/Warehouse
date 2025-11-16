@@ -3,71 +3,109 @@
 {% block content %}
 
 {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-      {% for category, message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+{% if messages %}
+<ul>
+  {% for category, message in messages %}
+  <li>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
 {% endwith %}
 
 
 <form method="post" autocomplete="off">
-  
-<div id="all_base">
-  <div id="base_add">
-  <div id="add_item">
 
-   <div> 
-    <label for="project_code">کد پروژه</label>
-    <input type="text" id="project_code" name="project_code" placeholder="">
+
+  <div class="field-container">
     <label for="property_code">کد اموال</label>
-    <input type="text" id="property_code" name="property_code" placeholder="">
-   </div>
+    <input type="text" id="property_code" placeholder="property_code" onclick="loadSuggestions('property_code')"
+      oninput="loadSuggestions('property_code')" name="property_code">
+    <div class="suggest-box" id="property_code_box"></div>
+  </div>
 
-    <div>
+
+  <div class="field-container">
+    <label for="project_code">کد پروژه</label>
+    <input type="text" id="project_code" placeholder="project_code" onclick="loadSuggestions('project_code')"
+      oninput="loadSuggestions('project_code')" name="project_code">
+    <div class="suggest-box" id="project_code_box"></div>
+  </div>
+
+
+  <div class="field-container">
     <label for="user">کاربر</label>
-      <input type="text" id="user" name="user" placeholder="">
+    <input type="text" id="user" placeholder="User" onclick="loadSuggestions('user')" oninput="loadSuggestions('user')"
+      name="user">
+    <div class="suggest-box" id="user_box"></div>
+  </div>
+
+
+
+  <div class="field-container">
     <label for="recipient_delivery">تحویل گیرنده</label>
-    <input type="text" id="recipient_delivery" name="recipient_delivery" placeholder="">
-    </div>
+    <input type="text" id="recipient_delivery" placeholder="recipient_delivery"
+      onclick="loadSuggestions('recipient_delivery')" oninput="loadSuggestions('recipient_delivery')"
+      name="recipient_delivery">
+    <div class="suggest-box" id="recipient_delivery_box"></div>
+  </div>
 
-    <div>
-    <label for="personnel_code">کد پرسنل</label>
-      <input type="text" id="personnel_code" name="personnel_code" placeholder="">
-    <label for="current_location">محل استقرار</label>
-    <input type="text" id="current_location" name="current_location" placeholder="">
-    </div>
 
-    <div>
+  <div class="field-container">
     <label for="system_identification_code">کد شناسایی سیستم</label>
-      <input type="text" id="system_identification_code" name="system_identification_code" placeholder="">
+    <input type="text" id="system_identification_code" placeholder="system_identification_code"
+      onclick="loadSuggestions('system_identification_code')" oninput="loadSuggestions('system_identification_code')"
+      name="system_identification_code">
+    <div class="suggest-box" id="system_identification_code_box"></div>
+  </div>
+
+
+  <div class="field-container">
     <label for="category">گروه بندی</label>
-    <input type="text" id="category" name="category" placeholder="">
-    </div>
+    <input type="text" id="category" placeholder="category" onclick="loadSuggestions('category')"
+      oninput="loadSuggestions('category')" name="category">
+    <div class="suggest-box" id="category_box"></div>
+  </div>
 
-   <div>
+  <div class="field-container">
     <label for="model">مدل</label>
-     <input type="text" id="model" name="model" placeholder="">
+    <input type="text" id="model" placeholder="model" onclick="loadSuggestions('model')"
+      oninput="loadSuggestions('model')" name="model">
+    <div class="suggest-box" id="model_box"></div>
+  </div>
+
+
+  <div class="field-container">
     <label for="serial_number">شماره سریال</label>
-    <input type="text" id="serial_number" name="serial_number" placeholder="">
-   </div>
+    <input type="text" id="serial_number" placeholder="serial_number" onclick="loadSuggestions('serial_number')"
+      oninput="loadSuggestions('serial_number')" name="serial_number">
+    <div class="suggest-box" id="serial_number_box"></div>
+  </div>
 
-   <div>
+
+
+  <div class="field-container">
     <label for="closed">مختوم شده</label>
-      <input type="text" id="closed" name="closed" placeholder="">
+    <input type="text" id="closed" placeholder="closed" onclick="loadSuggestions('closed')"
+      oninput="loadSuggestions('closed')" name="closed">
+    <div class="suggest-box" id="closed_box"></div>
+  </div>
+
+  <div class="field-container">
     <label for="closed_time">توضیحات اختتام</label>
-    <input type="text" id="closed_time" name="closed_time" placeholder="">
-    </div>
-   <div>
-    <label for="description">توضیحات</label>
-     <input type="text" id="description" name="description" placeholder="">
-   </div>
-  
+    <input type="text" id="closed_time" placeholder="closed_time" onclick="loadSuggestions('closed_time')"
+      oninput="loadSuggestions('closed_time')" name="closed_time">
+    <div class="suggest-box" id="closed_time_box"></div>
+  </div>
 
-     <button id="button_add" type="submit" ons>ثبت</button>
+  <div class="field-container">
+    <label for="description">جزئیات</label>
+    <input type="text" id="description" placeholder="description" onclick="loadSuggestions('description')"
+      oninput="loadSuggestions('description')" name="description">
+    <div class="suggest-box" id="description_box"></div>
+  </div>
 
+
+  <button type="submit" ons>ثبت</button>
 
 </form>
 
@@ -77,7 +115,7 @@
   </div>
 </div>
 
- 
+
 
 
 

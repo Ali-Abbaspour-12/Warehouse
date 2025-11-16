@@ -1,8 +1,10 @@
 from flask import render_template,redirect,request,url_for,Blueprint,send_file
-from models import Item,db
+from models import Item
+from extensions import db
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 import pandas as pd
+from .login import admin_required
 
 report_bp = Blueprint("report_bp",__name__)
 

@@ -1,11 +1,15 @@
 from flask import Flask, render_template,render_template_string, request, redirect, url_for,Blueprint,flash
-from models import db, Item
+from models import Item
 import pandas as pd
+from extensions import db
+from .login import admin_required
+
 
 add_item_bp = Blueprint("add_item_bp", __name__,url_prefix="/add_item")
 
 
 @add_item_bp.route("/add_item",methods=['GET', 'POST'])
+@admin_required
 def add_item():
     if request.method == 'POST':
         record = Item(
@@ -39,6 +43,7 @@ def add_item():
 
 
 @add_item_bp.route('/show_all_items_wants_import_from_excel')
+@admin_required
 def show_all_items_wants_import_from_excel():
 
     excelFile = pd.read_excel("./excel/data.xlsx")
@@ -71,12 +76,14 @@ def show_all_items_wants_import_from_excel():
 
 
 @add_item_bp.route('/excel_import')
+@admin_required
 def excel_import():
     return render_template('add_item_panel/excel_import.html')
 
 
 
 @add_item_bp.route("/excel_import/import_to_database")
+@admin_required
 def import_to_database():
 
     excelFile = pd.read_excel("./excel/data.xlsx").astype(str)
@@ -113,6 +120,7 @@ def import_to_database():
 
 
 @add_item_bp.route("/suggest", methods=["GET"])
+@admin_required
 def suggest():
     args = request.args
 
