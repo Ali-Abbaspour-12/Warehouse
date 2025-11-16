@@ -70,6 +70,7 @@ def export_report():
     return send_file(file_path, as_attachment=True)
 
 
+
 @report_bp.route("/report")
 def report():
     args = request.args
@@ -97,4 +98,3 @@ def report():
 
     items = query.all()
     return render_template("report.html", items=items)
-    

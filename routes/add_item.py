@@ -4,6 +4,7 @@ import pandas as pd
 
 add_item_bp = Blueprint("add_item_bp", __name__)
 
+
 @add_item_bp.route("/add_item",methods=['GET', 'POST'])
 def add_item():
     if request.method == 'POST':
@@ -34,6 +35,7 @@ def add_item():
         return redirect(url_for("add_item_bp.add_item"))
 
     return render_template("add_item.html")
+
 
 
 @add_item_bp.route('/show_all_items_wants_import_from_excel')
@@ -108,4 +110,3 @@ def import_to_database():
 
     flash("آیتم با موفقیت اضافه شد!", "success")
     return redirect(url_for("add_item_bp.excel_import"))
-    

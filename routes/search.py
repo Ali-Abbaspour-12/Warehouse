@@ -2,9 +2,9 @@ from flask import Blueprint, render_template,request,redirect,url_for
 from models import Item,db,ItemHistory
 
 
-search_bp = Blueprint("search_bp", __name__)
+search_bp = Blueprint("search_bp", __name__,url_prefix="/search")
 
-#region /search
+
 @search_bp.route("/search")
 def search():
     args = request.args
@@ -32,15 +32,14 @@ def search():
 
     items = query.all()
     return render_template("search.html", items=items)
-#endregion
 
    
-#region /show_all_records
+
 @search_bp.route("/show_all_records")
 def show_all_records():
     items = Item.query.all()
     return render_template("show_all_records.html",items=items)
-#endregion
+
 
 @search_bp.route('/item_detail_<int:item_id>')
 def item_detail(item_id):
@@ -49,10 +48,12 @@ def item_detail(item_id):
     return render_template('item_detail.html',item=item)
 
 
+
 @search_bp.route('/history_detail_<int:item_id>_<int:history_id>')
 def history_detail(item_id,history_id):
     history = ItemHistory.query.get_or_404(history_id)
     return render_template('history_detail.html',history=history,item_id=item_id)
+
 
 
 @search_bp.route('/item_detail_<int:item_id>/edit_item',methods=['GET','POST'])
@@ -110,4 +111,44 @@ def edit_item(item_id):
         return redirect(url_for("search_bp.item_detail", item_id=item.id))
 
     return render_template("edit_item.html", item=item)
-    
+
+
+@search_bp.route("/suggest", methods=["GET"])
+def suggest():
+    args = request.args
+
+    field = args.get("field")
+    value = args.get("value", "")
+
+    field_mapping = {
+        "property_code": Item.property_code,
+        "project_code": Item.project_code,
+        "company": Item.company,
+        "category": Item.category,
+        "user": Item.user,
+        "serial_number": Item.serial_number,
+    }
+
+    if field not in field_mapping:
+        return {"error": "invalid field"}, 400
+
+    query = Item.query
+
+    # اعمال فیلتر برای فیلدهای دیگر
+    for key, column in field_mapping.items():
+        if key != field:
+            v = args.get(key)
+            if v:
+                query = query.filter(column.ilike(f"%{v}%"))
+
+    # دریافت همه مقادیر
+    suggestions = (
+        query.with_entities(field_mapping[field])
+        .distinct()
+        .filter(field_mapping[field].ilike(f"%{value}%"))
+        .order_by(field_mapping[field])
+        .limit(50)
+        .all()
+    )
+
+    return {"suggestions": [s[0] for s in suggestions if s[0]]}

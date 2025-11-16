@@ -6,40 +6,24 @@
     
     
 
-    <form method="get" autocomplete="off" ><br>
+    <form method="get"  autocomplete="off"><br>
 
-        <label for="property_code">کد اموال</label>
-        <input id="property_code" type="text" name="property_code">
+<div class="field-container">
+    <input type="text" id="property_code" placeholder="property_code" 
+           onclick="loadSuggestions('property_code')" 
+           oninput="loadSuggestions('property_code')">
 
+    <div class="suggest-box" id="property_code_box"></div>
+</div>
 
-        <label for="project_code">کد پروژه</label>
-        <input type="text" list="project_code" name="project_code" id="project_code">
-        <datalist name="project_code" id="project_code">
-            <option value="362">
-            <option value="290">
-            <option value="392">
-        </datalist>
+<div class="field-container">
+    <input type="text" id="user" placeholder="User"
+           onclick="loadSuggestions('user')" 
+           oninput="loadSuggestions('user')">
 
+    <div class="suggest-box" id="user_box"></div>
+</div>
 
-        <label for="user">کاربر</label>
-        <input type="text" list="uesr" name="user" id="user">
-        <datalist name="user" id="user">
-            </datalist>
-
-        <label for="company">شرکت</label>
-         <input type="text" list="company" name="company" id="company">
-        <datalist name="company" id="company">
-        </datalist>
-
-        <label for="serial_number">شماره سریال</label>
-        <input type="text" list="serial_number" name="serial_number">
-        <datalist name="serial_number" id="serial_number">
-        </datalist>
-
-        <label for="category">گروه بندی</label>
-        <input type="text" list="category" name="category">
-        <datalist name="category" id="category">
-        </datalist>
 
         
         <button type="submit">جستجو</button><br>
@@ -86,6 +70,60 @@
 
 <a href="{{url_for('search_bp.show_all_records')}}">نمایش همه ریکورد ها</a>
 
+<script>
+function getAllFieldsExcept(target) {
+    const keys = ["company", "user", "category", "project_code", "property_code", "serial_number"];
+    const params = {};
+    keys.forEach(k => {
+        if (k !== target) {
+            let v = document.getElementById(k)?.value;
+            if (v) params[k] = v;
+        }
+    });
+    return params;
+}
+
+function loadSuggestions(field) {
+    let value = document.getElementById(field).value;
+
+    let params = new URLSearchParams();
+    params.append("field", field);
+    params.append("value", value);
+
+    // اضافه کردن فیلتر سایر فیلدها
+    let others = getAllFieldsExcept(field);
+    for (let k in others) params.append(k, others[k]);
+
+    fetch(`/search/suggest?${params.toString()}`)
+        .then(res => res.json())
+        .then(data => {
+            let box = document.getElementById(field + "_box");
+            box.innerHTML = "";
+            box.style.display = data.suggestions.length ? "block" : "none";
+
+            data.suggestions.forEach(s => {
+                let div = document.createElement("div");
+                div.className = "suggest-item";
+                div.textContent = s;
+
+                div.onclick = () => {
+                    document.getElementById(field).value = s;
+                    box.style.display = "none";
+                };
+
+                box.appendChild(div);
+            });
+        });
+}
+
+document.addEventListener("click", (e) => {
+    document.querySelectorAll(".suggest-box").forEach(b => {
+        if (!b.contains(e.target) && !b.previousElementSibling.contains(e.target)) {
+            b.style.display = "none";
+        }
+    });
+});
+</script>
 
     
 {% endblock %}
