@@ -147,7 +147,7 @@ def suggest():
         .distinct()
         .filter(field_mapping[field].ilike(f"%{value}%"))
         .order_by(field_mapping[field])
-        .limit(50)
+        
         .all()
     )
 
