@@ -2,7 +2,7 @@ from flask import Flask, render_template,render_template_string, request, redire
 from models import db, Item
 import pandas as pd
 
-add_item_bp = Blueprint("add_item_bp", __name__)
+add_item_bp = Blueprint("add_item_bp", __name__,url_prefix="/add_item")
 
 
 @add_item_bp.route("/add_item",methods=['GET', 'POST'])
@@ -11,8 +11,8 @@ def add_item():
         record = Item(
 
                 project_code = request.form.get('project_code'),
-                warehouse_location = request.form.get('warehouse_location'),
-                row = request.form.get('row'),
+                #warehouse_location = request.form.get('warehouse_location'),
+                #row = request.form.get('row'),
                 user = request.form.get('user'),
                 company = request.form.get('company'),
                 unit = request.form.get('unit'),
@@ -34,7 +34,7 @@ def add_item():
         flash("آیتم با موفقیت اضافه شد!", "success")
         return redirect(url_for("add_item_bp.add_item"))
 
-    return render_template("add_item.html")
+    return render_template("add_item_panel/add_item.html")
 
 
 
@@ -48,8 +48,8 @@ def show_all_items_wants_import_from_excel():
         record = (
 
                 excelRow["project_code"],
-                excelRow["warehouse_location"],
-                excelRow["row"],
+                #excelRow["warehouse_location"],
+                #excelRow["row"],
                 excelRow["user"],
                 excelRow["company"],
                 excelRow["unit"],
@@ -67,12 +67,12 @@ def show_all_items_wants_import_from_excel():
 
         )
         records.append(record)
-    return render_template("show_all_items_wants_import_from_excel.html",records=records)
+    return render_template("add_item_panel/show_all_items_wants_import_from_excel.html",records=records)
 
 
 @add_item_bp.route('/excel_import')
 def excel_import():
-    return render_template('excel_import.html')
+    return render_template('add_item_panel/excel_import.html')
 
 
 
@@ -85,8 +85,8 @@ def import_to_database():
         record = Item(
 
                 project_code = excelRow["project_code"],
-                warehouse_location = excelRow["warehouse_location"],
-                row = excelRow["row"],
+                #warehouse_location = excelRow["warehouse_location"],
+                #row = excelRow["row"],
                 user = excelRow["user"],
                 company = excelRow["company"],
                 unit = excelRow["unit"],
@@ -110,3 +110,50 @@ def import_to_database():
 
     flash("آیتم با موفقیت اضافه شد!", "success")
     return redirect(url_for("add_item_bp.excel_import"))
+
+
+@add_item_bp.route("/suggest", methods=["GET"])
+def suggest():
+    args = request.args
+
+    field = args.get("field")
+    value = args.get("value", "")
+
+    field_mapping = {
+       "property_code": Item.property_code,
+        "project_code": Item.project_code,
+        "user": Item.user,
+        "company": Item.company,
+        "category": Item.category,
+        "personnel_code":Item.personnel_code,
+        "current_location":Item.current_location,
+        "system_identification_code":Item.system_identification_code,
+        "model":Item.model,
+        "serial_number":Item.serial_number,
+        "recipient_delivery":Item.recipient_delivery,
+        "closed":Item.closed
+    }
+
+    if field not in field_mapping:
+        return {"error": "invalid field"}, 400
+
+    query = Item.query
+
+    # اعمال فیلتر برای فیلدهای دیگر
+    for key, column in field_mapping.items():
+        if key != field:
+            v = args.get(key)
+            if v:
+                query = query.filter(column.ilike(f"%{v}%"))
+
+    # دریافت همه مقادیر
+    suggestions = (
+        query.with_entities(field_mapping[field])
+        .distinct()
+        .filter(field_mapping[field].ilike(f"%{value}%"))
+        .order_by(field_mapping[field])
+        
+        .all()
+    )
+
+    return {"suggestions": [s[0] for s in suggestions if s[0]]}

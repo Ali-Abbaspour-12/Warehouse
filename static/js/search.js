@@ -1,5 +1,5 @@
 function getAllFieldsExcept(target) {
-    const keys = ["company", "user", "category", "project_code", "property_code", "serial_number"];
+    const keys = ["company", "user", "category", "project_code", "property_code", "serial_number","personnel_code","current_location","system_identification_code", "model","serial_number","recipient_delivery","closed"];
     const params = {};
     keys.forEach(k => {
         if (k !== target) {

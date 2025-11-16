@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+    
+    
+
+    <form method="get"  autocomplete="off"><br>
+
+<div class="field-container">
+    <label for="property_code">کد اموال</label>
+    <input type="text" id="property_code" placeholder="property_code" 
+           onclick="loadSuggestions('property_code')" 
+           oninput="loadSuggestions('property_code')" name="property_code">
+    <div class="suggest-box" id="property_code_box"></div>
+</div>
+
+<div class="field-container">
+    <label for="project_code">کد پروژه</label>
+    <input type="text" id="project_code" placeholder="project_code"
+           onclick="loadSuggestions('project_code')" 
+           oninput="loadSuggestions('project_code')" name="project_code">
+    <div class="suggest-box" id="project_code_box"></div>
+</div>
+
+<div class="field-container">
+    <label for="user">کاربر</label>
+    <input type="text" id="user" placeholder="User"
+           onclick="loadSuggestions('user')" 
+           oninput="loadSuggestions('user')" name="user">
+    <div class="suggest-box" id="user_box"></div>
+</div>
+
+<div class="field-container">
+    <label for="company">شرکت</label>
+    <input type="text" id="company" placeholder="company"
+           onclick="loadSuggestions('company')" 
+           oninput="loadSuggestions('company')" name="company">
+    <div class="suggest-box" id="company_box"></div>
+</div>
+
+<div class="field-container">
+    <label for="category">گروه بندی</label>
+    <input type="text" id="category" placeholder="category"
+           onclick="loadSuggestions('category')" 
+           oninput="loadSuggestions('category')" name="category">
+    <div class="suggest-box" id="category_box"></div>
+
+<div class="field-container">
+    <label for="personnel_code">کد پرسنلی</label>
+    <input type="text" id="personnel_code" placeholder="personnel_code"
+           onclick="loadSuggestions('personnel_code')" 
+           oninput="loadSuggestions('personnel_code')" name="personnel_code">
+    <div class="suggest-box" id="personnel_code_box"></div>
+
+<div class="field-container">
+    <label for="current_location">محل استقرار</label>
+    <input type="text" id="current_location" placeholder="current_location"
+           onclick="loadSuggestions('current_location')" 
+           oninput="loadSuggestions('current_location')" name="current_location">
+    <div class="suggest-box" id="current_location_box"></div>
+
+<div class="field-container">
+    <label for="system_identification_code">کد شناسایی سیستم</label>
+    <input type="text" id="system_identification_code" placeholder="system_identification_code"
+           onclick="loadSuggestions('system_identification_code')" 
+           oninput="loadSuggestions('system_identification_code')" name="system_identification_code">
+    <div class="suggest-box" id="system_identification_code_box"></div>
+
+<div class="field-container">
+    <label for="model">مدل</label>
+    <input type="text" id="model" placeholder="model"
+           onclick="loadSuggestions('model')" 
+           oninput="loadSuggestions('model')" name="model">
+    <div class="suggest-box" id="model_box"></div>
+
+<div class="field-container">
+    <label for="serial_number">شماره سریال</label>
+    <input type="text" id="serial_number" placeholder="serial_number"
+           onclick="loadSuggestions('serial_number')" 
+           oninput="loadSuggestions('serial_number')" name="serial_number">
+    <div class="suggest-box" id="serial_number_box"></div>
+
+<div class="field-container">
+    <label for="recipient_delivery">تحویل گیرنده</label>
+    <input type="text" id="recipient_delivery" placeholder="recipient_delivery"
+           onclick="loadSuggestions('recipient_delivery')" 
+           oninput="loadSuggestions('recipient_delivery')" name="recipient_delivery">
+    <div class="suggest-box" id="recipient_delivery_box"></div>
+
+<div class="field-container">
+    <label for="closed">مختوم شده</label>
+    <input type="text" id="closed" placeholder="closed"
+           onclick="loadSuggestions('closed')" 
+           oninput="loadSuggestions('closed')" name="closed">
+    <div class="suggest-box" id="closed_box"></div>
+
+
+        
+        <button type="submit">جستجو</button><br>
+
+    </form>
+
+   
+    {% if items|length == 0 %}
+        <h1>موردی یافت نشد !</h1>
+
+    {% else %}
+        <table>
+    <thead>
+        <tr>
+            <th>کد اموال</th>
+            <th>کد پروژه</th>
+            <th>کاربر</th>
+            <th>تحویل گیرنده</th>
+            <th>شرکت</th>
+            <th>گروه یندی</th>
+            <th>کد شناسایی</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+   
+        <tr>
+            <td>{{item.property_code}}</td>
+            <td>{{item.project_code}}</td>
+            <td>{{item.user}}</td>
+            <td>{{item.recipient_delivery}}</td>
+            <td>{{item.company}}</td>
+            <td>{{item.category}}</td>
+            <td>{{item.system_identification_code}}</td>
+            
+            <td><a href="{{url_for('search_bp.item_detail',item_id=item.id,**request.args)}}">جزییات</a></td>
+        </tr>
+    
+    {% endfor %}
+    </tbody>
+</table>
+    {% endif %}
+    
+
+<a href="{{url_for('search_bp.show_all_records')}}">نمایش همه ریکورد ها</a>
+
+    
+{% endblock %}
+

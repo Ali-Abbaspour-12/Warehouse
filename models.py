@@ -12,8 +12,8 @@ class Item(db.Model):
 
     id = db.Column(db.Integer,primary_key=True)
     project_code = db.Column(db.String(80))
-    warehouse_location = db.Column(db.String(80))
-    row = db.Column(db.String(80))
+    #warehouse_location = db.Column(db.String(80))
+    #row = db.Column(db.String(80))
     user = db.Column(db.String(80))
     company = db.Column(db.String(80))
     unit = db.Column(db.String(80))
@@ -36,8 +36,8 @@ class ItemHistory(db.Model):
 
     id = db.Column(db.Integer,primary_key=True)
     project_code = db.Column(db.String(80))
-    warehouse_location = db.Column(db.String(80))
-    row = db.Column(db.String(80))
+    #warehouse_location = db.Column(db.String(80))
+    #row = db.Column(db.String(80))
     user = db.Column(db.String(80))
     company = db.Column(db.String(80))
     unit = db.Column(db.String(80))

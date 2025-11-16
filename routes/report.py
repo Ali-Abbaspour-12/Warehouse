@@ -14,8 +14,8 @@ def export_report():
 
     data = [{
         "project_code": i.project_code,
-        "warehouse_location": i.warehouse_location,
-        "row": i.row,
+        #"warehouse_location": i.warehouse_location,
+        #"row": i.row,
         "user": i.user,
         "company": i.company,
         "unit": i.unit,
@@ -94,7 +94,7 @@ def report():
             query = query.filter(model_field.ilike(f"%{value}%"))
 
     if not has_filter:
-        return render_template("report.html", items=[])
+        return render_template("report_panel/report.html", items=[])
 
     items = query.all()
-    return render_template("report.html", items=items)
+    return render_template("report_panel/report.html", items=items)

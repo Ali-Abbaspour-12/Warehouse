@@ -12,10 +12,16 @@ def search():
     field_mapping = {
         "property_code": Item.property_code,
         "project_code": Item.project_code,
+        "user": Item.user,
         "company": Item.company,
         "category": Item.category,
-        "user": Item.user,
-        "serial_number":Item.serial_number
+        "personnel_code":Item.personnel_code,
+        "current_location":Item.current_location,
+        "system_identification_code":Item.system_identification_code,
+        "model":Item.model,
+        "serial_number":Item.serial_number,
+        "recipient_delivery":Item.recipient_delivery,
+        "closed":Item.closed
     }
 
     query = Item.query
@@ -28,31 +34,31 @@ def search():
             query = query.filter(model_field.ilike(f"%{value}%"))
 
     if not has_filter:
-        return render_template("search.html", items=[])
+        return render_template("search_panel/search.html", items=[])
 
     items = query.all()
-    return render_template("search.html", items=items)
+    return render_template("search_panel/search.html", items=items)
 
    
 
-@search_bp.route("/show_all_records")
+@search_bp.route("search_panel/show_all_records")
 def show_all_records():
     items = Item.query.all()
-    return render_template("show_all_records.html",items=items)
+    return render_template("search_panel/show_all_records.html",items=items)
 
 
 @search_bp.route('/item_detail_<int:item_id>')
 def item_detail(item_id):
     item = Item.query.get_or_404(item_id)
 
-    return render_template('item_detail.html',item=item)
+    return render_template('search_panel/item_detail.html',item=item)
 
 
 
 @search_bp.route('/history_detail_<int:item_id>_<int:history_id>')
 def history_detail(item_id,history_id):
     history = ItemHistory.query.get_or_404(history_id)
-    return render_template('history_detail.html',history=history,item_id=item_id)
+    return render_template('search_panel/history_detail.html',history=history,item_id=item_id)
 
 
 
@@ -110,7 +116,7 @@ def edit_item(item_id):
 
         return redirect(url_for("search_bp.item_detail", item_id=item.id))
 
-    return render_template("edit_item.html", item=item)
+    return render_template("search_panel/edit_item.html", item=item)
 
 
 @search_bp.route("/suggest", methods=["GET"])
@@ -121,12 +127,18 @@ def suggest():
     value = args.get("value", "")
 
     field_mapping = {
-        "property_code": Item.property_code,
+       "property_code": Item.property_code,
         "project_code": Item.project_code,
+        "user": Item.user,
         "company": Item.company,
         "category": Item.category,
-        "user": Item.user,
-        "serial_number": Item.serial_number,
+        "personnel_code":Item.personnel_code,
+        "current_location":Item.current_location,
+        "system_identification_code":Item.system_identification_code,
+        "model":Item.model,
+        "serial_number":Item.serial_number,
+        "recipient_delivery":Item.recipient_delivery,
+        "closed":Item.closed
     }
 
     if field not in field_mapping:

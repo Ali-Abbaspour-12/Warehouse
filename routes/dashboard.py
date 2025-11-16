@@ -6,4 +6,4 @@ dashboard_bp = Blueprint("dashboard_bp", __name__)
 
 @dashboard_bp.route("/")
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("dashboard_panel/dashboard.html")
