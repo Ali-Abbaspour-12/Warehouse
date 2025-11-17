@@ -2,37 +2,63 @@
 
 {% block content %}
 
-    <ul>
-        <li>{{item.id}}</li>
-        <li>{{item.project_code}}</li>
-        <li>{{item.warehouse_location}}</li>
-        <li>{{item.row}}</li>
-        <li>{{item.user}}</li>
-        <li>{{item.company}}</li>
-        <li>{{item.unit}}</li>
-        <li>{{item.personnel_code}}</li>
-        <li>{{item.current_location}}</li>
-        <li>{{item.system_identification_code}}</li>
-        <li>{{item.category}}</li>
-        <li>{{item.model}}</li>
-        <li>{{item.serial_number}}</li>
-        <li>{{item.property_code}}</li>
-        <li>{{item.recipient_delivery}}</li>
-        <li>{{item.description}}</li>
-        <li>{{item.closed}}</li>
-        <li>{{item.closed_time}}</li>
-        
-    </ul><br>
+<div class="container mt-5 d-flex justify-content-center">
 
-    <ul>
-        {% for history in item.item_history|reverse %}
-            <a href="{{url_for('search_bp.history_detail',history_id=history.id,item_id=item.id)}}"><li>{{history.property_code}}</li></a>
-        {% endfor %}
-    </ul>
+    <div class="card shadow-lg w-75 border-primary">
 
+        <!-- عنوان کارت -->
+        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+            جزئیات آیتم
+        </div>
 
+        <!-- اطلاعات آیتم -->
+        <div class="card-body">
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item"><strong>ID:</strong> {{ item.id }}</li>
+                <li class="list-group-item"><strong>کد پروژه:</strong> {{ item.project_code }}</li>
+                <li class="list-group-item"><strong>انبار:</strong> {{ item.warehouse_location }}</li>
+                <li class="list-group-item"><strong>ردیف:</strong> {{ item.row }}</li>
+                <li class="list-group-item"><strong>کاربر:</strong> {{ item.user }}</li>
+                <li class="list-group-item"><strong>شرکت:</strong> {{ item.company }}</li>
+                <li class="list-group-item"><strong>واحد:</strong> {{ item.unit }}</li>
+                <li class="list-group-item"><strong>کد پرسنلی:</strong> {{ item.personnel_code }}</li>
+                <li class="list-group-item"><strong>مکان فعلی:</strong> {{ item.current_location }}</li>
+                <li class="list-group-item"><strong>کد شناسایی سیستم:</strong> {{ item.system_identification_code }}</li>
+                <li class="list-group-item"><strong>گروه بندی:</strong> {{ item.category }}</li>
+                <li class="list-group-item"><strong>مدل:</strong> {{ item.model }}</li>
+                <li class="list-group-item"><strong>شماره سریال:</strong> {{ item.serial_number }}</li>
+                <li class="list-group-item"><strong>کد اموال:</strong> {{ item.property_code }}</li>
+                <li class="list-group-item"><strong>تحویل گیرنده:</strong> {{ item.recipient_delivery }}</li>
+                <li class="list-group-item"><strong>توضیحات:</strong> {{ item.description }}</li>
+                <li class="list-group-item"><strong>مختوم شده:</strong> {{ item.closed }}</li>
+                <li class="list-group-item"><strong>تاریخ اختتام:</strong> {{ item.closed_time }}</li>
+            </ul>
 
-    <a href="{{url_for('search_bp.edit_item',item_id=item.id)}}">ویرایش آیتم</a><br>
-    <a href="{{url_for('search_bp.search',**request.args)}}">بازگشت</a>
+            <!-- تاریخچه آیتم -->
+            <h5 class="fw-bold mb-2 text-primary">تاریخچه آیتم</h5>
+            <ul class="list-group mb-4">
+                {% for history in item.item_history|reverse %}
+                <a href="{{ url_for('search_bp.history_detail', history_id=history.id, item_id=item.id) }}"
+                   class="list-group-item list-group-item-action border-primary">
+                    {{ history.property_code }}
+                </a>
+                {% endfor %}
+            </ul>
+
+            <!-- دکمه‌ها -->
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('search_bp.edit_item', item_id=item.id) }}" class="btn btn-warning">
+                    ویرایش آیتم
+                </a>
+                <a href="{{ url_for('search_bp.search', **request.args) }}" class="btn btn-primary">
+                    بازگشت
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}

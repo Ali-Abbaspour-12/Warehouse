@@ -1,39 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container mt-5">
 
-   
+    <h4 class="text-center text-primary mb-4">لیست آیتم‌ها</h4>
 
-    {% for item in items %}
-            <table>
-    <thead>
-        <tr>
-            <th>کد اموال</th>
-            <th>کد پروژه</th>
-            <th>کاربر</th>
-            <th>تحویل گیرنده</th>
-            <th>شرکت</th>
-            <th>گروه یندی</th>
-            <th>کد شناسایی</th>
-        </tr>
-    </thead>
-    <tbody>
-   
-        <tr>
-            <td>{{item.property_code}}</td>
-            <td>{{item.project_code}}</td>
-            <td>{{item.user}}</td>
-            <td>{{item.recipient_delivery}}</td>
-            <td>{{item.company}}</td>
-            <td>{{item.category}}</td>
-            <td>{{item.system_identification_code}}</td>
-            
-            <td><a href="{{url_for('search_bp.item_detail',item_id=item.id,**request.args)}}">جزییات</a></td>
-        </tr>
-    
-    </tbody>
-</table>
-    {% endfor %}
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-striped table-hover table-sm text-center align-middle">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th>کد اموال</th>
+                    <th>کد پروژه</th>
+                    <th>کاربر</th>
+                    <th>تحویل گیرنده</th>
+                    <th>شرکت</th>
+                    <th>گروه بندی</th>
+                    <th>کد شناسایی</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.property_code }}</td>
+                    <td>{{ item.project_code }}</td>
+                    <td>{{ item.user }}</td>
+                    <td>{{ item.recipient_delivery }}</td>
+                    <td>{{ item.company }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.system_identification_code }}</td>
+                    <td>
+                        <a href="{{ url_for('search_bp.item_detail', item_id=item.id, **request.args) }}"
+                           class="btn btn-primary btn-sm">
+                           جزییات
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center text-primary fw-bold">آیتمی یافت نشد.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-     <a href="{{url_for('search_bp.search')}}">بازگشت</a>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('search_bp.search') }}" class="btn btn-primary">
+            بازگشت
+        </a>
+    </div>
+
+</div>
 {% endblock %}

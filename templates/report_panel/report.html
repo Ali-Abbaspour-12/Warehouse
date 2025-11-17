@@ -1,57 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    
+<div class="container mt-5 text-center">
 
-    <form method="get" autocomplete="off" ><br>
+    <h4 class="text-primary mb-4">خروجی گرفتن از کل دیتابیس</h4>
 
-        <label for="property_code">کد اموال</label>
-        <input id="property_code" type="text" name="property_code">
+    <a href="{{ url_for('report_bp.export_report') }}" 
+       class="btn btn-primary btn-lg shadow-sm">
+       خروجی گرفتن اکسل
+    </a>
 
-
-        <label for="project_code">کد پروژه</label>
-        <input type="text" list="project_code" name="project_code" id="project_code">
-        <datalist name="project_code" id="project_code">
-            <option value="362">
-            <option value="290">
-            <option value="392">
-        </datalist>
-
-
-        <label for="user">کاربر</label>
-        <input type="text" list="uesr" name="user" id="user">
-        <datalist name="user" id="user">
-            </datalist>
-
-        <label for="company">شرکت</label>
-         <input type="text" list="company" name="company" id="company">
-        <datalist name="company" id="company">
-        </datalist>
-
-        <label for="serial_number">شماره سریال</label>
-        <input type="text" list="serial_number" name="serial_number">
-        <datalist name="serial_number" id="serial_number">
-        </datalist>
-
-        <label for="category">گروه بندی</label>
-        <input type="text" list="category" name="category">
-        <datalist name="category" id="category">
-        </datalist>
-
-        
-        <button type="submit">جستجو</button><br>
-
-    </form>
-
-    <ul>
-    {% if items|length == 0 %}
-        <h1>موردی یافت نشد !</h1>
-    {% endif %}
-    {% for item in items %}
-        <li>{{ item.property_code }} - {{ item.model }} - {{item.id}}</li>
-    {% endfor %}
-</ul>
-
-<a href="{{url_for('report_bp.export_report')}}">خروجی گرفتن کل دیتابیس به صورت اکسل</a>
-
+</div>
 {% endblock %}

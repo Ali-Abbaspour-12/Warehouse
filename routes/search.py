@@ -75,8 +75,8 @@ def edit_item(item_id):
         record = ItemHistory(
 
             project_code = item.project_code,
-            warehouse_location = item.warehouse_location,
-            row = item.row,
+            #warehouse_location = item.warehouse_location,
+            #row = item.row,
             user = item.user,
             company = item.company,
             unit = item.unit,

@@ -1,10 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<ul>
-    {% for row in records %}
-        <li>{{row[0]}} - {{row[4]}} - {{row[12]}}</li>
-    {% endfor %}
-</ul>
-    <a href="{{url_for('add_item_bp.import_to_database')}}">وارد کردن به دیتابیس</a>
+
+<div class="container mt-5 d-flex justify-content-center">
+
+    <div class="card shadow-lg border-primary" style="width: 70%; min-width: 380px;">
+
+        <!-- عنوان کارت -->
+        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+            لیست رکوردها
+        </div>
+
+        <!-- جدول -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-striped text-center align-middle mb-0">
+
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>کد اموال</th>
+                        <th>شرکت</th>
+                        <th>تحویل گیرنده</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in records %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[4] }}</td>
+                        <td>{{ row[12] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        <!-- دکمه فوتر -->
+        <div class="card-footer text-center bg-light py-3">
+            <a href="{{ url_for('add_item_bp.import_to_database') }}"
+               class="btn btn-primary fw-bold px-5">
+                وارد کردن به دیتابیس
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
 {% endblock %}

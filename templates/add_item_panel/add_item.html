@@ -1,123 +1,151 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container mt-5 d-flex justify-content-center">
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<ul>
-  {% for category, message in messages %}
-  <li>{{ message }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
+    <div class="card shadow-lg p-4 border-primary" style="width: 60%; min-width: 380px;">
 
+        <!-- پیام‌های فلش -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert alert-info">
+            <ul class="mb-0">
+                {% for category, message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% endwith %}
 
-<form method="post" autocomplete="off">
+        <h4 class="text-center mb-4 text-primary fw-bold">فرم ثبت اطلاعات</h4>
 
+        <form method="post" autocomplete="off" class="row g-3">
 
-  <div class="field-container">
-    <label for="property_code">کد اموال</label>
-    <input type="text" id="property_code" placeholder="property_code" onclick="loadSuggestions('property_code')"
-      oninput="loadSuggestions('property_code')" name="property_code">
-    <div class="suggest-box" id="property_code_box"></div>
-  </div>
+            {% set fields = [
+                ('property_code', 'کد اموال'),
+                ('project_code', 'کد پروژه'),
+                ('user', 'کاربر'),
+                ('recipient_delivery', 'تحویل گیرنده'),
+                ('system_identification_code', 'کد شناسایی سیستم'),
+                ('category', 'گروه بندی'),
+                ('model', 'مدل'),
+                ('serial_number', 'شماره سریال'),
+                ('closed', 'مختوم شده'),
+                ('closed_time', 'توضیحات اختتام'),
+                ('description', 'جزئیات')
+            ] %}
 
+            {% for id, label in fields %}
+            <div class="col-md-6 position-relative">
+                <label class="form-label fw-bold text-primary" for="{{ id }}">{{ label }}</label>
+                <input type="text"
+                       id="{{ id }}"
+                       name="{{ id }}"
+                       placeholder="{{ id }}"
+                       class="form-control border-primary"
+                       onclick="loadSuggestions('{{ id }}')"
+                       oninput="loadSuggestions('{{ id }}')">
 
-  <div class="field-container">
-    <label for="project_code">کد پروژه</label>
-    <input type="text" id="project_code" placeholder="project_code" onclick="loadSuggestions('project_code')"
-      oninput="loadSuggestions('project_code')" name="project_code">
-    <div class="suggest-box" id="project_code_box"></div>
-  </div>
+                <div class="suggest-box shadow-sm" id="{{ id }}_box"></div>
+            </div>
+            {% endfor %}
 
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary px-5">ثبت</button>
+            </div>
 
-  <div class="field-container">
-    <label for="user">کاربر</label>
-    <input type="text" id="user" placeholder="User" onclick="loadSuggestions('user')" oninput="loadSuggestions('user')"
-      name="user">
-    <div class="suggest-box" id="user_box"></div>
-  </div>
+        </form>
 
+        <div class="text-center mt-4">
+            <a class="btn btn-primary px-4" href="{{ url_for('add_item_bp.excel_import') }}">
+                وارد کردن دسته جمعی از اکسل
+            </a>
+        </div>
 
+    </div>
 
-  <div class="field-container">
-    <label for="recipient_delivery">تحویل گیرنده</label>
-    <input type="text" id="recipient_delivery" placeholder="recipient_delivery"
-      onclick="loadSuggestions('recipient_delivery')" oninput="loadSuggestions('recipient_delivery')"
-      name="recipient_delivery">
-    <div class="suggest-box" id="recipient_delivery_box"></div>
-  </div>
-
-
-  <div class="field-container">
-    <label for="system_identification_code">کد شناسایی سیستم</label>
-    <input type="text" id="system_identification_code" placeholder="system_identification_code"
-      onclick="loadSuggestions('system_identification_code')" oninput="loadSuggestions('system_identification_code')"
-      name="system_identification_code">
-    <div class="suggest-box" id="system_identification_code_box"></div>
-  </div>
-
-
-  <div class="field-container">
-    <label for="category">گروه بندی</label>
-    <input type="text" id="category" placeholder="category" onclick="loadSuggestions('category')"
-      oninput="loadSuggestions('category')" name="category">
-    <div class="suggest-box" id="category_box"></div>
-  </div>
-
-  <div class="field-container">
-    <label for="model">مدل</label>
-    <input type="text" id="model" placeholder="model" onclick="loadSuggestions('model')"
-      oninput="loadSuggestions('model')" name="model">
-    <div class="suggest-box" id="model_box"></div>
-  </div>
-
-
-  <div class="field-container">
-    <label for="serial_number">شماره سریال</label>
-    <input type="text" id="serial_number" placeholder="serial_number" onclick="loadSuggestions('serial_number')"
-      oninput="loadSuggestions('serial_number')" name="serial_number">
-    <div class="suggest-box" id="serial_number_box"></div>
-  </div>
-
-
-
-  <div class="field-container">
-    <label for="closed">مختوم شده</label>
-    <input type="text" id="closed" placeholder="closed" onclick="loadSuggestions('closed')"
-      oninput="loadSuggestions('closed')" name="closed">
-    <div class="suggest-box" id="closed_box"></div>
-  </div>
-
-  <div class="field-container">
-    <label for="closed_time">توضیحات اختتام</label>
-    <input type="text" id="closed_time" placeholder="closed_time" onclick="loadSuggestions('closed_time')"
-      oninput="loadSuggestions('closed_time')" name="closed_time">
-    <div class="suggest-box" id="closed_time_box"></div>
-  </div>
-
-  <div class="field-container">
-    <label for="description">جزئیات</label>
-    <input type="text" id="description" placeholder="description" onclick="loadSuggestions('description')"
-      oninput="loadSuggestions('description')" name="description">
-    <div class="suggest-box" id="description_box"></div>
-  </div>
-
-
-  <button type="submit" ons>ثبت</button>
-
-</form>
-
-<div id="axel_box">
-  <div>
-    <a href="{{url_for('add_item_bp.excel_import')}}" style="display: block;">وارد کردن دسته جمعی از اکسل</a>
-  </div>
 </div>
 
+<!-- استایل پیشنهادها -->
+<style>
+    .suggest-box {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border: 1px solid #0d6efd; /* رنگ آبی Bootstrap */
+        border-radius: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 1000;
+    }
 
+    .suggest-item {
+        padding: 8px 10px;
+        cursor: pointer;
+    }
 
+    .suggest-item:hover {
+        background: #e3f2fd; /* آبی روشن هاور */
+    }
+</style>
 
+<!-- اسکریپت پیشنهادها -->
+<script>
+    function getAllFieldsExcept(target) {
+        const keys = ["company", "user", "category", "project_code", "property_code", "serial_number", "personnel_code", "current_location", "system_identification_code", "model", "serial_number", "recipient_delivery", "closed"];
+        const params = {};
+        keys.forEach(k => {
+            if (k !== target) {
+                let v = document.getElementById(k)?.value;
+                if (v) params[k] = v;
+            }
+        });
+        return params;
+    }
 
+    function loadSuggestions(field) {
+        let value = document.getElementById(field).value;
+
+        let params = new URLSearchParams();
+        params.append("field", field);
+        params.append("value", value);
+
+        let others = getAllFieldsExcept(field);
+        for (let k in others) params.append(k, others[k]);
+
+        fetch(`/add_item/suggest?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                let box = document.getElementById(field + "_box");
+                box.innerHTML = "";
+                box.style.display = data.suggestions.length ? "block" : "none";
+
+                data.suggestions.forEach(s => {
+                    let div = document.createElement("div");
+                    div.className = "suggest-item";
+                    div.textContent = s;
+
+                    div.onclick = () => {
+                        document.getElementById(field).value = s;
+                        box.style.display = "none";
+                    };
+
+                    box.appendChild(div);
+                });
+            });
+    }
+
+    document.addEventListener("click", (e) => {
+        document.querySelectorAll(".suggest-box").forEach(b => {
+            if (!b.contains(e.target) && !b.previousElementSibling.contains(e.target)) {
+                b.style.display = "none";
+            }
+        });
+    });
+</script>
 
 {% endblock %}

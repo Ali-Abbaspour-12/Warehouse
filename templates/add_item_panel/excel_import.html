@@ -2,17 +2,41 @@
 
 {% block content %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-      {% for category, message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+<div class="container mt-5 d-flex justify-content-center">
 
-<a href="{{url_for('add_item_bp.show_all_items_wants_import_from_excel')}}">نمایش رکورد های فایل اکسل</a><br>
-<a href="{{url_for('add_item_bp.add_item')}}">بازگشت</a>
+    <div class="card shadow-lg border-primary p-4" style="width: 50%; min-width: 350px;">
+
+        <!-- پیام‌های فلش -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert alert-info">
+            <ul class="mb-0">
+                {% for category, message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <h4 class="text-center mb-4 text-primary fw-bold">مدیریت رکوردهای اکسل</h4>
+
+        <div class="text-center d-grid gap-3">
+
+            <a href="{{ url_for('add_item_bp.show_all_items_wants_import_from_excel') }}"
+               class="btn btn-primary fw-bold">
+                نمایش رکوردهای فایل اکسل
+            </a>
+
+            <a href="{{ url_for('add_item_bp.add_item') }}"
+               class="btn btn-secondary fw-bold">
+                بازگشت
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}

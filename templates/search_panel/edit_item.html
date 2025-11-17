@@ -1,63 +1,119 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>ویرایش آیتم</h2>
 
-<form method="POST">
+<div class="container mt-5 d-flex justify-content-center">
 
-    <label>project_code</label>
-    <input name="project_code" value="{{ item.project_code }}">
-    <br>
-    <label>warehouse_location</label>
-    <input name="warehouse_location" value="{{ item.warehouse_location }}">
-    <br>
-    <label>row</label>
-    <input name="row" value="{{ item.row }}">
-<br>
-    <label>first_recipient_delivery</label>
-    <input name="user" value="{{ item.user }}">
-<br>
-    <label>company</label>
-    <input name="company" value="{{ item.company }}">
-<br>
-    <label>unit</label>
-    <input name="unit" value="{{ item.unit }}">
-<br>
-    <label>personnel_code</label>
-    <input name="personnel_code" value="{{ item.personnel_code }}">
-<br>
-    <label>current_location</label>
-    <input name="current_location" value="{{ item.current_location }}">
-<br>
-    <label>system_identification_code</label>
-    <input name="system_identification_code" value="{{ item.system_identification_code }}">
-<br>
-    <label>category</label>
-    <input name="category" value="{{ item.category }}">
-<br>
-    <label>model</label>
-    <input name="model" value="{{ item.model }}">
-<br>
-    <label>serial_number</label>
-    <input name="serial_number" value="{{ item.serial_number }}">
-<br>
-    <label>property_code</label>
-    <input name="property_code" value="{{ item.property_code }}">
-<br>
-    <label>recipient_delivery</label>
-    <input name="recipient_delivery" value="{{ item.recipient_delivery }}">
-<br>
-    <label>description</label>
-    <textarea name="description">{{ item.description }}</textarea>
-<br>
-    <label>closed</label>
-    <input name="closed" value="{{ item.closed }}">
-<br>
-    <label>closed_time</label>
-    <input name="closed_time" value="{{ item.closed_time }}">
-<br>
-    <button type="submit">ذخیره تغییرات</button>
+    <div class="card shadow-lg w-75 border-primary p-4">
 
-</form>
+        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+            ویرایش آیتم
+        </div>
 
-<a href="{{ url_for('search_bp.item_detail', item_id=item.id) }}">بازگشت</a>
+        <div class="card-body">
+
+            <form method="POST" class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">کد پروژه</label>
+                    <input type="text" name="project_code" class="form-control border-primary" value="{{ item.project_code }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">انبار</label>
+                    <input type="text" name="warehouse_location" class="form-control border-primary" value="{{ item.warehouse_location }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">ردیف</label>
+                    <input type="text" name="row" class="form-control border-primary" value="{{ item.row }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">کاربر</label>
+                    <input type="text" name="user" class="form-control border-primary" value="{{ item.user }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">شرکت</label>
+                    <input type="text" name="company" class="form-control border-primary" value="{{ item.company }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">واحد</label>
+                    <input type="text" name="unit" class="form-control border-primary" value="{{ item.unit }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">کد پرسنلی</label>
+                    <input type="text" name="personnel_code" class="form-control border-primary" value="{{ item.personnel_code }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">مکان فعلی</label>
+                    <input type="text" name="current_location" class="form-control border-primary" value="{{ item.current_location }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">کد شناسایی سیستم</label>
+                    <input type="text" name="system_identification_code" class="form-control border-primary" value="{{ item.system_identification_code }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">گروه بندی</label>
+                    <input type="text" name="category" class="form-control border-primary" value="{{ item.category }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">مدل</label>
+                    <input type="text" name="model" class="form-control border-primary" value="{{ item.model }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">شماره سریال</label>
+                    <input type="text" name="serial_number" class="form-control border-primary" value="{{ item.serial_number }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">کد اموال</label>
+                    <input type="text" name="property_code" class="form-control border-primary" value="{{ item.property_code }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">تحویل گیرنده</label>
+                    <input type="text" name="recipient_delivery" class="form-control border-primary" value="{{ item.recipient_delivery }}">
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label text-primary fw-bold">توضیحات</label>
+                    <textarea name="description" class="form-control border-primary" rows="3">{{ item.description }}</textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">مختوم شده</label>
+                    <input type="text" name="closed" class="form-control border-primary" value="{{ item.closed }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">تاریخ اختتام</label>
+                    <input type="text" name="closed_time" class="form-control border-primary" value="{{ item.closed_time }}">
+                </div>
+
+                <div class="col-12 text-center mt-3">
+                    <button type="submit" class="btn btn-primary px-5">ذخیره تغییرات</button>
+                </div>
+
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="{{ url_for('search_bp.item_detail', item_id=item.id) }}" class="btn btn-secondary">
+                    بازگشت
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 {% endblock %}

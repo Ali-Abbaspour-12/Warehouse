@@ -1,63 +1,201 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/base.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/search.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/add_item.css')}}">
-    
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مدیریت</title>
 
-    <script src="{{ url_for('static',filename='js/base.js')}}"></script>
-    <script src="{{ url_for('static',filename='js/search.js')}}"></script>
-    <script src="{{ url_for('static',filename='js/add_item.js')}}"></script>
+<!-- Bootstrap محلی -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/rtl.css') }}">
 
-    <title>Document</title>
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Vazir', sans-serif;
+    overflow-x: hidden;
+}
+
+main {
+    transition: margin-right 0.3s;
+    padding: 20px;
+    margin-right: 250px; /* پنل باز */
+}
+
+/* پنل */
+#sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #0d6efd;
+    color: white;
+    transition: width 0.3s;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1050;
+}
+
+#sidebar.collapsed {
+    width: 70px;
+}
+
+/* دکمه باز و بسته کردن پنل */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    margin: 10px auto;
+    cursor: pointer;
+}
+
+/* لیست لینک‌ها */
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    flex-grow: 1;
+}
+
+#sidebar ul li {
+    margin-bottom: 5px;
+}
+
+#sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+#sidebar ul li a.active {
+    background-color: rgba(255,255,255,0.3);
+}
+
+/* هنگام بسته بودن پنل، متن‌ها مخفی شوند */
+.link-text {
+    margin-right: 10px;
+    transition: opacity 0.3s, width 0.3s;
+    white-space: nowrap;
+}
+
+#sidebar.collapsed .link-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+/* آیکون‌ها */
+.icon {
+    min-width: 24px;
+    text-align: center;
+    font-size: 1.2rem;
+}
+</style>
 </head>
+
 <body>
-    <header>
-    <nav id="navbar">
-        
-        <div>
-            <a id="dashboard" href="{{ url_for('dashboard_bp.dashboard') }}" >داشبورد</a>
-        </div>
-        
-        <div>
-            <a href="{{ url_for('search_bp.search') }}">جستجو</a>
-        </div>
-
+<div id="sidebar">
+    <button class="toggle-btn" id="toggleBtn">&#9776;</button>
+    <ul>
+        <li>
+            <a href="{{ url_for('dashboard_bp.dashboard') }}" data-path="{{ url_for('dashboard_bp.dashboard') }}">
+                <span class="icon">🏠</span>
+                <span class="link-text">داشبورد</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('search_bp.search') }}" data-path="{{ url_for('search_bp.search') }}">
+                <span class="icon">🔍</span>
+                <span class="link-text">جستجو</span>
+            </a>
+        </li>
         {% if current_user.is_authenticated and current_user.is_admin %}
-        <div>
-            <a href="{{ url_for('add_item_bp.add_item') }}">افزودن آیتم</a>
-        </div>
+        <li>
+            <a href="{{ url_for('add_item_bp.add_item') }}" data-path="{{ url_for('add_item_bp.add_item') }}">
+                <span class="icon">➕</span>
+                <span class="link-text">افزودن آیتم</span>
+            </a>
+        </li>
         {% endif %}
-        
-
-        <div>
-            <a href="{{ url_for('report_bp.report') }}">گزارش گیری</a>
-        </div>
-
+        <li>
+            <a href="{{ url_for('report_bp.report') }}" data-path="{{ url_for('report_bp.report') }}">
+                <span class="icon">📊</span>
+                <span class="link-text">گزارش گیری</span>
+            </a>
+        </li>
         {% if current_user.is_authenticated and current_user.is_admin %}
-        <div>
-            <a href="{{ url_for('settings_bp.settings') }}">تنظیمات</a>
-        </div>
+        <li>
+            <a href="{{ url_for('settings_bp.settings') }}" data-path="{{ url_for('settings_bp.settings') }}">
+                <span class="icon">⚙️</span>
+                <span class="link-text">تنظیمات</span>
+            </a>
+        </li>
         {% endif %}
-        
-        <!-- دکمه خروج -->
-        <div style="margin-left:auto;">
-            <a href="{{ url_for('login_bp.logout') }}">خروج</a>
-        </div>
-    </nav>
-</header>
+        <li>
+            <a href="{{ url_for('login_bp.logout') }}">
+                <span class="icon">🚪</span>
+                <span class="link-text">خروج</span>
+            </a>
+        </li>
+    </ul>
+</div>
 
-    <main>
-        {% block content %}
+<main>
+    {% block content %}
+    <h1>محتوا</h1>
+    {% endblock %}
+</main>
 
-        {% endblock %}
-    </main>
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script>
+// مدیریت باز و بسته شدن پنل
+const toggleBtn = document.getElementById('toggleBtn');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.querySelector('main');
 
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    mainContent.style.marginRight = sidebar.classList.contains('collapsed') ? '70px' : '250px';
+});
+
+// مدیریت فعال شدن لینک‌ها و هایلایت
+const sidebarLinks = sidebar.querySelectorAll('ul li a');
+
+function highlightActive() {
+    sidebarLinks.forEach(link => {
+        if (link.getAttribute('data-path') === window.location.pathname) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
+// هایلایت لینک فعلی در بارگذاری صفحه
+highlightActive();
+
+// هایلایت لینک هنگام کلیک بدون باز شدن پنل
+sidebarLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        // اگر لینک logout است، اجازه بدهد
+        if (!link.href.includes('logout')) {
+            // اجازه دهیم لینک صفحه را باز کند اما پنل باز نشود
+            // پنل فقط با دکمه toggle باز و بسته شود
+        }
+    });
+});
+</script>
 </body>
-
-
-
 </html>

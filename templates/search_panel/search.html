@@ -1,152 +1,201 @@
 {% extends "base.html" %}
 
-
 {% block content %}
 
-    
-    
+<div class="container mt-4">
 
-<form method="get"  autocomplete="off"><br>
+    <!-- 🔵 فرم داخل کارت Bootstrap با تم آبی -->
+    <div class="card shadow-lg border-primary mb-4">
+        <div class="card-header bg-primary text-white fw-bold text-center">
+            فرم جستجو
+        </div>
+        <div class="card-body">
 
-<div class="field-container">
-    <label for="property_code">کد اموال</label>
-    <input type="text" id="property_code" placeholder="property_code" 
-           onclick="loadSuggestions('property_code')" 
-           oninput="loadSuggestions('property_code')" name="property_code">
-    <div class="suggest-box" id="property_code_box"></div>
-</div>
+            <form method="get" autocomplete="off">
 
-<div class="field-container">
-    <label for="project_code">کد پروژه</label>
-    <input type="text" id="project_code" placeholder="project_code"
-           onclick="loadSuggestions('project_code')" 
-           oninput="loadSuggestions('project_code')" name="project_code">
-    <div class="suggest-box" id="project_code_box"></div>
-</div>
+                <div class="row g-3">
 
-<div class="field-container">
-    <label for="user">کاربر</label>
-    <input type="text" id="user" placeholder="User"
-           onclick="loadSuggestions('user')" 
-           oninput="loadSuggestions('user')" name="user">
-    <div class="suggest-box" id="user_box"></div>
-</div>
+                    {% set fields = [
+                        ('property_code','کد اموال','property_code'),
+                        ('project_code','کد پروژه','project_code'),
+                        ('user','کاربر','User'),
+                        ('company','شرکت','company'),
+                        ('category','گروه بندی','category'),
+                        ('personnel_code','کد پرسنلی','personnel_code'),
+                        ('current_location','محل استقرار','current_location'),
+                        ('system_identification_code','کد شناسایی سیستم','system_identification_code'),
+                        ('model','مدل','model'),
+                        ('serial_number','شماره سریال','serial_number'),
+                        ('recipient_delivery','تحویل گیرنده','recipient_delivery'),
+                        ('closed','مختوم شده','closed')
+                    ] %}
 
-<div class="field-container">
-    <label for="company">شرکت</label>
-    <input type="text" id="company" placeholder="company"
-           onclick="loadSuggestions('company')" 
-           oninput="loadSuggestions('company')" name="company">
-    <div class="suggest-box" id="company_box"></div>
-</div>
+                    {% for id,label,ph in fields %}
+                    <div class="col-md-4 position-relative">
+                        <label for="{{id}}" class="form-label text-primary fw-bold">{{label}}</label>
+                        <input type="text" class="form-control border-primary"
+                               id="{{id}}" name="{{id}}" placeholder="{{ph}}"
+                               onclick="loadSuggestions('{{id}}')" oninput="loadSuggestions('{{id}}')">
+                        <div class="suggest-box" id="{{id}}_box"></div>
+                    </div>
+                    {% endfor %}
 
-<div class="field-container">
-    <label for="category">گروه بندی</label>
-    <input type="text" id="category" placeholder="category"
-           onclick="loadSuggestions('category')" 
-           oninput="loadSuggestions('category')" name="category">
-    <div class="suggest-box" id="category_box"></div>
-</div>
+                </div>
 
-<div class="field-container">
-    <label for="personnel_code">کد پرسنلی</label>
-    <input type="text" id="personnel_code" placeholder="personnel_code"
-           onclick="loadSuggestions('personnel_code')" 
-           oninput="loadSuggestions('personnel_code')" name="personnel_code">
-    <div class="suggest-box" id="personnel_code_box"></div>
-</div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary px-5">
+                        جستجو
+                    </button>
+                </div>
 
-<div class="field-container">
-    <label for="current_location">محل استقرار</label>
-    <input type="text" id="current_location" placeholder="current_location"
-           onclick="loadSuggestions('current_location')" 
-           oninput="loadSuggestions('current_location')" name="current_location">
-    <div class="suggest-box" id="current_location_box"></div>
-</div>
+            </form>
 
-<div class="field-container">
-    <label for="system_identification_code">کد شناسایی سیستم</label>
-    <input type="text" id="system_identification_code" placeholder="system_identification_code"
-           onclick="loadSuggestions('system_identification_code')" 
-           oninput="loadSuggestions('system_identification_code')" name="system_identification_code">
-    <div class="suggest-box" id="system_identification_code_box"></div>
-</div>
+        </div>
+    </div>
 
-<div class="field-container">
-    <label for="model">مدل</label>
-    <input type="text" id="model" placeholder="model"
-           onclick="loadSuggestions('model')" 
-           oninput="loadSuggestions('model')" name="model">
-    <div class="suggest-box" id="model_box"></div>
-</div>
-
-<div class="field-container">
-    <label for="serial_number">شماره سریال</label>
-    <input type="text" id="serial_number" placeholder="serial_number"
-           onclick="loadSuggestions('serial_number')" 
-           oninput="loadSuggestions('serial_number')" name="serial_number">
-    <div class="suggest-box" id="serial_number_box"></div>
-</div>
-
-<div class="field-container">
-    <label for="recipient_delivery">تحویل گیرنده</label>
-    <input type="text" id="recipient_delivery" placeholder="recipient_delivery"
-           onclick="loadSuggestions('recipient_delivery')" 
-           oninput="loadSuggestions('recipient_delivery')" name="recipient_delivery">
-    <div class="suggest-box" id="recipient_delivery_box"></div>
-</div>
-
-<div class="field-container">
-    <label for="closed">مختوم شده</label>
-    <input type="text" id="closed" placeholder="closed"
-           onclick="loadSuggestions('closed')" 
-           oninput="loadSuggestions('closed')" name="closed">
-    <div class="suggest-box" id="closed_box"></div>
-</div>
-
-        
-        <button type="submit">جستجو</button><br>
-
-    </form>
-
-   
+    <!-- 🟢 نمایش جدول اگر نتیجه وجود دارد -->
     {% if items|length > 0 %}
-       
-        <table>
-    <thead>
-        <tr>
-            <th>کد اموال</th>
-            <th>کد پروژه</th>
-            <th>کاربر</th>
-            <th>تحویل گیرنده</th>
-            <th>شرکت</th>
-            <th>گروه یندی</th>
-            <th>کد شناسایی</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for item in items %}
-   
-        <tr>
-            <td>{{item.property_code}}</td>
-            <td>{{item.project_code}}</td>
-            <td>{{item.user}}</td>
-            <td>{{item.recipient_delivery}}</td>
-            <td>{{item.company}}</td>
-            <td>{{item.category}}</td>
-            <td>{{item.system_identification_code}}</td>
-            
-            <td><a href="{{url_for('search_bp.item_detail',item_id=item.id,**request.args)}}">جزییات</a></td>
-        </tr>
-    
-    {% endfor %}
-    </tbody>
-</table>
+
+    <div class="card shadow border-primary">
+        <div class="card-header bg-primary text-white fw-bold">
+            نتایج جستجو
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+
+                <table class="table table-striped table-hover m-0 text-center align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>کد اموال</th>
+                            <th>کد پروژه</th>
+                            <th>کاربر</th>
+                            <th>تحویل گیرنده</th>
+                            <th>شرکت</th>
+                            <th>گروه بندی</th>
+                            <th>کد شناسایی</th>
+                            <th>جزییات</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{item.property_code}}</td>
+                            <td>{{item.project_code}}</td>
+                            <td>{{item.user}}</td>
+                            <td>{{item.recipient_delivery}}</td>
+                            <td>{{item.company}}</td>
+                            <td>{{item.category}}</td>
+                            <td>{{item.system_identification_code}}</td>
+
+                            <td>
+                                <a class="btn btn-primary btn-sm"
+                                    href="{{url_for('search_bp.item_detail', item_id=item.id, **request.args)}}">
+                                    مشاهده
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
     {% endif %}
-    
 
-<a href="{{url_for('search_bp.show_all_records')}}">نمایش همه ریکورد ها</a>
+    <!-- دکمه نمایش همه رکوردها -->
+    <div class="text-center mt-4">
+        <a href="{{url_for('search_bp.show_all_records')}}" class="btn btn-outline-primary">
+            نمایش همه رکوردها
+        </a>
+    </div>
 
-    
+</div>
+
+<!-- استایل suggest-box با تم آبی -->
+<style>
+    .suggest-box {
+        position: absolute;
+        width: 100%;
+        background: #fff;
+        border: 1px solid #0d6efd; /* آبی Bootstrap */
+        border-radius: 0.25rem;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 2000;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .suggest-item {
+        padding: 8px 10px;
+        cursor: pointer;
+    }
+
+    .suggest-item:hover {
+        background: #e3f2fd; /* آبی روشن */
+    }
+</style>
+
+<!-- JS بخش پیشنهادها بدون تغییر در منطق -->
+<script>
+    function getAllFieldsExcept(target) {
+        const keys = ["company", "user", "category", "project_code", "property_code", "serial_number",
+                      "personnel_code","current_location","system_identification_code", "model",
+                      "serial_number","recipient_delivery","closed"];
+        const params = {};
+        keys.forEach(k => {
+            if (k !== target) {
+                let v = document.getElementById(k)?.value;
+                if (v) params[k] = v;
+            }
+        });
+        return params;
+    }
+
+    function loadSuggestions(field) {
+        let value = document.getElementById(field).value;
+
+        let params = new URLSearchParams();
+        params.append("field", field);
+        params.append("value", value);
+
+        let others = getAllFieldsExcept(field);
+        for (let k in others) params.append(k, others[k]);
+
+        fetch(`/search/suggest?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                let box = document.getElementById(field + "_box");
+                box.innerHTML = "";
+                box.style.display = data.suggestions.length ? "block" : "none";
+
+                data.suggestions.forEach(s => {
+                    let div = document.createElement("div");
+                    div.className = "suggest-item";
+                    div.textContent = s;
+
+                    div.onclick = () => {
+                        document.getElementById(field).value = s;
+                        box.style.display = "none";
+                    };
+
+                    box.appendChild(div);
+                });
+            });
+    }
+
+    document.addEventListener("click", (e) => {
+        document.querySelectorAll(".suggest-box").forEach(b => {
+            if (!b.contains(e.target) && !b.previousElementSibling.contains(e.target)) {
+                b.style.display = "none";
+            }
+        });
+    });
+</script>
+
 {% endblock %}
-

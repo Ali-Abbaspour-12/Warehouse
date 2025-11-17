@@ -1,27 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
-     <ul>
-        
-        <li>{{history.id}}</li>
-        <li>{{history.project_code}}</li>
-        <li>{{history.warehouse_location}}</li>
-        <li>{{history.row}}</li>
-        <li>{{history.user}}</li>
-        <li>{{history.company}}</li>
-        <li>{{history.unit}}</li>
-        <li>{{history.personnel_code}}</li>
-        <li>{{history.current_location}}</li>
-        <li>{{history.system_identification_code}}</li>
-        <li>{{history.category}}</li>
-        <li>{{history.model}}</li>
-        <li>{{history.serial_number}}</li>
-        <li>{{history.property_code}}</li>
-        <li>{{history.recipient_delivery}}</li>
-        <li>{{history.description}}</li>
-        <li>{{history.closed}}</li>
-        <li>{{history.closed_time}}</li>
-        <li>{{history.changed_at}}</li>
-        
-    </ul><br>
-    <a href="{{url_for('search_bp.item_detail',item_id=item_id)}}">بازگشت</a>
+
+<div class="container mt-5 d-flex justify-content-center">
+
+    <div class="card shadow-lg w-75 border-primary">
+
+        <!-- عنوان کارت -->
+        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+            جزئیات تاریخچه
+        </div>
+
+        <!-- اطلاعات تاریخچه -->
+        <div class="card-body">
+
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item"><strong>ID:</strong> {{ history.id }}</li>
+                <li class="list-group-item"><strong>کد پروژه:</strong> {{ history.project_code }}</li>
+                <li class="list-group-item"><strong>انبار:</strong> {{ history.warehouse_location }}</li>
+                <li class="list-group-item"><strong>ردیف:</strong> {{ history.row }}</li>
+                <li class="list-group-item"><strong>کاربر:</strong> {{ history.user }}</li>
+                <li class="list-group-item"><strong>شرکت:</strong> {{ history.company }}</li>
+                <li class="list-group-item"><strong>واحد:</strong> {{ history.unit }}</li>
+                <li class="list-group-item"><strong>کد پرسنلی:</strong> {{ history.personnel_code }}</li>
+                <li class="list-group-item"><strong>مکان فعلی:</strong> {{ history.current_location }}</li>
+                <li class="list-group-item"><strong>کد شناسایی سیستم:</strong> {{ history.system_identification_code }}</li>
+                <li class="list-group-item"><strong>گروه بندی:</strong> {{ history.category }}</li>
+                <li class="list-group-item"><strong>مدل:</strong> {{ history.model }}</li>
+                <li class="list-group-item"><strong>شماره سریال:</strong> {{ history.serial_number }}</li>
+                <li class="list-group-item"><strong>کد اموال:</strong> {{ history.property_code }}</li>
+                <li class="list-group-item"><strong>تحویل گیرنده:</strong> {{ history.recipient_delivery }}</li>
+                <li class="list-group-item"><strong>توضیحات:</strong> {{ history.description }}</li>
+                <li class="list-group-item"><strong>مختوم شده:</strong> {{ history.closed }}</li>
+                <li class="list-group-item"><strong>تاریخ اختتام:</strong> {{ history.closed_time }}</li>
+                <li class="list-group-item"><strong>تغییر یافته در:</strong> {{ history.changed_at }}</li>
+            </ul>
+
+            <div class="text-center">
+                <a href="{{ url_for('search_bp.item_detail', item_id=item_id) }}" class="btn btn-primary">
+                    بازگشت
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 {% endblock %}
