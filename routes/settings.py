@@ -1,5 +1,5 @@
 from flask import redirect,render_template,flash,Blueprint,url_for
-from models import Item
+from models import Item,ItemHistory
 from extensions import db
 from .login import admin_required
 
@@ -17,6 +17,7 @@ def settings():
 @admin_required
 def delete_all_records():
     Item.query.delete()
+    ItemHistory.query.delete()
     db.session.commit()
     flash("همه ریکورد ها حذف شدند","success")
     return redirect(url_for("settings_bp.settings"))
