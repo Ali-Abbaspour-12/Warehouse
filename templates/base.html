@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>پنل مدیریت</title>
 
-<!-- Bootstrap محلی -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/rtl.css') }}">
@@ -16,186 +15,122 @@ body, html {
     padding: 0;
     height: 100%;
     font-family: 'Vazir', sans-serif;
-    overflow-x: hidden;
 }
 
-main {
-    transition: margin-right 0.3s;
-    padding: 20px;
-    margin-right: 250px; /* پنل باز */
-}
-
-/* پنل */
-#sidebar {
+/* نوار بالا */
+#topbar {
     position: fixed;
     top: 0;
     right: 0;
-    height: 100%;
-    width: 250px;
+    width: 100%;
+    height: 60px;
     background-color: #0d6efd;
     color: white;
-    transition: width 0.3s;
-    overflow-x: hidden;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
     z-index: 1050;
 }
 
-#sidebar.collapsed {
-    width: 70px;
-}
-
-/* دکمه باز و بسته کردن پنل */
-.toggle-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    margin: 10px auto;
-    cursor: pointer;
-}
-
-/* لیست لینک‌ها */
-#sidebar ul {
+/* لیست منوی افقی */
+#topbar ul {
     list-style: none;
+    display: flex;
+    margin: 0;
     padding: 0;
-    margin-top: 20px;
-    flex-grow: 1;
 }
 
-#sidebar ul li {
-    margin-bottom: 5px;
+#topbar ul li {
+    margin-left: 15px;
 }
 
-#sidebar ul li a {
+#topbar ul li a {
     color: white;
     text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
-    padding: 12px 20px;
-    border-radius: 5px;
-    transition: background 0.3s;
+    transition: background 0.2s;
 }
 
-#sidebar ul li a.active {
-    background-color: rgba(255,255,255,0.3);
+#topbar ul li a.active,
+#topbar ul li a:hover {
+    background-color: rgba(255,255,255,0.18);
 }
 
-/* هنگام بسته بودن پنل، متن‌ها مخفی شوند */
-.link-text {
-    margin-right: 10px;
-    transition: opacity 0.3s, width 0.3s;
-    white-space: nowrap;
-}
-
-#sidebar.collapsed .link-text {
-    opacity: 0;
-    width: 0;
-    overflow: hidden;
-}
-
-/* آیکون‌ها */
 .icon {
-    min-width: 24px;
-    text-align: center;
+    margin-left: 6px;
     font-size: 1.2rem;
+}
+
+/* محتوا بعد از نوار بالا */
+main {
+    padding: 80px 20px; /* فاصله از نوار بالا */
 }
 </style>
 </head>
 
 <body>
-<div id="sidebar">
-    <button class="toggle-btn" id="toggleBtn">&#9776;</button>
+
+<!-- نوار بالا -->
+<div id="topbar" role="navigation" aria-label="main-navbar">
     <ul>
         <li>
             <a href="{{ url_for('dashboard_bp.dashboard') }}" data-path="{{ url_for('dashboard_bp.dashboard') }}">
-                <span class="icon">🏠</span>
-                <span class="link-text">داشبورد</span>
+                <span class="icon">🏠</span> داشبورد
             </a>
         </li>
         <li>
             <a href="{{ url_for('search_bp.search') }}" data-path="{{ url_for('search_bp.search') }}">
-                <span class="icon">🔍</span>
-                <span class="link-text">جستجو</span>
+                <span class="icon">🔍</span> جستجو
             </a>
         </li>
         {% if current_user.is_authenticated and current_user.is_admin %}
         <li>
             <a href="{{ url_for('add_item_bp.add_item') }}" data-path="{{ url_for('add_item_bp.add_item') }}">
-                <span class="icon">➕</span>
-                <span class="link-text">افزودن آیتم</span>
+                <span class="icon">➕</span> افزودن آیتم
             </a>
         </li>
         {% endif %}
         <li>
             <a href="{{ url_for('report_bp.report') }}" data-path="{{ url_for('report_bp.report') }}">
-                <span class="icon">📊</span>
-                <span class="link-text">گزارش گیری</span>
+                <span class="icon">📊</span> گزارش‌گیری
             </a>
         </li>
         {% if current_user.is_authenticated and current_user.is_admin %}
         <li>
             <a href="{{ url_for('settings_bp.settings') }}" data-path="{{ url_for('settings_bp.settings') }}">
-                <span class="icon">⚙️</span>
-                <span class="link-text">تنظیمات</span>
+                <span class="icon">⚙️</span> تنظیمات
             </a>
         </li>
         {% endif %}
         <li>
             <a href="{{ url_for('login_bp.logout') }}">
-                <span class="icon">🚪</span>
-                <span class="link-text">خروج</span>
+                <span class="icon">🚪</span> خروج
             </a>
         </li>
     </ul>
 </div>
 
+<!-- محتوای اصلی -->
 <main>
     {% block content %}
     <h1>محتوا</h1>
     {% endblock %}
 </main>
 
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 <script>
-// مدیریت باز و بسته شدن پنل
-const toggleBtn = document.getElementById('toggleBtn');
-const sidebar = document.getElementById('sidebar');
-const mainContent = document.querySelector('main');
+document.addEventListener('DOMContentLoaded', function(){
+    const links = document.querySelectorAll('#topbar ul li a');
 
-toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    mainContent.style.marginRight = sidebar.classList.contains('collapsed') ? '70px' : '250px';
-});
-
-// مدیریت فعال شدن لینک‌ها و هایلایت
-const sidebarLinks = sidebar.querySelectorAll('ul li a');
-
-function highlightActive() {
-    sidebarLinks.forEach(link => {
-        if (link.getAttribute('data-path') === window.location.pathname) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
-}
-
-// هایلایت لینک فعلی در بارگذاری صفحه
-highlightActive();
-
-// هایلایت لینک هنگام کلیک بدون باز شدن پنل
-sidebarLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        sidebarLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-        // اگر لینک logout است، اجازه بدهد
-        if (!link.href.includes('logout')) {
-            // اجازه دهیم لینک صفحه را باز کند اما پنل باز نشود
-            // پنل فقط با دکمه toggle باز و بسته شود
-        }
+    const currentPath = window.location.pathname;
+    links.forEach(link => {
+        const path = link.getAttribute('data-path') || link.getAttribute('href');
+        link.classList.toggle('active', path === currentPath);
     });
 });
 </script>
+
 </body>
 </html>

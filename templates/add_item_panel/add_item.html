@@ -2,81 +2,78 @@
 
 {% block content %}
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
+    <div class="row g-4">
 
-    <!-- 🔵 کارت اصلی مثل فرم جستجو -->
-    <div class="card shadow-lg border-primary mb-4">
-        <div class="card-header bg-primary text-white fw-bold text-center">
-            فرم ثبت اطلاعات
-        </div>
+        <!-- ستون فرم ثبت اطلاعات -->
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="card shadow-lg border-primary w-50 d-flex flex-column">
+                <div class="card-header bg-primary text-white fw-bold text-center">
+                    فرم ثبت اطلاعات
+                </div>
 
-        <div class="card-body">
-
-            <!-- پیام‌های فلش -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div class="alert alert-info">
-                <ul class="mb-0">
-                    {% for category, message in messages %}
-                    <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-            {% endwith %}
-
-            <form method="post" autocomplete="off">
-
-                <div class="row g-3">
-
-                    {% set fields = [
-                        ('property_code', 'کد اموال'),
-                        ('project_code', 'کد پروژه'),
-                        ('warehouse_loaction','محل'),
-                        ('row','ردیف'),
-                        ('user', 'کاربر'),
-                        ('recipient_delivery', 'تحویل گیرنده'),
-                        ('system_identification_code', 'کد شناسایی سیستم'),
-                        ('category', 'گروه بندی'),
-                        ('model', 'مدل'),
-                        ('serial_number', 'شماره سریال'),
-                        ('closed', 'مختوم شده'),
-                        ('closed_time', 'توضیحات اختتام'),
-                        ('description', 'جزئیات')
-                    ] %}
-
-                    {% for id, label in fields %}
-                    <div class="col-md-6 position-relative">
-                        <label for="{{id}}" class="form-label text-primary fw-bold">{{label}}</label>
-                        <input type="text" class="form-control border-primary"
-                               id="{{id}}" name="{{id}}" placeholder="{{label}}"
-                               onclick="loadSuggestions('{{id}}')" oninput="loadSuggestions('{{id}}')">
-                        <div class="suggest-box" id="{{id}}_box"></div>
+                <div class="card-body text-end p-2">
+                    <!-- پیام‌های فلش -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div class="alert alert-info">
+                        <ul class="mb-0">
+                            {% for category, message in messages %}
+                            <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+                    <form method="post" autocomplete="off" class="text-end">
+                        {% set fields = [
+                            ('property_code', 'کد اموال'),
+                            ('project_code', 'کد پروژه'),
+                            ('warehouse_location','محل'),
+                            ('row','ردیف'),
+                            ('user', 'کاربر'),
+                            ('recipient_delivery', 'تحویل گیرنده'),
+                            ('system_identification_code', 'کد شناسایی سیستم'),
+                            ('category', 'گروه بندی'),
+                            ('model', 'مدل'),
+                            ('serial_number', 'شماره سریال'),
+                            ('closed', 'مختوم شده'),
+                            ('closed_time', 'توضیحات اختتام'),
+                            ('description', 'جزئیات')
+                        ] %}
+
+                        {% for id, label in fields %}
+                        <div class="mb-2 position-relative text-end">
+                            <label for="{{id}}" class="form-label fw-bold d-block" style="font-size:0.85rem; text-align:right;">
+                                {{label}}
+                            </label>
+                            <input type="text" class="form-control border-primary form-control-sm text-end"
+                                   id="{{id}}" name="{{id}}"
+                                   onclick="loadSuggestions('{{id}}')" oninput="loadSuggestions('{{id}}')">
+                            <div class="suggest-box" id="{{id}}_box"></div>
+                        </div>
+                        {% endfor %}
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary w-50 btn-sm">ثبت</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <a class="btn btn-primary w-50 btn-sm" href="{{ url_for('add_item_bp.excel_import') }}">
+                            وارد کردن دسته جمعی از اکسل
+                        </a>
+                    </div>
 
                 </div>
-
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary px-5">
-                        ثبت
-                    </button>
-                </div>
-
-            </form>
-
-            <div class="text-center mt-4">
-                <a class="btn btn-primary px-4" href="{{ url_for('add_item_bp.excel_import') }}">
-                    وارد کردن دسته جمعی از اکسل
-                </a>
             </div>
-
         </div>
-    </div>
 
+    </div>
 </div>
 
-<!-- استایل suggest-box مانند فرم دوم -->
+<!-- استایل suggest-box مشابه کد اول -->
 <style>
     .suggest-box {
         position: absolute;
@@ -92,8 +89,9 @@
     }
 
     .suggest-item {
-        padding: 8px 10px;
+        padding: 6px 10px;
         cursor: pointer;
+        font-size: 0.9rem;
     }
 
     .suggest-item:hover {
@@ -101,7 +99,7 @@
     }
 </style>
 
-<!-- اسکریپت پیشنهادها -->
+<!-- اسکریپت پیشنهادها مشابه کد اول -->
 <script>
     function getAllFieldsExcept(target) {
         const keys = ["company", "user", "category", "project_code", "property_code",
