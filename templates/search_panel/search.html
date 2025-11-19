@@ -18,6 +18,8 @@
                     {% set fields = [
                         ('property_code','کد اموال','property_code'),
                         ('project_code','کد پروژه','project_code'),
+                        ('warehouse_location','محل','warehouse_location'),
+                        ('row','ردیف','row'),
                         ('user','کاربر','User'),
                         ('company','شرکت','company'),
                         ('category','گروه بندی','category'),
@@ -47,6 +49,12 @@
                         جستجو
                     </button>
                 </div>
+
+                <div class="text-center mt-4">
+        <a href="{{url_for('search_bp.show_all_records')}}" class="btn btn-primary">
+            نمایش همه رکوردها
+        </a>
+    </div>
 
             </form>
 
@@ -108,11 +116,7 @@
     {% endif %}
 
     <!-- دکمه نمایش همه رکوردها -->
-    <div class="text-center mt-4">
-        <a href="{{url_for('search_bp.show_all_records')}}" class="btn btn-outline-primary">
-            نمایش همه رکوردها
-        </a>
-    </div>
+    
 
 </div>
 
@@ -146,7 +150,7 @@
     function getAllFieldsExcept(target) {
         const keys = ["company", "user", "category", "project_code", "property_code", "serial_number",
                       "personnel_code","current_location","system_identification_code", "model",
-                      "serial_number","recipient_delivery","closed"];
+                      "serial_number","recipient_delivery","closed","warehouse_location","row"];
         const params = {};
         keys.forEach(k => {
             if (k !== target) {

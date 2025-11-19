@@ -14,16 +14,18 @@ def search():
     field_mapping = {
         "property_code": Item.property_code,
         "project_code": Item.project_code,
+        "warehouse_location": Item.warehouse_location,
+        "row": Item.row,
         "user": Item.user,
         "company": Item.company,
         "category": Item.category,
-        "personnel_code":Item.personnel_code,
-        "current_location":Item.current_location,
-        "system_identification_code":Item.system_identification_code,
-        "model":Item.model,
-        "serial_number":Item.serial_number,
-        "recipient_delivery":Item.recipient_delivery,
-        "closed":Item.closed
+        "personnel_code": Item.personnel_code,
+        "current_location": Item.current_location,
+        "system_identification_code": Item.system_identification_code,
+        "model": Item.model,
+        "serial_number": Item.serial_number,
+        "recipient_delivery": Item.recipient_delivery,
+        "closed": Item.closed
     }
 
     query = Item.query
@@ -38,8 +40,11 @@ def search():
     if not has_filter:
         return render_template("search_panel/search.html", items=[])
 
-    items = query.all()
+    # مرتب‌سازی نزولی بر اساس property_code
+    items = query.order_by(Item.property_code.desc()).all()
+
     return render_template("search_panel/search.html", items=items)
+
 
    
 
@@ -75,8 +80,8 @@ def edit_item(item_id):
         record = ItemHistory(
 
             project_code = item.project_code,
-            #warehouse_location = item.warehouse_location,
-            #row = item.row,
+            warehouse_location = item.warehouse_location,
+            row = item.row,
             user = item.user,
             company = item.company,
             unit = item.unit,
@@ -132,6 +137,8 @@ def suggest():
     field_mapping = {
        "property_code": Item.property_code,
         "project_code": Item.project_code,
+        "warehouse_location":Item.warehouse_location,
+        "row":Item.row,
         "user": Item.user,
         "company": Item.company,
         "category": Item.category,

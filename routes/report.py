@@ -16,8 +16,8 @@ def export_report():
 
     data = [{
         "project_code": i.project_code,
-        #"warehouse_location": i.warehouse_location,
-        #"row": i.row,
+        "warehouse_location": i.warehouse_location,
+        "row": i.row,
         "user": i.user,
         "company": i.company,
         "unit": i.unit,

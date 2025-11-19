@@ -14,7 +14,7 @@
         <!-- اطلاعات آیتم -->
         <div class="card-body">
             <ul class="list-group list-group-flush mb-4">
-                <li class="list-group-item"><strong>ID:</strong> {{ item.id }}</li>
+                
                 <li class="list-group-item"><strong>کد پروژه:</strong> {{ item.project_code }}</li>
                 <li class="list-group-item"><strong>انبار:</strong> {{ item.warehouse_location }}</li>
                 <li class="list-group-item"><strong>ردیف:</strong> {{ item.row }}</li>
@@ -47,7 +47,7 @@
 
             <!-- دکمه‌ها -->
             <div class="d-flex gap-2">
-                <a href="{{ url_for('search_bp.edit_item', item_id=item.id) }}" class="btn btn-warning">
+                <a href="{{ url_for('search_bp.edit_item', item_id=item.id) }}" class="btn btn-primary">
                     ویرایش آیتم
                 </a>
                 <a href="{{ url_for('search_bp.search', **request.args) }}" class="btn btn-primary">

@@ -15,8 +15,8 @@ def add_item():
         record = Item(
 
                 project_code = request.form.get('project_code'),
-                #warehouse_location = request.form.get('warehouse_location'),
-                #row = request.form.get('row'),
+                warehouse_location = request.form.get('warehouse_location'),
+                row = request.form.get('row'),
                 user = request.form.get('user'),
                 company = request.form.get('company'),
                 unit = request.form.get('unit'),
@@ -53,8 +53,8 @@ def show_all_items_wants_import_from_excel():
         record = (
 
                 excelRow["project_code"],
-                #excelRow["warehouse_location"],
-                #excelRow["row"],
+                excelRow["warehouse_location"],
+                excelRow["row"],
                 excelRow["user"],
                 excelRow["company"],
                 excelRow["unit"],
@@ -92,8 +92,8 @@ def import_to_database():
         record = Item(
 
                 project_code = excelRow["project_code"],
-                #warehouse_location = excelRow["warehouse_location"],
-                #row = excelRow["row"],
+                warehouse_location = excelRow["warehouse_location"],
+                row = excelRow["row"],
                 user = excelRow["user"],
                 company = excelRow["company"],
                 unit = excelRow["unit"],
@@ -130,6 +130,8 @@ def suggest():
     field_mapping = {
        "property_code": Item.property_code,
         "project_code": Item.project_code,
+        "warehouse_location":Item.warehouse_location,
+        "row":Item.row,
         "user": Item.user,
         "company": Item.company,
         "category": Item.category,
@@ -160,7 +162,6 @@ def suggest():
         .distinct()
         .filter(field_mapping[field].ilike(f"%{value}%"))
         .order_by(field_mapping[field])
-        
         .all()
     )
 
