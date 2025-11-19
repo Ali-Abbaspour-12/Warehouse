@@ -1,14 +1,223 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5 text-center">
 
-    <h4 class="text-primary mb-4">خروجی گرفتن از کل دیتابیس</h4>
 
-    <a href="{{ url_for('report_bp.export_report') }}" 
-       class="btn btn-primary btn-lg shadow-sm">
-       خروجی گرفتن اکسل
-    </a>
 
+<div class="container-fluid mt-4">
+    <div class="row g-4">
+
+        <!-- ستون فرم جستجو -->
+        <div class="col-lg-3 col-md-4 col-sm-12">
+            <div class="card shadow-lg border-primary w-100 d-flex flex-column">
+                <div class="card-header bg-primary text-white fw-bold text-center">
+                    فرم جستجو
+                </div>
+                <div class="card-body text-end p-2">
+                    <form method="get" autocomplete="off" class="text-end">
+
+                        {% set fields = [
+                        ('property_code','کد اموال'),
+                        ('project_code','کد پروژه'),
+                        ('warehouse_location','محل'),
+                        ('row','ردیف'),
+                        ('user','کاربر'),
+                        ('company','شرکت'),
+                        ('category','گروه بندی'),
+                        ('personnel_code','کد پرسنلی'),
+                        ('current_location','محل استقرار'),
+                        ('system_identification_code','کد شناسایی سیستم'),
+                        ('model','مدل'),
+                        ('serial_number','شماره سریال'),
+                        ('recipient_delivery','تحویل گیرنده'),
+                        ('closed','مختوم شده')
+                        ] %}
+
+                        {% for id,label in fields %}
+                        <div class="mb-2 position-relative text-end">
+                            <label for="{{id}}" class="form-label fw-bold d-block" style="font-size:0.85rem; text-align:right;">
+                                {{label}}
+                            </label>
+                            <input type="text" class="form-control border-primary form-control-sm text-end"
+                                   id="{{id}}" name="{{id}}" 
+                                   onclick="loadSuggestions('{{id}}')" 
+                                   oninput="loadSuggestions('{{id}}')">
+
+                            <div class="suggest-box" id="{{id}}_box"></div>
+                        </div>
+                        {% endfor %}
+
+                        <!-- انتخاب فیلد گروه‌بندی -->
+                        <div class="mb-2">
+                            <label class="form-label fw-bold">گروه‌بندی بر اساس</label>
+                            <select name="group_field" class="form-select form-select-sm border-primary text-end">
+                                <option value="">-- انتخاب کنید --</option>
+
+                                {% for id, label in fields %}
+                                <option value="{{id}}"
+                                    {% if request.args.get('group_field') == id %} selected {% endif %}>
+                                    {{label}}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <br>
+                        <div class="text-center mt-2">
+                            <button type="submit" class="btn btn-primary w-100 btn-sm mb-2">جستجو</button>
+
+                            <div class="container mt-5 text-center">
+                                <a href="{{ url_for('report_bp.export_report') }}" class="btn btn-primary btn-lg shadow-sm">
+                                    خروجی گرفتن اکسل
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ستون جدول گروه‌بندی (جایگزین جدول نتایج جستجو) -->
+        <div class="col-lg-9 col-md-8 col-sm-12">
+
+            {% if group_data %}
+            <div class="card shadow border-primary mb-3">
+                <div class="card-header bg-primary text-white fw-bold text-center">
+                    نتایج گروه‌بندی بر اساس: {{ group_field }}
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-bordered table-hover m-0 text-center">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>مقدار</th>
+                                <th>تعداد</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in group_data %}
+                            <tr>
+                                <td>{{ row.field if row.field else "—" }}</td>
+                                <td>{{ row.cnt }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
 </div>
+
+<!-- دکمه بازگشت به بالا -->
+<button onclick="scrollToTop()" id="backToTopBtn" title="بازگشت به بالا"
+    style="position:fixed; bottom:20px; right:20px; display:none; z-index:9999;"
+    class="btn btn-primary btn-sm">↑ بالا</button>
+
+<!-- استایل پیشنهادها -->
+<style>
+    .suggest-box {
+        position: absolute;
+        width: 100%;
+        background: #fff;
+        border: 1px solid #0d6efd;
+        border-radius: 0.25rem;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 2000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .suggest-item {
+        padding: 6px 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    .suggest-item:hover {
+        background: #e3f2fd;
+    }
+</style>
+
+<!-- اسکریپت پیشنهاددهی -->
+<script>
+    function getAllFieldsExcept(target) {
+        const keys = ["company", "user", "category", "project_code", "property_code",
+            "serial_number", "personnel_code", "current_location",
+            "system_identification_code", "model", "recipient_delivery",
+            "closed", "warehouse_location", "row"];
+
+        const params = {};
+        keys.forEach(k => {
+            if (k !== target) {
+                let v = document.getElementById(k)?.value;
+                if (v) params[k] = v;
+            }
+        });
+        return params;
+    }
+
+    function loadSuggestions(field) {
+        let value = document.getElementById(field).value;
+
+        let params = new URLSearchParams();
+        params.append("field", field);
+        params.append("value", value);
+
+        let others = getAllFieldsExcept(field);
+        for (let k in others) params.append(k, others[k]);
+
+        fetch(`/report/suggest?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                let box = document.getElementById(field + "_box");
+                box.innerHTML = "";
+                box.style.display = data.suggestions.length ? "block" : "none";
+
+                data.suggestions.forEach(s => {
+                    let div = document.createElement("div");
+                    div.className = "suggest-item";
+                    div.textContent = s;
+
+                    div.onclick = () => {
+                        document.getElementById(field).value = s;
+                        box.style.display = "none";
+                    };
+
+                    box.appendChild(div);
+                });
+            });
+    }
+
+    document.addEventListener("click", (e) => {
+        document.querySelectorAll(".suggest-box").forEach(b => {
+            if (!b.contains(e.target) && !b.previousElementSibling.contains(e.target)) {
+                b.style.display = "none";
+            }
+        });
+    });
+
+    // دکمه بازگشت به بالا
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    window.onscroll = function () { toggleBackToTopBtn(); };
+
+    function toggleBackToTopBtn() {
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            backToTopBtn.style.display = "block";
+        } else {
+            backToTopBtn.style.display = "none";
+        }
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+
+
 {% endblock %}

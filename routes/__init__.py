@@ -4,3 +4,4 @@ from .search import search_bp
 from .settings import settings_bp
 from .report import report_bp
 from .login import login_bp
+from .documet import document_bp

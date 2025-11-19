@@ -6,7 +6,7 @@ from openpyxl.styles import Alignment
 import pandas as pd
 from .login import admin_required
 
-report_bp = Blueprint("report_bp",__name__)
+report_bp = Blueprint("report_bp",__name__,url_prefix="/report")
 
 
 
@@ -73,6 +73,8 @@ def export_report():
 
 
 
+
+
 @report_bp.route("/report")
 def report():
     args = request.args
@@ -80,15 +82,24 @@ def report():
     field_mapping = {
         "property_code": Item.property_code,
         "project_code": Item.project_code,
+        "warehouse_location": Item.warehouse_location,
+        "row": Item.row,
+        "user": Item.user,
         "company": Item.company,
         "category": Item.category,
-        "user": Item.user,
-        "serial_number":Item.serial_number
+        "personnel_code": Item.personnel_code,
+        "current_location": Item.current_location,
+        "system_identification_code": Item.system_identification_code,
+        "model": Item.model,
+        "serial_number": Item.serial_number,
+        "recipient_delivery": Item.recipient_delivery,
+        "closed": Item.closed
     }
 
     query = Item.query
     has_filter = False
 
+    # ---- اعمال فیلترهای فرم ----
     for arg_key, model_field in field_mapping.items():
         value = args.get(arg_key)
         if value:
@@ -96,7 +107,79 @@ def report():
             query = query.filter(model_field.ilike(f"%{value}%"))
 
     if not has_filter:
-        return render_template("report_panel/report.html", items=[])
+        return render_template("report_panel/report.html", 
+                               items=[],
+                               group_data=None,
+                               group_field=None)
 
-    items = query.all()
-    return render_template("report_panel/report.html", items=items)
+    # ---- گروه‌بندی ----
+    group_field = args.get("group_field")
+    group_data = None
+
+    if group_field in field_mapping:
+        column = field_mapping[group_field]
+        group_data = (
+            query.with_entities(column.label("field"), db.func.count().label("cnt"))
+                 .group_by(column)
+                 .order_by(db.func.count().desc())
+                 .all()
+        )
+
+    # ---- نتایج لیستی ----
+    items = query.order_by(Item.property_code.desc()).all()
+
+    return render_template("report_panel/report.html",
+                           items=items,
+                           group_data=group_data,
+                           group_field=group_field)
+
+
+
+
+@report_bp.route("/suggest", methods=["GET"])
+def suggest():
+    args = request.args
+
+    field = args.get("field")
+    value = args.get("value", "")
+
+    field_mapping = {
+       "property_code": Item.property_code,
+        "project_code": Item.project_code,
+        "warehouse_location":Item.warehouse_location,
+        "row":Item.row,
+        "user": Item.user,
+        "company": Item.company,
+        "category": Item.category,
+        "personnel_code":Item.personnel_code,
+        "current_location":Item.current_location,
+        "system_identification_code":Item.system_identification_code,
+        "model":Item.model,
+        "serial_number":Item.serial_number,
+        "recipient_delivery":Item.recipient_delivery,
+        "closed":Item.closed
+    }
+
+    if field not in field_mapping:
+        return {"error": "invalid field"}, 400
+
+    query = Item.query
+
+    # اعمال فیلتر برای فیلدهای دیگر
+    for key, column in field_mapping.items():
+        if key != field:
+            v = args.get(key)
+            if v:
+                query = query.filter(column.ilike(f"%{v}%"))
+
+    # دریافت همه مقادیر
+    suggestions = (
+        query.with_entities(field_mapping[field])
+        .distinct()
+        .filter(field_mapping[field].ilike(f"%{value}%"))
+        .order_by(field_mapping[field])
+        
+        .all()
+    )
+
+    return {"suggestions": [s[0] for s in suggestions if s[0]]}

@@ -28,29 +28,29 @@
 
                     <form method="post" autocomplete="off" class="text-end">
                         {% set fields = [
-                            ('property_code', 'کد اموال'),
-                            ('project_code', 'کد پروژه'),
-                            ('warehouse_location','محل'),
-                            ('row','ردیف'),
-                            ('user', 'کاربر'),
-                            ('recipient_delivery', 'تحویل گیرنده'),
-                            ('system_identification_code', 'کد شناسایی سیستم'),
-                            ('category', 'گروه بندی'),
-                            ('model', 'مدل'),
-                            ('serial_number', 'شماره سریال'),
-                            ('closed', 'مختوم شده'),
-                            ('closed_time', 'توضیحات اختتام'),
-                            ('description', 'جزئیات')
+                        ('property_code', 'کد اموال'),
+                        ('project_code', 'کد پروژه'),
+                        ('warehouse_location','محل'),
+                        ('row','ردیف'),
+                        ('user', 'کاربر'),
+                        ('recipient_delivery', 'تحویل گیرنده'),
+                        ('system_identification_code', 'کد شناسایی سیستم'),
+                        ('category', 'گروه بندی'),
+                        ('model', 'مدل'),
+                        ('serial_number', 'شماره سریال'),
+                        ('closed', 'مختوم شده'),
+                        ('closed_time', 'توضیحات اختتام'),
+                        ('description', 'جزئیات')
                         ] %}
 
                         {% for id, label in fields %}
                         <div class="mb-2 position-relative text-end">
-                            <label for="{{id}}" class="form-label fw-bold d-block" style="font-size:0.85rem; text-align:right;">
+                            <label for="{{id}}" class="form-label fw-bold d-block"
+                                style="font-size:0.85rem; text-align:right;">
                                 {{label}}
                             </label>
-                            <input type="text" class="form-control border-primary form-control-sm text-end"
-                                   id="{{id}}" name="{{id}}"
-                                   onclick="loadSuggestions('{{id}}')" oninput="loadSuggestions('{{id}}')">
+                            <input type="text" class="form-control border-primary form-control-sm text-end" id="{{id}}"
+                                name="{{id}}" onclick="loadSuggestions('{{id}}')" oninput="loadSuggestions('{{id}}')">
                             <div class="suggest-box" id="{{id}}_box"></div>
                         </div>
                         {% endfor %}
@@ -61,13 +61,15 @@
                     </form>
 
                     <div class="text-center mt-4">
-                        <a class="btn btn-primary w-50 btn-sm" href="{{ url_for('add_item_bp.excel_import') }}">
-                            وارد کردن دسته جمعی از اکسل
-                        </a>
-                    </div>
+                    <a class="btn btn-primary w-50 btn-sm" href="{{ url_for('add_item_bp.excel_import') }}">
+                        وارد کردن دسته جمعی از اکسل
+                    </a>
+                </div>
 
                 </div>
+                
             </div>
+            
         </div>
 
     </div>
@@ -85,7 +87,7 @@
         overflow-y: auto;
         display: none;
         z-index: 2000;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .suggest-item {
@@ -103,9 +105,9 @@
 <script>
     function getAllFieldsExcept(target) {
         const keys = ["company", "user", "category", "project_code", "property_code",
-         "serial_number", "personnel_code", "current_location",
-         "system_identification_code", "model", "serial_number",
-         "recipient_delivery", "closed","warehouse_location","row"];
+            "serial_number", "personnel_code", "current_location",
+            "system_identification_code", "model", "serial_number",
+            "recipient_delivery", "closed", "warehouse_location", "row"];
 
         const params = {};
         keys.forEach(k => {
@@ -159,3 +161,6 @@
 </script>
 
 {% endblock %}
+
+
+

@@ -1,136 +1,152 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پنل مدیریت</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت</title>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/rtl.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rtl.css') }}">
 
-<style>
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Vazir', sans-serif;
-}
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Vazir', sans-serif;
+        }
 
-/* نوار بالا */
-#topbar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 60px;
-    background-color: #0d6efd;
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    z-index: 1050;
-}
+        /* نوار بالا */
+        #topbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #0d6efd;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1050;
+        }
 
-/* لیست منوی افقی */
-#topbar ul {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-}
+        /* لیست منوی افقی */
+        #topbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
 
-#topbar ul li {
-    margin-left: 15px;
-}
+        #topbar ul li {
+            margin-left: 15px;
+        }
 
-#topbar ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 14px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    transition: background 0.2s;
-}
+        #topbar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+        }
 
-#topbar ul li a.active,
-#topbar ul li a:hover {
-    background-color: rgba(255,255,255,0.18);
-}
+        #topbar ul li a.active,
+        #topbar ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.18);
+        }
 
-.icon {
-    margin-left: 6px;
-    font-size: 1.2rem;
-}
+        .icon {
+            margin-left: 6px;
+            font-size: 1.2rem;
+        }
 
-/* محتوا بعد از نوار بالا */
-main {
-    padding: 80px 20px; /* فاصله از نوار بالا */
-}
-</style>
+        /* محتوا بعد از نوار بالا */
+        main {
+            padding: 80px 20px;
+            /* فاصله از نوار بالا */
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- نوار بالا -->
-<div id="topbar" role="navigation" aria-label="main-navbar">
-    <ul>
-        <li>
-            <a href="{{ url_for('dashboard_bp.dashboard') }}" data-path="{{ url_for('dashboard_bp.dashboard') }}">
-                <span class="icon">🏠</span> داشبورد
-            </a>
-        </li>
-        <li>
-            <a href="{{ url_for('search_bp.search') }}" data-path="{{ url_for('search_bp.search') }}">
-                <span class="icon">🔍</span> جستجو
-            </a>
-        </li>
-        {% if current_user.is_authenticated and current_user.is_admin %}
-        <li>
-            <a href="{{ url_for('add_item_bp.add_item') }}" data-path="{{ url_for('add_item_bp.add_item') }}">
-                <span class="icon">➕</span> افزودن آیتم
-            </a>
-        </li>
-        {% endif %}
-        <li>
-            <a href="{{ url_for('report_bp.report') }}" data-path="{{ url_for('report_bp.report') }}">
-                <span class="icon">📊</span> گزارش‌گیری
-            </a>
-        </li>
-        {% if current_user.is_authenticated and current_user.is_admin %}
-        <li>
-            <a href="{{ url_for('settings_bp.settings') }}" data-path="{{ url_for('settings_bp.settings') }}">
-                <span class="icon">⚙️</span> تنظیمات
-            </a>
-        </li>
-        {% endif %}
-        <li>
-            <a href="{{ url_for('login_bp.logout') }}">
-                <span class="icon">🚪</span> خروج
-            </a>
-        </li>
-    </ul>
-</div>
+    <!-- نوار بالا -->
+    <div id="topbar" role="navigation" aria-label="main-navbar">
+        <ul>
+            <li>
+                <a href="{{ url_for('dashboard_bp.dashboard') }}" data-path="{{ url_for('dashboard_bp.dashboard') }}">
+                    <span class="icon">🏠</span> داشبورد
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('search_bp.search') }}" data-path="{{ url_for('search_bp.search') }}">
+                    <span class="icon">🔍</span> جستجو
+                </a>
+            </li>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <li>
+                <a href="{{ url_for('add_item_bp.add_item') }}" data-path="{{ url_for('add_item_bp.add_item') }}">
+                    <span class="icon">➕</span> افزودن آیتم
+                </a>
+            </li>
+            {% endif %}
 
-<!-- محتوای اصلی -->
-<main>
-    {% block content %}
-    <h1>محتوا</h1>
-    {% endblock %}
-</main>
 
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-    const links = document.querySelectorAll('#topbar ul li a');
 
-    const currentPath = window.location.pathname;
-    links.forEach(link => {
-        const path = link.getAttribute('data-path') || link.getAttribute('href');
-        link.classList.toggle('active', path === currentPath);
-    });
-});
-</script>
+
+            <li>
+                <a href="{{ url_for('report_bp.report') }}" data-path="{{ url_for('report_bp.report') }}">
+                    <span class="icon">📊</span> گزارش‌گیری
+                </a>
+            </li>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <li>
+                <a href="{{ url_for('settings_bp.settings') }}" data-path="{{ url_for('settings_bp.settings') }}">
+                    <span class="icon">⚙️</span> تنظیمات
+                </a>
+            </li>
+            {% endif %}
+
+
+            <li>
+                <a href="{{ url_for('document_bp.document') }}" data-path="{{ url_for('document_bp.document') }}">
+                    <span class="icon">📄</span> مستندات
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('login_bp.logout') }}">
+                    <span class="icon">🚪</span> خروج
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- محتوای اصلی -->
+    <main>
+        {% block content %}
+        <h1>محتوا</h1>
+        {% endblock %}
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const links = document.querySelectorAll('#topbar ul li a');
+
+            const currentPath = window.location.pathname;
+            links.forEach(link => {
+                const path = link.getAttribute('data-path') || link.getAttribute('href');
+                link.classList.toggle('active', path === currentPath);
+            });
+        });
+    </script>
 
 </body>
+
 </html>

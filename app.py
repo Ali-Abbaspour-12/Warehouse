@@ -14,6 +14,7 @@ from routes import (
     search_bp,
     settings_bp,
     report_bp,
+    document_bp
 )
 
 login_manager = LoginManager()
@@ -48,6 +49,7 @@ def create_app():
     app.register_blueprint(search_bp)
     app.register_blueprint(settings_bp)
     app.register_blueprint(report_bp)
+    app.register_blueprint(document_bp)
 
     return app
 
