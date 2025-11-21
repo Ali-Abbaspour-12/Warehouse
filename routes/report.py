@@ -5,13 +5,16 @@ from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 import pandas as pd
 from .login import admin_required
+from flask_login import login_required
 import io
+
 
 report_bp = Blueprint("report_bp",__name__,url_prefix="/report")
 
 
 
 @report_bp.route('/export_report')
+@login_required
 def export_report():
     # مشخص کردن جدول‌ها و نام شیت‌ها
     models = [
@@ -71,6 +74,7 @@ def export_report():
 
 
 @report_bp.route("/report")
+@login_required
 def report():
     args = request.args
 
@@ -132,6 +136,7 @@ def report():
 
 
 @report_bp.route("/suggest", methods=["GET"])
+@login_required
 def suggest():
     args = request.args
 

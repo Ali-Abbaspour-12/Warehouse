@@ -37,12 +37,13 @@ def document():
     return render_template("document_panel/document.html", files=files)
 
 @document_bp.route("/document/uploads/<filename>")
+@admin_required 
 @login_required
 def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 @document_bp.route("/document/delete/<filename>", methods=["POST"])
-@admin_required  # فقط ادمین میتونه حذف کنه
+@admin_required 
 @login_required
 def delete_file(filename):
     file_path = os.path.join(UPLOAD_FOLDER, filename)

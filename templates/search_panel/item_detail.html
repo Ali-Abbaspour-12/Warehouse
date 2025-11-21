@@ -47,9 +47,11 @@
 
             <!-- دکمه‌ها -->
             <div class="d-flex gap-2">
+                {% if current_user.is_authenticated and current_user.is_admin %}
                 <a href="{{ url_for('search_bp.edit_item', item_id=item.id) }}" class="btn btn-primary">
                     ویرایش آیتم
                 </a>
+                {%endif%}
                 <a href="{{ url_for('search_bp.search', **request.args) }}" class="btn btn-primary">
                     بازگشت
                 </a>

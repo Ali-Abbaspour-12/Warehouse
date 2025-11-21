@@ -1,4 +1,34 @@
 {% extends "base.html" %}
+
 {% block content %}
+
+<style>
+    @keyframes fadeInMove {
+        0% { 
+            opacity: 0; 
+            transform: translateY(-20px); 
+        }
+        50% { 
+             
+            transform: translateY(20px); 
+        }
+        100% { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+
+    .fst-it-title {
+        font-size: 48px;
+        font-weight: bold;
+        color: #007bff;
+        text-align: center;
+        margin-top: 60px;
+        animation: fadeInMove 1.6s ease-in-out forwards;
+        letter-spacing: 4px;
+    }
+</style>
+
+<div class="fst-it-title">FST IT</div>
 
 {% endblock %}

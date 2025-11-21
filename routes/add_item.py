@@ -3,6 +3,7 @@ from models import Item
 import pandas as pd
 from extensions import db
 from .login import admin_required
+from flask_login import login_required
 from werkzeug.utils import secure_filename
 import os
 
@@ -11,6 +12,7 @@ add_item_bp = Blueprint("add_item_bp", __name__,url_prefix="/add_item")
 
 
 @add_item_bp.route("/add_item",methods=['GET', 'POST'])
+@login_required
 @admin_required
 def add_item():
     if request.method == 'POST':
@@ -45,6 +47,7 @@ def add_item():
 
 
 @add_item_bp.route("/excel_import/show_records", methods=["POST"])
+@login_required
 @admin_required
 def show_records():
     file = request.files.get("excel_file")
@@ -71,6 +74,7 @@ def show_records():
     return render_template("add_item_panel/show_records.html", records=records)
 
 @add_item_bp.route('/excel_import')
+@login_required
 @admin_required
 def excel_import():
     return render_template('add_item_panel/excel_import.html')
@@ -78,6 +82,7 @@ def excel_import():
 
 
 @add_item_bp.route("/excel_import/import_to_database", methods=["POST"])
+@login_required
 @admin_required
 def import_to_database():
 
@@ -117,7 +122,7 @@ def import_to_database():
 
 
 @add_item_bp.route("/suggest", methods=["GET"])
-@admin_required
+@login_required
 def suggest():
     args = request.args
 

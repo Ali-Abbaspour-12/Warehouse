@@ -42,7 +42,7 @@
                     <button class="btn btn-primary w-100 mb-3">جستجو</button>
 
                 </form>
-
+                {% if current_user.is_authenticated and current_user.is_admin %}
                 <hr>
 
                 <!-- لینک افزودن پرسنل -->
@@ -57,57 +57,66 @@
                         افزودن دسته جمعی پرسنل
                     </a>
                 </div>
-
+                {% endif %}
             </div>
         </div>
     </div>
 
     <!-- نتایج جستجو -->
     {% if results is defined %}
+
+
+    {% if results %}
+
     <div class="mt-5">
+        <div class="card shadow border-primary w-100 d-flex flex-column">
+            <div class="card-header bg-primary text-white fw-bold text-center">
+                نتایج جستجو
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>ID</th>
+                            <th>نام کاربری</th>
+                            <th>کد پرسنلی</th>
+                            <th>شرکت</th>
+                            <th>واحد</th>
+                            <th>کد ملی</th>
+                            <th>محل فعلی</th>
+                            {% if current_user.is_authenticated and current_user.is_admin %}
+                            <th>جزئیات</th>
+                            {%endif%}
 
-        {% if results %}
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle">
-                <thead class="table-primary text-center">
-                    <tr>
-                        <th>ID</th>
-                        <th>نام کاربری</th>
-                        <th>کد پرسنلی</th>
-                        <th>شرکت</th>
-                        <th>واحد</th>
-                        <th>کد ملی</th>
-                        <th>محل فعلی</th>
-                        <th>جزئیات</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for p in results %}
-                    <tr>
-                        <td>{{ p.id }}</td>
-                        <td>{{ p.username }}</td>
-                        <td>{{ p.personnel_code }}</td>
-                        <td>{{ p.company }}</td>
-                        <td>{{ p.unit }}</td>
-                        <td>{{ p.national_code }}</td>
-                        <td>{{ p.current_location }}</td>
-
-                        <!-- لینک ویرایش -->
-                        <td class="text-center">
-                            <a href="{{ url_for('personnel_bp.edit_personnel', id=p.id) }}"
-                                class="btn btn-warning btn-sm">ویرایش</a>
-                            <a href="{{ url_for('personnel_bp.delete_personnel', id=p.id) }}"
-                                class="btn btn-danger btn-sm"
-                                onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">
-                                حذف
-                            </a>
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in results %}
+                        <tr>
+                            <td>{{ p.id }}</td>
+                            <td>{{ p.username }}</td>
+                            <td>{{ p.personnel_code }}</td>
+                            <td>{{ p.company }}</td>
+                            <td>{{ p.unit }}</td>
+                            <td>{{ p.national_code }}</td>
+                            <td>{{ p.current_location }}</td>
+                            {% if current_user.is_authenticated and current_user.is_admin %}
+                            <!-- لینک ویرایش -->
+                            <td class="text-center">
+                                <a href="{{ url_for('personnel_bp.edit_personnel', id=p.id) }}"
+                                    class="btn btn-warning btn-sm">ویرایش</a>
+                                <a href="{{ url_for('personnel_bp.delete_personnel', id=p.id) }}"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">
+                                    حذف
+                                </a>
+                            </td>
+                            {%endif%}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         {% endif %}
@@ -115,7 +124,22 @@
     {% endif %}
 
 </div>
+<style>
+    .card {
+        border-radius: 0.5rem;
+    }
 
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .table th {
+        font-weight: bold;
+        background-color: #e3f2fd;
+    }
+</style>
 
 
 <script>

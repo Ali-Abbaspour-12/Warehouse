@@ -96,8 +96,10 @@
                                     <td>
                                         <a class="btn btn-primary btn-sm"
                                             href="{{url_for('search_bp.item_detail', item_id=item.id, **request.args)}}">مشاهده</a>
+                                            {% if current_user.is_authenticated and current_user.is_admin %}
                                         <a class="btn btn-primary btn-sm"
                                             href="{{url_for('search_bp.edit_item', item_id=item.id, **request.args)}}">ویرایش</a>
+                                            {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}

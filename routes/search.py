@@ -2,12 +2,14 @@ from flask import Blueprint, render_template,request,redirect,url_for
 from models import Item,ItemHistory
 from extensions import db
 from .login import admin_required
+from flask_login import login_required
 
 
 search_bp = Blueprint("search_bp", __name__,url_prefix="/search")
 
 
 @search_bp.route("/search")
+@login_required
 def search():
     args = request.args
 
@@ -49,12 +51,14 @@ def search():
    
 
 @search_bp.route("search_panel/show_all_records")
+@login_required
 def show_all_records():
     items = Item.query.all()
     return render_template("search_panel/show_all_records.html",items=items)
 
 
 @search_bp.route('/item_detail_<int:item_id>')
+@login_required
 def item_detail(item_id):
     item = Item.query.get_or_404(item_id)
 
@@ -63,6 +67,8 @@ def item_detail(item_id):
 
 
 @search_bp.route('/history_detail_<int:item_id>_<int:history_id>')
+@admin_required
+@login_required
 def history_detail(item_id,history_id):
     history = ItemHistory.query.get_or_404(history_id)
     return render_template('search_panel/history_detail.html',history=history,item_id=item_id)
@@ -70,6 +76,7 @@ def history_detail(item_id,history_id):
 
 
 @search_bp.route('/item_detail_<int:item_id>/edit_item',methods=['GET','POST'])
+@login_required
 @admin_required
 def edit_item(item_id):
     item = Item.query.get_or_404(item_id)
@@ -128,6 +135,7 @@ def edit_item(item_id):
 
 
 @search_bp.route("/suggest", methods=["GET"])
+@login_required
 def suggest():
     args = request.args
 

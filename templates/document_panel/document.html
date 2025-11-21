@@ -18,6 +18,8 @@
       {% endif %}
     {% endwith %}
 
+
+    {% if current_user.is_authenticated and current_user.is_admin %}
     <!-- Upload form -->
     <div class="card mb-4 shadow-sm">
         <div class="card-body">
@@ -30,6 +32,7 @@
             </form>
         </div>
     </div>
+    {%endif%}
 
     <!-- List of uploaded files -->
     <div class="card shadow-sm">
@@ -42,9 +45,11 @@
                 {{ file }}
                 <div>
                     <a href="{{ url_for('document_bp.uploaded_file', filename=file) }}" class="btn btn-sm btn-success me-2" target="_blank">دانلود</a>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
                     <form method="POST" action="{{ url_for('document_bp.delete_file', filename=file) }}" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید که می‌خواهید این فایل حذف شود؟');">
                         <button type="submit" class="btn btn-sm btn-danger" >حذف</button>
                     </form>
+                    {%endif%}
                 </div>
             </li>
             {% else %}
