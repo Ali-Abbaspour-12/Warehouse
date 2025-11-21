@@ -98,13 +98,25 @@
             {% endif %}
 
 
-
+            <li>
+                <a href="{{ url_for('personnel_bp.personnel') }}" data-path="{{ url_for('personnel_bp.personnel') }}">
+                    <span class="icon">🧑‍💼</span> پرسنل
+                </a>
+            </li>
 
             <li>
                 <a href="{{ url_for('report_bp.report') }}" data-path="{{ url_for('report_bp.report') }}">
                     <span class="icon">📊</span> گزارش‌گیری
                 </a>
             </li>
+
+
+            <li>
+                <a href="{{ url_for('document_bp.document') }}" data-path="{{ url_for('document_bp.document') }}">
+                    <span class="icon">📄</span> مستندات
+                </a>
+            </li>
+
             {% if current_user.is_authenticated and current_user.is_admin %}
             <li>
                 <a href="{{ url_for('settings_bp.settings') }}" data-path="{{ url_for('settings_bp.settings') }}">
@@ -113,12 +125,6 @@
             </li>
             {% endif %}
 
-
-            <li>
-                <a href="{{ url_for('document_bp.document') }}" data-path="{{ url_for('document_bp.document') }}">
-                    <span class="icon">📄</span> مستندات
-                </a>
-            </li>
 
             <li>
                 <a href="{{ url_for('login_bp.logout') }}">

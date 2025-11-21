@@ -1,10 +1,11 @@
 from flask import render_template,redirect,request,url_for,Blueprint,send_file
-from models import Item
+from models import Item, ItemHistory, User, Personnel
 from extensions import db
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 import pandas as pd
 from .login import admin_required
+import io
 
 report_bp = Blueprint("report_bp",__name__,url_prefix="/report")
 
@@ -12,64 +13,58 @@ report_bp = Blueprint("report_bp",__name__,url_prefix="/report")
 
 @report_bp.route('/export_report')
 def export_report():
-    items = Item.query.all()
+    # مشخص کردن جدول‌ها و نام شیت‌ها
+    models = [
+        (Item, "Items"),
+        (ItemHistory, "ItemHistory"),  # شیت جدا برای ItemHistory
+        (User, "Users"),
+        (Personnel, "Personnel"),
+    ]
 
-    data = [{
-        "project_code": i.project_code,
-        "warehouse_location": i.warehouse_location,
-        "row": i.row,
-        "user": i.user,
-        "company": i.company,
-        "unit": i.unit,
-        "personnel_code": i.personnel_code,
-        "current_location": i.current_location,
-        "system_identification_code": i.system_identification_code,
-        "category": i.category,
-        "model": i.model,
-        "serial_number": i.serial_number,
-        "property_code": i.property_code,
-        "recipient_delivery": i.recipient_delivery,
-        "description": i.description,
-        "closed": i.closed,
-        "closed_time": i.closed_time,
-    } for i in items]
+    output = io.BytesIO()
 
-    df = pd.DataFrame(data)
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        for model, sheet_name in models:
+            records = model.query.all()
+            if not records:
+                continue
 
-    file_path = "export.xlsx"
-    df.to_excel(file_path, index=False, engine="openpyxl")
+            # استخراج داینامیک ستون‌ها
+            data = [{col.name: getattr(r, col.name) for col in r.__table__.columns} for r in records]
+            df = pd.DataFrame(data)
+            df.to_excel(writer, index=False, sheet_name=sheet_name)
+    output.seek(0)
 
-    wb = load_workbook(file_path)
-    ws = wb.active
-    
-    # 1) صفحه راست به چپ
-    ws.sheet_view.rightToLeft = True
+    # اعمال فرمت‌ها با openpyxl
+    wb = load_workbook(output)
+    for ws in wb.worksheets:
+        ws.sheet_view.rightToLeft = True
+        center_alignment = Alignment(horizontal="center", vertical="center")
+        for row in ws.iter_rows():
+            for cell in row:
+                cell.alignment = center_alignment
+        for col in ws.columns:
+            max_length = 0
+            col_letter = col[0].column_letter
+            for cell in col:
+                try:
+                    length = len(str(cell.value))
+                    if length > max_length:
+                        max_length = length
+                except:
+                    pass
+            ws.column_dimensions[col_letter].width = max_length + 3
 
-    # 2) وسط‌چین بودن تمام سلول‌ها
-    center_alignment = Alignment(horizontal="center", vertical="center")
-    for row in ws.iter_rows():
-        for cell in row:
-            cell.alignment = center_alignment
+    final_output = io.BytesIO()
+    wb.save(final_output)
+    final_output.seek(0)
 
-    # 3) تنظیم خودکار عرض ستون‌ها
-    for col in ws.columns:
-        max_length = 0
-        col_letter = col[0].column_letter
+    return send_file(final_output,
+                     as_attachment=True,
+                     download_name="all_tables_report.xlsx",
+                     mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-        for cell in col:
-            try:
-                value_length = len(str(cell.value))
-                if value_length > max_length:
-                    max_length = value_length
-            except:
-                pass
 
-        # کمی فاصله اضافه می‌کنیم که خفه نشود
-        ws.column_dimensions[col_letter].width = max_length + 3
-
-    wb.save(file_path)
-
-    return send_file(file_path, as_attachment=True)
 
 
 

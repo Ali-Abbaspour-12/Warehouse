@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center text-primary mb-4">افزودن چند پرسنل از اکسل</h2>
+
+    <div class="col-md-6 mx-auto">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">انتخاب فایل اکسل</label>
+                        <input type="file" name="file" class="form-control" required>
+                    </div>
+                    <button class="btn btn-success w-100">نمایش ریکوردها</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,8 +1,10 @@
-from flask import Flask, render_template,render_template_string, request, redirect, url_for,Blueprint,flash
+from flask import Flask, render_template,render_template_string, request, redirect, url_for,Blueprint,flash,session
 from models import Item
 import pandas as pd
 from extensions import db
 from .login import admin_required
+from werkzeug.utils import secure_filename
+import os
 
 
 add_item_bp = Blueprint("add_item_bp", __name__,url_prefix="/add_item")
@@ -42,38 +44,31 @@ def add_item():
 
 
 
-@add_item_bp.route('/show_all_items_wants_import_from_excel')
+@add_item_bp.route("/excel_import/show_records", methods=["POST"])
 @admin_required
-def show_all_items_wants_import_from_excel():
+def show_records():
+    file = request.files.get("excel_file")
 
-    excelFile = pd.read_excel("./excel/data.xlsx")
+    if not file or file.filename == "":
+        flash("لطفاً یک فایل اکسل انتخاب کنید!", "danger")
+        return redirect(url_for("add_item_bp.excel_import"))
 
-    records = []
-    for _,excelRow in excelFile.iterrows():
-        record = (
+    # ذخیره موقت
+    filename = secure_filename(file.filename)
+    temp_path = os.path.join("uploads", filename)
+    os.makedirs("uploads", exist_ok=True)
+    file.save(temp_path)
 
-                excelRow["project_code"],
-                excelRow["warehouse_location"],
-                excelRow["row"],
-                excelRow["user"],
-                excelRow["company"],
-                excelRow["unit"],
-                excelRow["personnel_code"],
-                excelRow["current_location"],
-                excelRow["system_identification_code"],
-                excelRow["category"],
-                excelRow["model"],
-                excelRow["serial_number"],
-                excelRow["property_code"],
-                excelRow["recipient_delivery"],
-                excelRow["description"], 
-                excelRow["closed"],
-                excelRow["closed_time"],
+    # خواندن فایل
+    df = pd.read_excel(temp_path).astype(str)
 
-        )
-        records.append(record)
-    return render_template("add_item_panel/show_all_items_wants_import_from_excel.html",records=records)
+    # ذخیره نام فایل برای مرحله بعد (import)
+    session["uploaded_excel"] = filename
 
+    # ارسال DataFrame به صفحه HTML
+    records = df.to_dict(orient="records")
+
+    return render_template("add_item_panel/show_records.html", records=records)
 
 @add_item_bp.route('/excel_import')
 @admin_required
@@ -82,41 +77,43 @@ def excel_import():
 
 
 
-@add_item_bp.route("/excel_import/import_to_database")
+@add_item_bp.route("/excel_import/import_to_database", methods=["POST"])
 @admin_required
 def import_to_database():
 
-    excelFile = pd.read_excel("./excel/data.xlsx").astype(str)
+    filename = session.get("uploaded_excel")
 
-    for _,excelRow in excelFile.iterrows():
-        record = Item(
+    if not filename:
+        flash("هیچ فایلی برای وارد کردن یافت نشد!", "danger")
+        return redirect(url_for("add_item_bp.excel_import"))
 
-                project_code = excelRow["project_code"],
-                warehouse_location = excelRow["warehouse_location"],
-                row = excelRow["row"],
-                user = excelRow["user"],
-                company = excelRow["company"],
-                unit = excelRow["unit"],
-                personnel_code = excelRow["personnel_code"],
-                current_location = excelRow["current_location"],
-                system_identification_code = excelRow["system_identification_code"],
-                category = excelRow["category"],
-                model = excelRow["model"],
-                serial_number = excelRow["serial_number"],
-                property_code = excelRow["property_code"],
-                recipient_delivery = excelRow["recipient_delivery"],
-                description =  excelRow["description"], 
-                closed = excelRow["closed"],
-                closed_time = excelRow["closed_time"],
+    file_path = os.path.join("uploads", filename)
 
-        )
+    # خواندن اکسل و تبدیل نال‌ها به خط تیره
+    excelFile = pd.read_excel(file_path)
+    excelFile = excelFile.fillna("-").astype(str)
+
+    db_fields = [
+        "project_code", "warehouse_location", "row", "user", "company", "unit",
+        "personnel_code", "current_location", "system_identification_code",
+        "category", "model", "serial_number", "property_code",
+        "recipient_delivery", "description", "closed", "closed_time"
+    ]
+
+    for _, excelRow in excelFile.iterrows():
+
+        # ساخت دیکشنری امن: اگر ستون نبود → '-'
+        data = {field: excelRow.get(field, "-") for field in db_fields}
+
+        record = Item(**data)
         db.session.add(record)
 
-    
     db.session.commit()
 
-    flash("آیتم با موفقیت اضافه شد!", "success")
+    flash("داده‌ها با موفقیت وارد پایگاه داده شدند!", "success")
     return redirect(url_for("add_item_bp.excel_import"))
+
+
 
 
 @add_item_bp.route("/suggest", methods=["GET"])

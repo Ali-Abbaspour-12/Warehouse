@@ -14,7 +14,8 @@ from routes import (
     search_bp,
     settings_bp,
     report_bp,
-    document_bp
+    document_bp,
+    personnel_bp
 )
 
 login_manager = LoginManager()
@@ -50,6 +51,7 @@ def create_app():
     app.register_blueprint(settings_bp)
     app.register_blueprint(report_bp)
     app.register_blueprint(document_bp)
+    app.register_blueprint(personnel_bp)
 
     return app
 
@@ -60,4 +62,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(host="0.0.0.0", debug=True)
-    #serve(app, host="0.0.0.0", port=5000)
+    #serve(app, host="0.0.0.0", port=5001)

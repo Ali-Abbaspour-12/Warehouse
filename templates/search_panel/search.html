@@ -3,66 +3,74 @@
 {% block content %}
 
 <div class="container-fluid mt-4">
-    <div class="row g-4"> 
-
-        <!-- ستون فرم جستجو -->
-        <div class="col-lg-3 col-md-4 col-sm-12">
+    <div class="row g-4">
+        <!-- فرم جستجو در بالای صفحه -->
+        <div class="col-12">
             <div class="card shadow-lg border-primary w-100 d-flex flex-column">
                 <div class="card-header bg-primary text-white fw-bold text-center">
-                    فرم جستجو
+                    جستجو آیتم
                 </div>
-                <div class="card-body text-end p-2">
+                <div class="card-body text-end p-3">
                     <form method="get" autocomplete="off" class="text-end">
                         {% set fields = [
-                            ('property_code','کد اموال'),
-                            ('project_code','کد پروژه'),
-                            ('warehouse_location','محل'),
-                            ('row','ردیف'),
-                            ('user','کاربر'),
-                            ('company','شرکت'),
-                            ('category','گروه بندی'),
-                            ('personnel_code','کد پرسنلی'),
-                            ('current_location','محل استقرار'),
-                            ('system_identification_code','کد شناسایی سیستم'),
-                            ('model','مدل'),
-                            ('serial_number','شماره سریال'),
-                            ('recipient_delivery','تحویل گیرنده'),
-                            ('closed','مختوم شده')
+                        ('property_code','کد اموال'),
+                        ('project_code','کد پروژه'),
+                        ('warehouse_location','محل'),
+                        ('row','ردیف'),
+                        ('user','کاربر'),
+                        ('company','شرکت'),
+                        ('category','گروه بندی'),
+                        ('personnel_code','کد پرسنلی'),
+                        ('current_location','محل استقرار'),
+                        ('system_identification_code','کد شناسایی سیستم'),
+                        ('model','مدل'),
+                        ('serial_number','شماره سریال'),
+                        ('recipient_delivery','تحویل گیرنده'),
+                        ('closed','مختوم شده')
                         ] %}
-                        {% for id,label in fields %}
-                        <div class="mb-2 position-relative text-end">
-                            <label for="{{id}}" class="form-label fw-bold d-block" style="font-size:0.85rem; text-align:right;">
-                                {{label}}
-                            </label>
-                            <input type="text" class="form-control border-primary form-control-sm text-end"
-                                   id="{{id}}" name="{{id}}"
-                                   onclick="loadSuggestions('{{id}}')" oninput="loadSuggestions('{{id}}')">
-                            <div class="suggest-box" id="{{id}}_box"></div>
-                        </div>
-                        {% endfor %}
-                        <br>
-                        <div class="text-center mt-2">
-                            <button type="submit" class="btn btn-primary w-100 btn-sm mb-2">جستجو</button>
 
-                            <a href="{{url_for('search_bp.show_all_records')}}" class="btn btn-outline-primary w-100 btn-sm mb-2">
-                                نمایش همه رکوردها
-                            </a>
+                        <div class="row">
+                            {% for id,label in fields %}
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3 position-relative text-end">
+                                <label for="{{id}}" class="form-label fw-bold d-block"
+                                    style="font-size:0.85rem; text-align:right;">
+                                    {{label}}
+                                </label>
+                                <input type="text" class="form-control border-primary form-control-sm text-end"
+                                    id="{{id}}" name="{{id}}" onclick="loadSuggestions('{{id}}')"
+                                    oninput="loadSuggestions('{{id}}')">
+                                <div class="suggest-box" id="{{id}}_box"></div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary btn-lg mx-2 px-4">جستجو</button>
+                                <br><br>
+                                <hr>
+                                <a href="{{url_for('search_bp.show_all_records')}}"
+                                    class="btn btn-outline-primary btn-lg mx-2 px-4">
+                                    نمایش همه رکوردها
+                                </a>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- ستون جدول نتایج -->
-        <div class="col-lg-9 col-md-8 col-sm-12">
+        <!-- نتایج جستجو در زیر فرم -->
+        <div class="col-12">
             {% if items|length > 0 %}
             <div class="card shadow border-primary w-100 d-flex flex-column">
                 <div class="card-header bg-primary text-white fw-bold text-center">
-                    نتایج جستجو
+                    نتایج جستجو ({{ items|length }} مورد یافت شد)
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover m-0 table-bordered table-sm text-center align-middle w-100">
+                        <table
+                            class="table table-striped table-hover m-0 table-bordered table-sm text-center align-middle w-100">
                             <thead class="table-primary">
                                 <tr>
                                     <th>کد اموال</th>
@@ -87,13 +95,22 @@
                                     <td>{{item.system_identification_code}}</td>
                                     <td>
                                         <a class="btn btn-primary btn-sm"
-                                           href="{{url_for('search_bp.item_detail', item_id=item.id, **request.args)}}">مشاهده</a>
+                                            href="{{url_for('search_bp.item_detail', item_id=item.id, **request.args)}}">مشاهده</a>
+                                        <a class="btn btn-primary btn-sm"
+                                            href="{{url_for('search_bp.edit_item', item_id=item.id, **request.args)}}">ویرایش</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card shadow border-primary w-100">
+                <div class="card-body text-center py-5">
+                    <h5 class="text-muted">هیچ نتیجه‌ای یافت نشد</h5>
+                    <p class="text-muted mb-0">لطفاً معیارهای جستجو را تغییر دهید یا همه رکوردها را مشاهده کنید</p>
                 </div>
             </div>
             {% endif %}
@@ -103,11 +120,11 @@
 </div>
 
 <!-- دکمه بازگشت به بالا -->
-<button onclick="scrollToTop()" id="backToTopBtn" title="بازگشت به بالا" 
-        style="position:fixed; bottom:20px; right:20px; display:none; z-index:9999;"
-        class="btn btn-primary btn-sm">↑ بالا</button>
+<button onclick="scrollToTop()" id="backToTopBtn" title="بازگشت به بالا"
+    style="position:fixed; bottom:20px; right:20px; display:none; z-index:9999;" class="btn btn-primary btn-sm">↑
+    بالا</button>
 
-<!-- 🔵 استایل پیشنهادها -->
+<!-- استایل پیشنهادها -->
 <style>
     .suggest-box {
         position: absolute;
@@ -119,24 +136,84 @@
         overflow-y: auto;
         display: none;
         z-index: 2000;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+
     .suggest-item {
         padding: 6px 10px;
         cursor: pointer;
         font-size: 0.9rem;
+        text-align: right;
     }
+
     .suggest-item:hover {
         background: #e3f2fd;
     }
+
+    /* بهبود نمایش در دستگاه‌های مختلف */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .col-xl-3,
+        .col-lg-4,
+        .col-md-6 {
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-lg {
+            width: 100%;
+            margin-bottom: 0.5rem !important;
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1200px) {
+        .col-xl-3 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @media (min-width: 1201px) {
+        .col-xl-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+    }
+
+    /* بهبود ظاهر فرم */
+    .form-control {
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .table th {
+        font-weight: bold;
+        background-color: #e3f2fd;
+    }
 </style>
 
-<!-- 🔵 اسکریپت پیشنهاددهی و دکمه بالا -->
+<!-- اسکریپت پیشنهاددهی و دکمه بالا -->
 <script>
     function getAllFieldsExcept(target) {
         const keys = ["company", "user", "category", "project_code", "property_code", "serial_number",
-                      "personnel_code","current_location","system_identification_code", "model",
-                      "serial_number","recipient_delivery","closed","warehouse_location","row"];
+            "personnel_code", "current_location", "system_identification_code", "model",
+            "serial_number", "recipient_delivery", "closed", "warehouse_location", "row"];
         const params = {};
         keys.forEach(k => {
             if (k !== target) {
@@ -190,7 +267,7 @@
     // دکمه بازگشت به بالا
     const backToTopBtn = document.getElementById("backToTopBtn");
 
-    window.onscroll = function() { toggleBackToTopBtn(); };
+    window.onscroll = function () { toggleBackToTopBtn(); };
 
     function toggleBackToTopBtn() {
         if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
@@ -201,7 +278,7 @@
     }
 
     function scrollToTop() {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 

@@ -2,119 +2,130 @@
 
 {% block content %}
 
-
-
 <div class="container-fluid mt-4">
     <div class="row g-4">
-
-        <!-- ستون فرم جستجو -->
-        <div class="col-lg-3 col-md-4 col-sm-12">
+        <!-- فرم جستجو در بالای صفحه -->
+        <div class="col-12">
             <div class="card shadow-lg border-primary w-100 d-flex flex-column">
                 <div class="card-header bg-primary text-white fw-bold text-center">
-                    فرم جستجو
+                گزارش گیری آیتم
                 </div>
-                <div class="card-body text-end p-2">
+
+                <div class="card-body text-end p-3">
                     <form method="get" autocomplete="off" class="text-end">
+                        <div class="row">
+                            {% set fields = [
+                            ('property_code','کد اموال'),
+                            ('project_code','کد پروژه'),
+                            ('warehouse_location','محل'),
+                            ('row','ردیف'),
+                            ('user','کاربر'),
+                            ('company','شرکت'),
+                            ('category','گروه بندی'),
+                            ('personnel_code','کد پرسنلی'),
+                            ('current_location','محل استقرار'),
+                            ('system_identification_code','کد شناسایی سیستم'),
+                            ('model','مدل'),
+                            ('serial_number','شماره سریال'),
+                            ('recipient_delivery','تحویل گیرنده'),
+                            ('closed','مختوم شده')
+                            ] %}
 
-                        {% set fields = [
-                        ('property_code','کد اموال'),
-                        ('project_code','کد پروژه'),
-                        ('warehouse_location','محل'),
-                        ('row','ردیف'),
-                        ('user','کاربر'),
-                        ('company','شرکت'),
-                        ('category','گروه بندی'),
-                        ('personnel_code','کد پرسنلی'),
-                        ('current_location','محل استقرار'),
-                        ('system_identification_code','کد شناسایی سیستم'),
-                        ('model','مدل'),
-                        ('serial_number','شماره سریال'),
-                        ('recipient_delivery','تحویل گیرنده'),
-                        ('closed','مختوم شده')
-                        ] %}
-
-                        {% for id,label in fields %}
-                        <div class="mb-2 position-relative text-end">
-                            <label for="{{id}}" class="form-label fw-bold d-block" style="font-size:0.85rem; text-align:right;">
-                                {{label}}
-                            </label>
-                            <input type="text" class="form-control border-primary form-control-sm text-end"
-                                   id="{{id}}" name="{{id}}" 
-                                   onclick="loadSuggestions('{{id}}')" 
-                                   oninput="loadSuggestions('{{id}}')">
-
-                            <div class="suggest-box" id="{{id}}_box"></div>
-                        </div>
-                        {% endfor %}
-
-                        <!-- انتخاب فیلد گروه‌بندی -->
-                        <div class="mb-2">
-                            <label class="form-label fw-bold">گروه‌بندی بر اساس</label>
-                            <select name="group_field" class="form-select form-select-sm border-primary text-end">
-                                <option value="">-- انتخاب کنید --</option>
-
-                                {% for id, label in fields %}
-                                <option value="{{id}}"
-                                    {% if request.args.get('group_field') == id %} selected {% endif %}>
+                            {% for id,label in fields %}
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-3 position-relative text-end">
+                                <label for="{{id}}" class="form-label fw-bold d-block"
+                                    style="font-size:0.85rem; text-align:right;">
                                     {{label}}
-                                </option>
-                                {% endfor %}
-                            </select>
+                                </label>
+                                <input type="text" class="form-control border-primary form-control-sm text-end"
+                                    id="{{id}}" name="{{id}}" onclick="loadSuggestions('{{id}}')"
+                                    oninput="loadSuggestions('{{id}}')">
+
+                                <div class="suggest-box" id="{{id}}_box"></div>
+                            </div>
+                            {% endfor %}
+
+                            
+
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-3 position-relative text-end">
+                                <label class="form-label fw-bold d-block" style="font-size:0.85rem; text-align:right;">
+                                    گروه‌بندی بر اساس
+                                </label>
+
+                                <select name="group_field" id="group_field"
+                                    class="form-select form-select-sm border-primary text-end"
+                                    onclick="loadGroupFieldSuggestions()">
+
+                                    <option value="" style="text-align: center;">-- انتخاب کنید --</option>
+
+                                    {% for id, label in fields %}
+                                    <option value="{{id}}" {% if request.args.get('group_field')==id %} selected {%
+                                        endif %}>
+                                        {{label}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+                                <div class="suggest-box" id="group_field_box"></div>
+                            </div>
                         </div>
 
-                        <br>
-                        <div class="text-center mt-2">
-                            <button type="submit" class="btn btn-primary w-100 btn-sm mb-2">جستجو</button>
 
-                            <div class="container mt-5 text-center">
-                                <a href="{{ url_for('report_bp.export_report') }}" class="btn btn-primary btn-lg shadow-sm">
+                        <div class="row mt-3">
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary btn-lg mx-2 px-4">جستجو</button>
+                                <br><br>
+                                <hr>
+                                <a href="{{ url_for('report_bp.export_report') }}"
+                                    class="btn btn-outline-primary btn-lg mx-2 px-4">
                                     خروجی گرفتن اکسل
                                 </a>
                             </div>
                         </div>
+
+
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- ستون جدول گروه‌بندی (جایگزین جدول نتایج جستجو) -->
-        <div class="col-lg-9 col-md-8 col-sm-12">
-
+        <!-- جدول گروه‌بندی در زیر فرم -->
+        <div class="col-12">
             {% if group_data %}
             <div class="card shadow border-primary mb-3">
-                <div class="card-header bg-primary text-white fw-bold text-center">
+                <div class="card-header bg-primary text-white fw-bold text-center py-3">
                     نتایج گروه‌بندی بر اساس: {{ group_field }}
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-bordered table-hover m-0 text-center">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>مقدار</th>
-                                <th>تعداد</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in group_data %}
-                            <tr>
-                                <td>{{ row.field if row.field else "—" }}</td>
-                                <td>{{ row.cnt }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover m-0 text-center">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>مقدار</th>
+                                    <th>تعداد</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in group_data %}
+                                <tr>
+                                    <td>{{ row.field if row.field else "—" }}</td>
+                                    <td>{{ row.cnt }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             {% endif %}
-
         </div>
-
     </div>
 </div>
 
 <!-- دکمه بازگشت به بالا -->
 <button onclick="scrollToTop()" id="backToTopBtn" title="بازگشت به بالا"
-    style="position:fixed; bottom:20px; right:20px; display:none; z-index:9999;"
-    class="btn btn-primary btn-sm">↑ بالا</button>
+    style="position:fixed; bottom:20px; right:20px; display:none; z-index:9999;" class="btn btn-primary btn-sm">↑
+    بالا</button>
 
 <!-- استایل پیشنهادها -->
 <style>
@@ -135,10 +146,45 @@
         padding: 6px 10px;
         cursor: pointer;
         font-size: 0.9rem;
+        text-align: right;
     }
 
     .suggest-item:hover {
         background: #e3f2fd;
+    }
+
+    #group_field {
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        cursor: text !important;
+    }
+
+    /* بهبود نمایش در دستگاه‌های کوچک */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .col-lg-4,
+        .col-md-6 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-header {
+            padding: 1rem !important;
+        }
+    }
+    
+    /* بهبود ظاهر کارت */
+    .card {
+        border-radius: 0.5rem;
+    }
+    
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1rem;
+        font-size: 1.1rem;
     }
 </style>
 
@@ -216,8 +262,36 @@
     function scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    function loadGroupFieldSuggestions() {
+        let box = document.getElementById("group_field_box");
+        box.innerHTML = "";
+
+        let select = document.getElementById("group_field");
+        let options = select.options;
+
+        Array.from(options).forEach(op => {
+            if (op.value) {
+                let div = document.createElement("div");
+                div.className = "suggest-item";
+                div.textContent = op.textContent;
+
+                div.onclick = () => {
+                    select.value = op.value;
+                    box.style.display = "none";
+                };
+
+                box.appendChild(div);
+            }
+        });
+
+        box.style.display = "block";
+    }
+    // جلوگیری از باز شدن لیست خود select
+    document.getElementById("group_field").addEventListener("mousedown", function (e) {
+        e.preventDefault();
+        loadGroupFieldSuggestions();
+    });
 </script>
-
-
 
 {% endblock %}

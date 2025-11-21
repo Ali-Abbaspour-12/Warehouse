@@ -4,15 +4,14 @@
 
 <div class="container-fluid mt-4">
     <div class="row g-4">
-
-        <!-- ستون فرم ثبت اطلاعات -->
-        <div class="col-lg-6 col-md-8 col-sm-12">
-            <div class="card shadow-lg border-primary w-50 d-flex flex-column">
+        <!-- فرم جستجو در بالای صفحه -->
+        <div class="col-12">
+            <div class="card shadow-lg border-primary w-100 d-flex flex-column">
                 <div class="card-header bg-primary text-white fw-bold text-center">
-                    فرم ثبت اطلاعات
+                افزودن آیتم
                 </div>
 
-                <div class="card-body text-end p-2">
+                <div class="card-body text-end p-3">
                     <!-- پیام‌های فلش -->
                     {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
@@ -43,39 +42,40 @@
                         ('description', 'جزئیات')
                         ] %}
 
-                        {% for id, label in fields %}
-                        <div class="mb-2 position-relative text-end">
-                            <label for="{{id}}" class="form-label fw-bold d-block"
-                                style="font-size:0.85rem; text-align:right;">
-                                {{label}}
-                            </label>
-                            <input type="text" class="form-control border-primary form-control-sm text-end" id="{{id}}"
-                                name="{{id}}" onclick="loadSuggestions('{{id}}')" oninput="loadSuggestions('{{id}}')">
-                            <div class="suggest-box" id="{{id}}_box"></div>
+                        <div class="row">
+                            {% for id, label in fields %}
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3 position-relative text-end">
+                                <label for="{{id}}" class="form-label fw-bold d-block"
+                                    style="font-size:0.85rem; text-align:right;">
+                                    {{label}}
+                                </label>
+                                <input type="text" class="form-control border-primary form-control-sm text-end"
+                                    id="{{id}}" name="{{id}}" onclick="loadSuggestions('{{id}}')"
+                                    oninput="loadSuggestions('{{id}}')">
+                                <div class="suggest-box" id="{{id}}_box"></div>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
 
-                        <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary w-50 btn-sm">ثبت</button>
+                        <div class="row mt-4">
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary btn-lg mx-2 px-4">ثبت اطلاعات</button>
+                                <br><br>
+                                <hr>
+                                <a class="btn btn-outline-primary btn-lg mx-2 px-4"
+                                    href="{{ url_for('add_item_bp.excel_import') }}">
+                                    وارد کردن دسته‌جمعی از اکسل
+                                </a>
+                            </div>
                         </div>
                     </form>
-
-                    <div class="text-center mt-4">
-                    <a class="btn btn-primary w-50 btn-sm" href="{{ url_for('add_item_bp.excel_import') }}">
-                        وارد کردن دسته جمعی از اکسل
-                    </a>
                 </div>
-
-                </div>
-                
             </div>
-            
         </div>
-
     </div>
 </div>
 
-<!-- استایل suggest-box مشابه کد اول -->
+<!-- استایل suggest-box -->
 <style>
     .suggest-box {
         position: absolute;
@@ -94,14 +94,71 @@
         padding: 6px 10px;
         cursor: pointer;
         font-size: 0.9rem;
+        text-align: right;
     }
 
     .suggest-item:hover {
         background: #e3f2fd;
     }
+
+    /* بهبود نمایش در دستگاه‌های مختلف */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .col-xl-4,
+        .col-lg-4,
+        .col-md-6 {
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-lg {
+            width: 100%;
+            margin-bottom: 0.5rem !important;
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1200px) {
+        .col-xl-10 {
+            max-width: 95%;
+        }
+
+        .col-xl-4 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @media (min-width: 1201px) {
+        .col-xl-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+    }
+
+    /* بهبود ظاهر فرم */
+    .form-control {
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
 </style>
 
-<!-- اسکریپت پیشنهادها مشابه کد اول -->
+<!-- اسکریپت پیشنهادها -->
 <script>
     function getAllFieldsExcept(target) {
         const keys = ["company", "user", "category", "project_code", "property_code",
@@ -161,6 +218,3 @@
 </script>
 
 {% endblock %}
-
-
-
