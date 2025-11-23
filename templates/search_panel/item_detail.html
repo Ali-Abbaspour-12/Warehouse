@@ -33,20 +33,8 @@
                 <li class="list-group-item"><strong>مختوم شده:</strong> {{ item.closed }}</li>
                 <li class="list-group-item"><strong>تاریخ اختتام:</strong> {{ item.closed_time }}</li>
             </ul>
-
-            <!-- تاریخچه آیتم -->
-            <h5 class="fw-bold mb-2 text-primary">تاریخچه آیتم</h5>
-            <ul class="list-group mb-4">
-                {% for history in item.item_history|reverse %}
-                <a href="{{ url_for('search_bp.history_detail', history_id=history.id, item_id=item.id) }}"
-                   class="list-group-item list-group-item-action border-primary">
-                    {{ history.property_code }}
-                </a>
-                {% endfor %}
-            </ul>
-
-            <!-- دکمه‌ها -->
-            <div class="d-flex gap-2">
+<!-- دکمه‌ها -->
+            <div class="d-flex gap-2 justify-content-center">
                 {% if current_user.is_authenticated and current_user.is_admin %}
                 <a href="{{ url_for('search_bp.edit_item', item_id=item.id) }}" class="btn btn-primary">
                     ویرایش آیتم
@@ -56,6 +44,20 @@
                     بازگشت
                 </a>
             </div>
+            <br>
+            <hr>
+            <!-- تاریخچه آیتم -->
+            <h5 class="fw-bold text-center bg-primary text-white p-3 rounded">تاریخچه آیتم</h5>
+            <ul class="list-group text-center">
+                {% for history in item.item_history|reverse %}
+                <a href="{{ url_for('search_bp.history_detail', history_id=history.id, item_id=item.id) }}"
+                   class="list-group-item list-group-item-action border-primary">
+                     {{ history.user }} - {{ history.recipient_delivery }} - {{history.description}}
+                </a>
+                {% endfor %}
+            </ul>
+
+            
 
         </div>
 
