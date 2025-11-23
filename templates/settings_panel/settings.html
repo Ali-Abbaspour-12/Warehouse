@@ -1,34 +1,49 @@
 {% extends 'base.html' %}
 
+
 {% block content %}
 
-<div class="container mt-5 d-flex justify-content-center">
+<h1 class="text-center text-primary fw-bold mb-4">مدیریت دیتابیس</h1>
 
-    <div class="card shadow-lg border-primary p-4" style="width: 50%; min-width: 300px;">
-
-        <!-- پیام‌های فلش -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="alert alert-info">
-            <ul class="mb-0">
-                {% for category, message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-        {% endwith %}
-
-        <h4 class="text-center mb-4 text-primary fw-bold">مدیریت ریکوردها</h4>
-
-        <div class="text-center">
-            <a href="{{ url_for('settings_bp.delete_all_records') }}" class="btn btn-danger fw-bold" onclick="return confirm('آیا مطمئن هستید که می‌خواهید این عمل را انجام دهید');">
-                حذف همه ریکوردها
-            </a>
-        </div>
-
+<div class="card border-primary shadow">
+    <div class="card-header bg-primary text-white">
+        <strong>لیست جداول دیتابیس</strong>
     </div>
 
+    <div class="card-body p-0">
+        <table class="table table-bordered table-hover mb-0">
+            <thead class="table-primary">
+                <tr>
+                    <th>نام جدول</th>
+                    <th>تعداد رکورد</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for table in tables %}
+                <tr>
+                    <td class="fw-semibold">{{ table.name }}</td>
+                    <td>{{ table.count }}</td>
+                    <td>
+
+                        <a href="{{ url_for('settings_bp.delete_records', table_name=table.name) }}"
+                           class="btn btn-primary btn-sm">
+                            حذف همه رکوردها
+                        </a>
+
+                        <a href="{{ url_for('settings_bp.drop_table', table_name=table.name) }}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('آیا مطمئنید؟ جدول کاملاً حذف می‌شود؟');">
+                            حذف کامل جدول
+                        </a>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% endblock %}
