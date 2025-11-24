@@ -30,7 +30,7 @@
                     <td>{{ item.category }}</td>
                     <td>{{ item.system_identification_code }}</td>
                     <td>
-                        <a href="{{ url_for('search_bp.item_detail', item_id=item.id, **request.args) }}"
+                        <a href="{{ url_for('item_bp.item_detail', item_id=item.id, **request.args) }}"
                            class="btn btn-primary btn-sm">
                            جزییات
                         </a>
@@ -46,7 +46,7 @@
     </div>
 
     <div class="text-center mt-4">
-        <a href="{{ url_for('search_bp.search') }}" class="btn btn-primary">
+        <a href="{{ url_for('item_bp.search') }}" class="btn btn-primary">
             بازگشت
         </a>
     </div>

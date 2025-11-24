@@ -14,7 +14,7 @@
         <!-- اطلاعات آیتم -->
         <div class="card-body">
             <ul class="list-group list-group-flush mb-4">
-                
+
                 <li class="list-group-item"><strong>کد پروژه:</strong> {{ item.project_code }}</li>
                 <li class="list-group-item"><strong>انبار:</strong> {{ item.warehouse_location }}</li>
                 <li class="list-group-item"><strong>ردیف:</strong> {{ item.row }}</li>
@@ -23,7 +23,8 @@
                 <li class="list-group-item"><strong>واحد:</strong> {{ item.unit }}</li>
                 <li class="list-group-item"><strong>کد پرسنلی:</strong> {{ item.personnel_code }}</li>
                 <li class="list-group-item"><strong>مکان فعلی:</strong> {{ item.current_location }}</li>
-                <li class="list-group-item"><strong>کد شناسایی سیستم:</strong> {{ item.system_identification_code }}</li>
+                <li class="list-group-item"><strong>کد شناسایی سیستم:</strong> {{ item.system_identification_code }}
+                </li>
                 <li class="list-group-item"><strong>گروه بندی:</strong> {{ item.category }}</li>
                 <li class="list-group-item"><strong>مدل:</strong> {{ item.model }}</li>
                 <li class="list-group-item"><strong>شماره سریال:</strong> {{ item.serial_number }}</li>
@@ -33,31 +34,35 @@
                 <li class="list-group-item"><strong>مختوم شده:</strong> {{ item.closed }}</li>
                 <li class="list-group-item"><strong>تاریخ اختتام:</strong> {{ item.closed_time }}</li>
             </ul>
-<!-- دکمه‌ها -->
+            <!-- دکمه‌ها -->
             <div class="d-flex gap-2 justify-content-center">
                 {% if current_user.is_authenticated and current_user.is_admin %}
-                <a href="{{ url_for('search_bp.edit_item', item_id=item.id) }}" class="btn btn-primary">
+                <a href="{{ url_for('item_bp.edit_item', item_id=item.id) }}" class="btn btn-primary">
                     ویرایش آیتم
                 </a>
                 {%endif%}
-                <a href="{{ url_for('search_bp.search', **request.args) }}" class="btn btn-primary">
+                <a href="{{ url_for('item_bp.search', **request.args) }}" class="btn btn-primary">
                     بازگشت
                 </a>
             </div>
             <br>
-            <hr>
+            
             <!-- تاریخچه آیتم -->
+            {% if item.item_history %}
+            <hr>
             <h5 class="fw-bold text-center bg-primary text-white p-3 rounded">تاریخچه آیتم</h5>
+
             <ul class="list-group text-center">
                 {% for history in item.item_history|reverse %}
-                <a href="{{ url_for('search_bp.history_detail', history_id=history.id, item_id=item.id) }}"
-                   class="list-group-item list-group-item-action border-primary">
-                     {{ history.user }} - {{ history.recipient_delivery }} - {{history.description}}
+                <a href="{{ url_for('item_bp.history_detail', history_id=history.id, item_id=item.id) }}"
+                    class="list-group-item list-group-item-action border-primary">
+                    {{ history.user }} - {{ history.recipient_delivery }} - {{ history.description }}
                 </a>
                 {% endfor %}
             </ul>
+            {% endif %}
 
-            
+
 
         </div>
 

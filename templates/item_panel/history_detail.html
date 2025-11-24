@@ -14,7 +14,7 @@
         <div class="card-body">
 
             <ul class="list-group list-group-flush mb-4">
-                
+
                 <li class="list-group-item"><strong>کد پروژه:</strong> {{ history.project_code }}</li>
                 <li class="list-group-item"><strong>انبار:</strong> {{ history.warehouse_location }}</li>
                 <li class="list-group-item"><strong>ردیف:</strong> {{ history.row }}</li>
@@ -23,7 +23,8 @@
                 <li class="list-group-item"><strong>واحد:</strong> {{ history.unit }}</li>
                 <li class="list-group-item"><strong>کد پرسنلی:</strong> {{ history.personnel_code }}</li>
                 <li class="list-group-item"><strong>مکان فعلی:</strong> {{ history.current_location }}</li>
-                <li class="list-group-item"><strong>کد شناسایی سیستم:</strong> {{ history.system_identification_code }}</li>
+                <li class="list-group-item"><strong>کد شناسایی سیستم:</strong> {{ history.system_identification_code }}
+                </li>
                 <li class="list-group-item"><strong>گروه بندی:</strong> {{ history.category }}</li>
                 <li class="list-group-item"><strong>مدل:</strong> {{ history.model }}</li>
                 <li class="list-group-item"><strong>شماره سریال:</strong> {{ history.serial_number }}</li>
@@ -36,8 +37,14 @@
             </ul>
 
             <div class="text-center">
-                <a href="{{ url_for('search_bp.item_detail', item_id=item_id) }}" class="btn btn-primary">
+                <a href="{{ url_for('item_bp.item_detail', item_id=item_id) }}" class="btn btn-primary">
                     بازگشت
+                </a>
+
+
+                <a href="{{ url_for('item_bp.delete_history', item_id=item_id, history_id=history.id) }}"
+                    class="btn btn-danger" onclick="return confirm('آیا مطمئن هستید؟ این عمل قابل بازگشت نیست.')">
+                    حذف این رکورد
                 </a>
             </div>
 

@@ -65,7 +65,7 @@
                                 <br><br>
                                 <hr>
                                 <a class="btn btn-outline-primary btn-lg mx-2 px-4"
-                                    href="{{ url_for('add_item_bp.excel_import') }}">
+                                    href="{{ url_for('item_bp.excel_import') }}">
                                     وارد کردن دسته‌جمعی از اکسل
                                 </a>
                             </div>
@@ -166,7 +166,7 @@
         const keys = ["company", "user", "category", "project_code", "property_code",
             "serial_number", "personnel_code", "current_location",
             "system_identification_code", "model", "serial_number",
-            "recipient_delivery", "closed", "warehouse_location", "row"];
+            "recipient_delivery", "closed", "warehouse_location", "row","description","closed_time"];
 
         const params = {};
         keys.forEach(k => {
@@ -188,7 +188,7 @@
         let others = getAllFieldsExcept(field);
         for (let k in others) params.append(k, others[k]);
 
-        fetch(`/add_item/suggest?${params.toString()}`)
+        fetch(`/item/suggest_all?${params.toString()}`)
             .then(res => res.json())
             .then(data => {
                 let box = document.getElementById(field + "_box");

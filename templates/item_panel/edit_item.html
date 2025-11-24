@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5 d-flex justify-content-center">
+
+    <div class="card shadow-lg w-75 border-primary p-4">
+
+        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+            ویرایش آیتم
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST" class="row g-3" autocomplete="off">
+
+                {% set fields = [
+                    ('project_code','کد پروژه'),
+                    ('warehouse_location','انبار'),
+                    ('row','ردیف'),
+                    ('user','کاربر'),
+                    ('company','شرکت'),
+                    ('unit','واحد'),
+                    ('personnel_code','کد پرسنلی'),
+                    ('current_location','مکان فعلی'),
+                    ('system_identification_code','کد شناسایی سیستم'),
+                    ('category','گروه بندی'),
+                    ('model','مدل'),
+                    ('serial_number','شماره سریال'),
+                    ('property_code','کد اموال'),
+                    ('recipient_delivery','تحویل گیرنده'),
+                    ('closed','مختوم شده')
+                ] %}
+
+                {% for id, label in fields %}
+                <div class="col-md-6 position-relative">
+                    <label class="form-label text-primary fw-bold">{{ label }}</label>
+
+                    <input type="text"
+                        id="{{ id }}"
+                        name="{{ id }}"
+                        value="{{ item.__dict__.get(id, '') }}"
+
+                        class="form-control border-primary"
+                        oninput="loadSuggestions('{{ id }}')"
+                        onclick="loadSuggestions('{{ id }}')">
+
+                    <div class="suggest-box" id="{{ id }}_box"></div>
+                </div>
+                {% endfor %}
+
+                <div class="col-12">
+                    <label class="form-label text-primary fw-bold">توضیحات</label>
+                    <textarea name="description" class="form-control border-primary" rows="3">{{ item.description }}</textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label text-primary fw-bold">تاریخ اختتام</label>
+                    <input type="text" name="closed_time" class="form-control border-primary" value="{{ item.closed_time }}">
+                </div>
+
+                <div class="col-12 text-center mt-3">
+                    <button type="submit" class="btn btn-primary px-5">ذخیره تغییرات</button>
+                </div>
+
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="{{ url_for('item_bp.item_detail', item_id=item.id) }}" class="btn btn-secondary">
+                    بازگشت
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+.suggest-box {
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #0d6efd;
+    border-radius: 0.25rem;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    z-index: 2000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.suggest-item {
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-align: right;
+}
+.suggest-item:hover {
+    background: #e3f2fd;
+}
+</style>
+
+<script>
+function loadSuggestions(field) {
+    let value = document.getElementById(field).value;
+
+    let params = new URLSearchParams();
+    params.append("field", field);
+    params.append("value", value);
+
+    fetch(`/item/suggest_all?${params.toString()}`)
+        .then(res => res.json())
+        .then(data => {
+            let box = document.getElementById(field + "_box");
+
+            box.innerHTML = "";
+            box.style.display = data.suggestions.length ? "block" : "none";
+
+            data.suggestions.forEach(s => {
+                let div = document.createElement("div");
+                div.className = "suggest-item";
+                div.textContent = s;
+
+                div.onclick = () => {
+                    document.getElementById(field).value = s;
+                    box.style.display = "none";
+                };
+
+                box.appendChild(div);
+            });
+        });
+}
+
+document.addEventListener("click", (e) => {
+    document.querySelectorAll(".suggest-box").forEach(b => {
+        if (!b.contains(e.target) &&
+            !b.previousElementSibling.contains(e.target)) {
+            b.style.display = "none";
+        }
+    });
+});
+</script>
+
+
+{% endblock %}

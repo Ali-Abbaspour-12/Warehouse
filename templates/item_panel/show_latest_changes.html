@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4 text-primary fw-bold">
+        آخرین ۲۰ رویداد (افزودن + تغییرات)
+    </h2>
+
+    <div class="card shadow">
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>زمان</th>
+                        <th>نوع رویداد</th>
+                        <th>کد آیتم</th>
+                        <th>توضیحات</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for e in events %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ e.time }}</td>
+
+                        {% if e.type == "new_item" %}
+                            <td class="text-success fw-bold">ایجاد آیتم جدید</td>
+                        {% else %}
+                            <td class="text-info fw-bold">ویرایش آیتم</td>
+                        {% endif %}
+
+                        <td>{{ e.item_id }}</td>
+                        <td>{{ e.description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -85,17 +85,11 @@
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('search_bp.search') }}" data-path="{{ url_for('search_bp.search') }}">
-                    <span class="icon">🔍</span> جستجو
+                <a href="{{ url_for('item_bp.search') }}" data-path="{{ url_for('item_bp.search') }}">
+                    <span class="icon">📦</span> اموال
                 </a>
             </li>
-            {% if current_user.is_authenticated and current_user.is_admin %}
-            <li>
-                <a href="{{ url_for('add_item_bp.add_item') }}" data-path="{{ url_for('add_item_bp.add_item') }}">
-                    <span class="icon">➕</span> افزودن آیتم
-                </a>
-            </li>
-            {% endif %}
+
 
 
             <li>
@@ -103,13 +97,9 @@
                     <span class="icon">🧑‍💼</span> پرسنل
                 </a>
             </li>
-            
 
-            <li>
-                <a href="{{ url_for('report_bp.report') }}" data-path="{{ url_for('report_bp.report') }}">
-                    <span class="icon">📊</span> گزارش‌گیری
-                </a>
-            </li>
+
+
 
 
 
@@ -127,6 +117,12 @@
             </li>
 
 
+
+            <li>
+                <a href="{{ url_for('report_bp.report') }}" data-path="{{ url_for('report_bp.report') }}">
+                    <span class="icon">📊</span> گزارش‌گیری
+                </a>
+            </li>
             <li>
                 <a href="{{ url_for('document_bp.document') }}" data-path="{{ url_for('document_bp.document') }}">
                     <span class="icon">📄</span> مستندات

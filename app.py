@@ -10,12 +10,11 @@ from waitress import serve
 from routes import (
     login_bp,
     dashboard_bp,
-    add_item_bp,
-    search_bp,
     settings_bp,
     report_bp,
     document_bp,
-    personnel_bp
+    personnel_bp,
+    item_bp
 )
 
 login_manager = LoginManager()
@@ -46,12 +45,11 @@ def create_app():
     # register blueprints
     app.register_blueprint(login_bp)
     app.register_blueprint(dashboard_bp)
-    app.register_blueprint(add_item_bp)
-    app.register_blueprint(search_bp)
     app.register_blueprint(settings_bp)
     app.register_blueprint(report_bp)
     app.register_blueprint(document_bp)
     app.register_blueprint(personnel_bp)
+    app.register_blueprint(item_bp)
 
     return app
 

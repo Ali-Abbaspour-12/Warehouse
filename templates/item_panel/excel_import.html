@@ -19,7 +19,7 @@
 
         <h4 class="text-center mb-4 text-primary fw-bold">مدیریت رکوردهای اکسل</h4>
 
-        <form action="{{ url_for('add_item_bp.show_records') }}"
+        <form action="{{ url_for('item_bp.show_records') }}"
               method="post" enctype="multipart/form-data"
               class="d-grid gap-3">
 
@@ -31,7 +31,7 @@
         </form>
 
         <div class="text-center d-grid gap-3 mt-4">
-            <a href="{{ url_for('add_item_bp.add_item') }}" class="btn btn-secondary fw-bold">
+            <a href="{{ url_for('item_bp.add_item') }}" class="btn btn-secondary fw-bold">
                 بازگشت
             </a>
         </div>

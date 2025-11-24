@@ -19,6 +19,7 @@
                         ('row','ردیف'),
                         ('user','کاربر'),
                         ('company','شرکت'),
+                         ('unit','واحد'),
                         ('category','گروه بندی'),
                         ('personnel_code','کد پرسنلی'),
                         ('current_location','محل استقرار'),
@@ -26,7 +27,10 @@
                         ('model','مدل'),
                         ('serial_number','شماره سریال'),
                         ('recipient_delivery','تحویل گیرنده'),
-                        ('closed','مختوم شده')
+                        ('closed','مختوم شده'),
+                         ('closed_time','زمان اختتام'),
+                         ('description','توضیحات'),
+                         
                         ] %}
 
                         <div class="row">
@@ -49,9 +53,19 @@
                                 <button type="submit" class="btn btn-primary btn-lg mx-2 px-4">جستجو</button>
                                 <br><br>
                                 <hr>
-                                <a href="{{url_for('search_bp.show_all_records')}}"
-                                    class="btn btn-outline-primary btn-lg mx-2 px-4">
+                                <a href="{{url_for('item_bp.show_all_records')}}"
+                                    class="btn btn-success btn-lg mx-2 px-4">
                                     نمایش همه رکوردها
+                                </a>
+                                {% if current_user.is_authenticated and current_user.is_admin %}
+                                <a href="{{url_for('item_bp.add_item')}}"
+                                    class="btn btn-success btn-lg mx-2 px-4">
+                                    افزودن آیتم جدید
+                                </a>
+                                {% endif %}
+                                <a href="{{url_for('item_bp.show_latest_changes')}}"
+                                    class="btn btn-success btn-lg mx-2 px-4">
+                                    آخرین تغییرات
                                 </a>
                             </div>
                         </div>
@@ -80,6 +94,7 @@
                                     <th>شرکت</th>
                                     <th>گروه بندی</th>
                                     <th>کد شناسایی</th>
+                                    <th>محل استقرار</th>
                                     <th>جزییات</th>
                                 </tr>
                             </thead>
@@ -93,13 +108,14 @@
                                     <td>{{item.company}}</td>
                                     <td>{{item.category}}</td>
                                     <td>{{item.system_identification_code}}</td>
+                                    <td>{{item.current_location}}</td>
                                     <td>
                                         <a class="btn btn-primary btn-sm"
-                                            href="{{url_for('search_bp.item_detail', item_id=item.id, **request.args)}}">مشاهده</a>
-                                            {% if current_user.is_authenticated and current_user.is_admin %}
+                                            href="{{url_for('item_bp.item_detail', item_id=item.id, **request.args)}}">مشاهده</a>
+                                        {% if current_user.is_authenticated and current_user.is_admin %}
                                         <a class="btn btn-primary btn-sm"
-                                            href="{{url_for('search_bp.edit_item', item_id=item.id, **request.args)}}">ویرایش</a>
-                                            {% endif %}
+                                            href="{{url_for('item_bp.edit_item', item_id=item.id, **request.args)}}">ویرایش</a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -208,7 +224,7 @@
     function getAllFieldsExcept(target) {
         const keys = ["company", "user", "category", "project_code", "property_code", "serial_number",
             "personnel_code", "current_location", "system_identification_code", "model",
-            "serial_number", "recipient_delivery", "closed", "warehouse_location", "row"];
+            "serial_number", "recipient_delivery", "closed", "warehouse_location", "row","closed_time","description"];
         const params = {};
         keys.forEach(k => {
             if (k !== target) {
@@ -229,7 +245,7 @@
         let others = getAllFieldsExcept(field);
         for (let k in others) params.append(k, others[k]);
 
-        fetch(`/search/suggest?${params.toString()}`)
+        fetch(`/item/suggest?${params.toString()}`)
             .then(res => res.json())
             .then(data => {
                 let box = document.getElementById(field + "_box");
