@@ -7,6 +7,7 @@ from waitress import serve
 
 
 
+
 from routes import (
     login_bp,
     dashboard_bp,
@@ -14,7 +15,8 @@ from routes import (
     report_bp,
     document_bp,
     personnel_bp,
-    item_bp
+    item_bp,
+    camera_bp
 )
 
 login_manager = LoginManager()
@@ -50,6 +52,7 @@ def create_app():
     app.register_blueprint(document_bp)
     app.register_blueprint(personnel_bp)
     app.register_blueprint(item_bp)
+    app.register_blueprint(camera_bp)
 
     return app
 

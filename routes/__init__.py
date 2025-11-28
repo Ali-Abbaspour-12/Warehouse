@@ -5,3 +5,4 @@ from .report import report_bp
 from .login import login_bp
 from .documet import document_bp
 from .personnel import personnel_bp
+from .camera import camera_bp
