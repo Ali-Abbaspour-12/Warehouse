@@ -28,7 +28,9 @@
                     ('serial_number','شماره سریال'),
                     ('property_code','کد اموال'),
                     ('recipient_delivery','تحویل گیرنده'),
-                    ('closed','مختوم شده')
+                    ('description','توضیحات'),
+                    ('closed','مختوم شده'),
+                    ('closed_time','تاریخ اختتام'),
                 ] %}
 
                 {% for id, label in fields %}
@@ -47,28 +49,22 @@
                     <div class="suggest-box" id="{{ id }}_box"></div>
                 </div>
                 {% endfor %}
-
-                <div class="col-12">
-                    <label class="form-label text-primary fw-bold">توضیحات</label>
-                    <textarea name="description" class="form-control border-primary" rows="3">{{ item.description }}</textarea>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label text-primary fw-bold">تاریخ اختتام</label>
-                    <input type="text" name="closed_time" class="form-control border-primary" value="{{ item.closed_time }}">
-                </div>
-
+                
+                
                 <div class="col-12 text-center mt-3">
+                    <br>
                     <button type="submit" class="btn btn-primary px-5">ذخیره تغییرات</button>
+
+                    <a href="{{ url_for('item_bp.item_detail', item_id=item.id) }}" class="btn btn-secondary px-5">
+                    بازگشت
+                </a>
                 </div>
+
+                
 
             </form>
 
-            <div class="text-center mt-3">
-                <a href="{{ url_for('item_bp.item_detail', item_id=item.id) }}" class="btn btn-secondary">
-                    بازگشت
-                </a>
-            </div>
+            
 
         </div>
 
