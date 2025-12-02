@@ -34,40 +34,80 @@
                 <li class="list-group-item"><strong>مختوم شده:</strong> {{ item.closed }}</li>
                 <li class="list-group-item"><strong>تاریخ اختتام:</strong> {{ item.closed_time }}</li>
             </ul>
-            <!-- دکمه‌ها -->
-            <div class="d-flex gap-2 justify-content-center">
-                {% if current_user.is_authenticated and current_user.is_admin %}
-                <a href="{{ url_for('item_bp.edit_item', item_id=item.id) }}" class="btn btn-primary">
-                    ویرایش آیتم
-                </a>
-                {%endif%}
-                <a href="{{ url_for('item_bp.search', **request.args) }}" class="btn btn-primary">
-                    بازگشت
-                </a>
-            </div>
-            <br>
-            
-            <!-- تاریخچه آیتم -->
-            {% if item.item_history %}
-            <hr>
-            <h5 class="fw-bold text-center bg-primary text-white p-3 rounded">تاریخچه آیتم</h5>
-
-            <ul class="list-group text-center">
-                {% for history in item.item_history|reverse %}
-                <a href="{{ url_for('item_bp.history_detail', history_id=history.id, item_id=item.id) }}"
-                    class="list-group-item list-group-item-action border-primary">
-                    {{ history.user }} - {{ history.recipient_delivery }} - {{ history.description }}
-                </a>
-                {% endfor %}
-            </ul>
-            {% endif %}
-
-
-
         </div>
 
     </div>
 
+</div>
+
+{% if item.item_history %}
+
+{% for history in item.item_history|reverse %}
+
+<div class="container mt-5 d-flex justify-content-center">
+
+    <div class="card shadow-lg w-75 border-primary">
+
+        <!-- عنوان کارت -->
+        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+            {{history.changed_at}}
+        </div>
+
+        <!-- اطلاعات آیتم -->
+        <div class="card-body">
+            <ul class="list-group list-group-flush mb-4">
+
+                <li class="list-group-item"><strong>کد پروژه:</strong> {{ history.project_code }}</li>
+                <li class="list-group-item"><strong>انبار:</strong> {{ history.warehouse_location }}</li>
+                <li class="list-group-item"><strong>ردیف:</strong> {{ history.row }}</li>
+                <li class="list-group-item"><strong>کاربر:</strong> {{ history.user }}</li>
+                <li class="list-group-item"><strong>شرکت:</strong> {{ history.company }}</li>
+                <li class="list-group-item"><strong>واحد:</strong> {{ history.unit }}</li>
+                <li class="list-group-item"><strong>کد پرسنلی:</strong> {{ history.personnel_code }}</li>
+                <li class="list-group-item"><strong>مکان فعلی:</strong> {{ history.current_location }}</li>
+                <li class="list-group-item"><strong>کد شناسایی سیستم:</strong> {{ history.system_identification_code }}
+                </li>
+                <li class="list-group-item"><strong>گروه بندی:</strong> {{ history.category }}</li>
+                <li class="list-group-item"><strong>مدل:</strong> {{ history.model }}</li>
+                <li class="list-group-item"><strong>شماره سریال:</strong> {{ history.serial_number }}</li>
+                <li class="list-group-item"><strong>کد اموال:</strong> {{ history.property_code }}</li>
+                <li class="list-group-item"><strong>تحویل گیرنده:</strong> {{ history.recipient_delivery }}</li>
+                <li class="list-group-item"><strong>توضیحات:</strong> {{ history.description }}</li>
+                <li class="list-group-item"><strong>مختوم شده:</strong> {{ history.closed }}</li>
+                <li class="list-group-item"><strong>تاریخ اختتام:</strong> {{ history.closed_time }}</li>
+            </ul>
+        </div>
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <div class="text-center">
+
+            <a href="{{ url_for('item_bp.delete_history', item_id=item.id, history_id=history.id) }}"
+                class="btn btn-danger" onclick="return confirm('آیا مطمئن هستید؟ این عمل قابل بازگشت نیست.')">
+                حذف این رکورد
+            </a>
+        </div>
+        {% endif %}
+        <br>
+
+    </div>
+
+
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+
+<br>
+<div class="d-flex gap-2 justify-content-center">
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <a href="{{ url_for('item_bp.edit_item', item_id=item.id) }}" class="btn btn-warning">
+        ویرایش آیتم
+    </a>
+    {%endif%}
+    <a href="{{ url_for('item_bp.search', **request.args) }}" class="btn btn-secondary">
+        بازگشت
+    </a>
 </div>
 
 {% endblock %}

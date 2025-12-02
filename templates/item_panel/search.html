@@ -19,7 +19,7 @@
                         ('row','ردیف'),
                         ('user','کاربر'),
                         ('company','شرکت'),
-                         ('unit','واحد'),
+                        ('unit','واحد'),
                         ('category','گروه بندی'),
                         ('personnel_code','کد پرسنلی'),
                         ('current_location','محل استقرار'),
@@ -28,9 +28,9 @@
                         ('serial_number','شماره سریال'),
                         ('recipient_delivery','تحویل گیرنده'),
                         ('closed','مختوم شده'),
-                         ('closed_time','زمان اختتام'),
-                         ('description','توضیحات'),
-                         
+                        ('closed_time','زمان اختتام'),
+                        ('description','توضیحات'),
+
                         ] %}
 
                         <div class="row">
@@ -47,24 +47,22 @@
                             </div>
                             {% endfor %}
                         </div>
-
+                        <button type="submit" class="btn btn-primary w-100 btn-lg mx-2 px-4">جستجو</button>
+                        <hr>
                         <div class="row mt-3">
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg mx-2 px-4">جستجو</button>
-                                <br><br>
-                                <hr>
+                            <div class="col-12 text-center d-flex">
+
                                 <a href="{{url_for('item_bp.show_all_records')}}"
-                                    class="btn btn-success btn-lg mx-2 px-4">
+                                    class="btn btn-success btn-lg mx-2 px-4 flex-fill">
                                     نمایش همه رکوردها
                                 </a>
                                 {% if current_user.is_authenticated and current_user.is_admin %}
-                                <a href="{{url_for('item_bp.add_item')}}"
-                                    class="btn btn-success btn-lg mx-2 px-4">
+                                <a href="{{url_for('item_bp.add_item')}}" class="btn btn-success btn-lg mx-2 px-4 flex-fill">
                                     افزودن آیتم جدید
                                 </a>
                                 {% endif %}
                                 <a href="{{url_for('item_bp.show_latest_changes')}}"
-                                    class="btn btn-success btn-lg mx-2 px-4">
+                                    class="btn btn-success btn-lg mx-2 px-4 flex-fill">
                                     آخرین تغییرات
                                 </a>
                             </div>
@@ -113,7 +111,7 @@
                                         <a class="btn btn-primary btn-sm"
                                             href="{{url_for('item_bp.item_detail', item_id=item.id, **request.args)}}">مشاهده</a>
                                         {% if current_user.is_authenticated and current_user.is_admin %}
-                                        <a class="btn btn-primary btn-sm"
+                                        <a class="btn btn-warning btn-sm"
                                             href="{{url_for('item_bp.edit_item', item_id=item.id, **request.args)}}">ویرایش</a>
                                         {% endif %}
                                     </td>
@@ -224,7 +222,7 @@
     function getAllFieldsExcept(target) {
         const keys = ["company", "user", "category", "project_code", "property_code", "serial_number",
             "personnel_code", "current_location", "system_identification_code", "model",
-            "serial_number", "recipient_delivery", "closed", "warehouse_location", "row","closed_time","description"];
+            "serial_number", "recipient_delivery", "closed", "warehouse_location", "row", "closed_time", "description"];
         const params = {};
         keys.forEach(k => {
             if (k !== target) {

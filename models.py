@@ -7,7 +7,7 @@ from extensions import db,login_manager
 
 
 def get_now_jalali():
-    return jdatetime.datetime.now().strftime('%Y/%m/%d - %H:%M:%S')
+    return jdatetime.datetime.now().strftime('%Y/%m/%d')
 
 class Item(db.Model):
     __tablename__ = 'items'
