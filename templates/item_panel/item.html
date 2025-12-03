@@ -3,6 +3,19 @@
 {% block content %}
 
 <div class="container-fluid mt-4">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="alert alert-info">
+        <ul class="mb-0">
+            {% for category, message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
+
     <div class="row g-4">
         <!-- فرم جستجو در بالای صفحه -->
         <div class="col-12">
@@ -57,7 +70,8 @@
                                     نمایش همه رکوردها
                                 </a>
                                 {% if current_user.is_authenticated and current_user.is_admin %}
-                                <a href="{{url_for('item_bp.add_item')}}" class="btn btn-success btn-lg mx-2 px-4 flex-fill">
+                                <a href="{{url_for('item_bp.add_item')}}"
+                                    class="btn btn-success btn-lg mx-2 px-4 flex-fill">
                                     افزودن آیتم جدید
                                 </a>
                                 {% endif %}

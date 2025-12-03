@@ -7,41 +7,98 @@ from werkzeug.utils import secure_filename
 import os
 import pandas as pd
 from datetime import datetime
+from persiantools.jdatetime import JalaliDateTime
+from sqlalchemy import event
+import json,os
 
+
+LOG_FILE_PATH = "logs/item_changes.log"
 
 
 item_bp = Blueprint("item_bp", __name__,url_prefix="/item")
 
 
-LOG_FILE = "logs/log.txt"
 
-def write_log(event_type, item_id, description):
-    os.makedirs("logs", exist_ok=True)
+def write_log(data):
+    line = json.dumps(data, ensure_ascii=False)
 
-    time_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    new_line = f"{time_str} | {event_type} | id={item_id} | {description}\n"
-
-    lines = []
-
-    # اگر فایل وجود دارد بخوان
-    if os.path.exists(LOG_FILE):
-        with open(LOG_FILE, "r", encoding="utf-8") as f:
+    try:
+        with open(LOG_FILE_PATH, "r", encoding="utf-8") as f:
             lines = f.readlines()
+    except FileNotFoundError:
+        lines = []
 
-    # اگر بیشتر از 19 خط داشت: خط اول حذف
-    if len(lines) >= 20:
-        lines = lines[1:]
+    lines.append(line + "\n")
 
-    # رکورد جدید اضافه
-    lines.append(new_line)
+    # فقط 30 لاگ آخر
+    lines = lines[-30:]
 
-    # بازنویسی فایل
-    with open(LOG_FILE, "w", encoding="utf-8") as f:
+    with open(LOG_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
 
-@item_bp.route("/search")
+
+@event.listens_for(Item, "after_insert")
+def after_insert(mapper, connection, target):
+    data = {
+        "action": "insert",
+        "time": str(datetime.datetime.now()),
+        "item_id": target.id,
+        "changes": {col.name: getattr(target, col.name) for col in target.__table__.columns}
+    }
+    write_log(data)
+
+
+@event.listens_for(Item, "after_update")
+def after_update(mapper, connection, target):
+    data = {
+        "action": "update",
+        "time": str(datetime.datetime.now()),
+        "item_id": target.id,
+        "changes": {}
+    }
+
+    for attr in target.__mapper__.columns:
+        history = getattr(target, attr.name).history
+        if history.has_changes():
+            data["changes"][attr.name] = {
+                "old": history.deleted[0] if history.deleted else None,
+                "new": history.added[0] if history.added else None
+            }
+
+    write_log(data)
+
+
+
+
+@item_bp.route("/show_latest_changes")
+def show_latest_changes():
+    log_path = "logs/item_changes.log"
+    logs = []
+
+    if os.path.exists(log_path):
+        with open(log_path, "r", encoding="utf-8") as f:
+            for line in f:
+                data = json.loads(line)
+
+                # تبدیل تاریخ میلادی به شمسی
+                try:
+                    dt = JalaliDateTime.fromisoformat(data["time"])
+                    data["jalali_time"] = dt.strftime("%Y/%m/%d - %H:%M")
+                except:
+                    data["jalali_time"] = data["time"]
+
+                logs.append(data)
+
+    logs.reverse()  # جدیدترین بالا
+
+    return render_template("item_panel/show_latest_changes.html", logs=logs)
+
+
+
+
+@item_bp.route("/item")
 @login_required
-def search():
+def item():
     args = request.args
 
     field_mapping = {
@@ -75,12 +132,12 @@ def search():
             query = query.filter(model_field.ilike(f"%{value}%"))
 
     if not has_filter:
-        return render_template("item_panel/search.html", items=[])
+        return render_template("item_panel/item.html", items=[])
 
     # مرتب‌سازی نزولی بر اساس property_code
     items = query.order_by(Item.property_code.desc()).all()
 
-    return render_template("item_panel/search.html", items=items)
+    return render_template("item_panel/item.html", items=items)
 
 
    
@@ -125,14 +182,14 @@ def delete_history(item_id, history_id):
 
 
 
-@item_bp.route('/item_detail_<int:item_id>/edit_item', methods=['GET', 'POST'])
+@item_bp.route('/edit_item_<int:item_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def edit_item(item_id):
     item = Item.query.get_or_404(item_id)
 
     if request.method == "POST":
-
+        
         # ذخیره نسخه قدیمی در تاریخچه
         record = ItemHistory(
             project_code=item.project_code,
@@ -166,9 +223,7 @@ def edit_item(item_id):
             setattr(item, field, request.form.get(field))
 
         db.session.commit()
-
-        # ثبت در فایل لاگ
-        write_log("edit_item", item.id, "ویرایش آیتم انجام شد")
+        write_log("CREATE", record.to_dict())
 
         return redirect(url_for("item_bp.item_detail", item_id=item.id))
 
@@ -206,12 +261,11 @@ def add_item():
         )
         db.session.add(record)
         db.session.commit()
+        
 
-        # ثبت در فایل لاگ
-        write_log("new_item", record.id, f"آیتم جدید اضافه شد")
 
         flash("آیتم با موفقیت اضافه شد!", "success")
-        return redirect(url_for("item_bp.add_item"))
+        return redirect(url_for("item_bp.item"))
 
     return render_template("item_panel/add_item.html")
 
@@ -290,34 +344,6 @@ def import_to_database():
     flash("داده‌ها با موفقیت وارد پایگاه داده شدند!", "success")
     return redirect(url_for("item_bp.excel_import"))
 
-
-
-
-
-
-
-@item_bp.route("/show_latest_changes", methods=["GET"])
-@login_required
-def show_latest_changes():
-
-    LOG_FILE = "logs/log.txt"
-    events = []
-
-    if os.path.exists(LOG_FILE):
-        with open(LOG_FILE, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-
-        # از جدیدترین به قدیمی‌ترین
-        for line in lines[::-1]:
-            parts = line.strip().split(" | ")
-            events.append({
-                "time": parts[0],
-                "type": parts[1],
-                "item_id": parts[2].replace("id=", ""),
-                "description": parts[3]
-            })
-
-    return render_template("item_panel/show_latest_changes.html", events=events)
 
 
 

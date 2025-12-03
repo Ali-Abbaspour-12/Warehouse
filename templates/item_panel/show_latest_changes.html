@@ -2,49 +2,93 @@
 
 {% block content %}
 
+
+
 <div class="container mt-4">
 
-    <h2 class="text-center mb-4 text-primary fw-bold">
-        آخرین ۲۰ رویداد (افزودن + تغییرات)
-    </h2>
+    <div class="header-box">
+        <h2>📘 لاگ ۳۰ تغییر آخر آیتم‌ها</h2>
+    </div>
 
-    <div class="card shadow">
-        <div class="card-body">
+    <div class="log-box">
+        <table class="table table-striped table-bordered text-center align-middle">
+            <thead>
+                <tr>
+                    <th>نوع عملیات</th>
+                    <th>شناسه آیتم</th>
+                    <th>تاریخ (شمسی)</th>
+                    <th>تغییرات</th>
+                </tr>
+            </thead>
 
-            <table class="table table-bordered table-hover text-center">
-                <thead class="table-primary">
-                    <tr>
-                        <th>#</th>
-                        <th>زمان</th>
-                        <th>نوع رویداد</th>
-                        <th>کد آیتم</th>
-                        <th>توضیحات</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for e in events %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ e.time }}</td>
-
-                        {% if e.type == "new_item" %}
-                            <td class="text-success fw-bold">ایجاد آیتم جدید</td>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>
+                        {% if log.action == "insert" %}
+                        <span class="badge bg-success">ایجاد</span>
                         {% else %}
-                            <td class="text-info fw-bold">ویرایش آیتم</td>
+                        <span class="badge bg-warning text-dark">ویرایش</span>
                         {% endif %}
+                    </td>
 
-                        <td>{{ e.item_id }}</td>
-                        <td>{{ e.description }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+                    <td>{{ log.item_id }}</td>
 
-            </table>
+                    <td>{{ log.jalali_time }}</td>
 
-        </div>
+                    <td class="text-start">
+                        {% if log.changes %}
+                        <ul class="list-group">
+                            {% for key, val in log.changes.items() %}
+                            <li class="list-group-item">
+                                <strong>{{ key }}:</strong>
+                                {% if log.action == "insert" %}
+                                {{ val }}
+                                {% else %}
+                                <span class="text-danger">قدیم: {{ val.old }}</span> |
+                                <span class="text-success">جدید: {{ val.new }}</span>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
     </div>
 
 </div>
 
+<style>
+    body {
+        background-color: #e3f2fd;
+        font-family: 'IRANSans', sans-serif;
+    }
+
+    .header-box {
+        background: #1565c0;
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .table thead {
+        background-color: #0d47a1;
+        color: white;
+    }
+
+    .log-box {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 0 10px #0002;
+    }
+</style>
 {% endblock %}

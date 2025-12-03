@@ -33,6 +33,7 @@ class Item(db.Model):
 
     item_history = db.relationship('ItemHistory',backref='Item',lazy=True)
 
+
 class ItemHistory(db.Model):
     __tablename__ = 'items_history'
 
