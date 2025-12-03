@@ -75,3 +75,23 @@ class Personnel(db.Model):
     unit = db.Column(db.String(100), nullable=False)
     national_code = db.Column(db.String(100), nullable=False)
     current_location = db.Column(db.String(100), nullable=False)
+
+
+class Repair(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    device_type = db.Column(db.String(100), nullable=False)
+    model = db.Column(db.String(100), nullable=False)
+    serial_number = db.Column(db.String(100), nullable=False)
+    property_code = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(512), nullable=False)
+    status = db.Column(db.String(100), nullable=False)
+    current_location = db.Column(db.String(100), nullable=False)
+
+
+class PhoneNumber(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
+    porject = db.Column(db.String(100), nullable=False)
+    phone_number = db.Column(db.String(100), nullable=False)
+    pre_phone_number = db.Column(db.String(100), nullable=False)
+
