@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center text-warning mb-4">ویرایش پرسنل</h2>
+
+    <div class="col-12 col-md-10 col-lg-8 mx-auto">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <form method="post">
+
+                    <div class="row g-3">
+                        {% set fields = [
+                            ('username','نام کاربری', phone.username),
+                            ('phone.project','پروژه', 'project'),
+                            ('phone_number','شماره تلفن', phone.phone_number),
+                            ('pre_phone_number','پیش شماره', phone.pre_phone_number),
+                        ] %}
+
+                        {% for id,label,value in fields %}
+                        <div class="col-md-4 position-relative">
+                            <label class="form-label fw-bold">{{ label }}</label>
+                            <input type="text" name="{{id}}" id="{{id}}" class="form-control border-primary"
+                                   value="{{ value }}" onclick="loadSuggestions('{{id}}')"
+                                   oninput="loadSuggestions('{{id}}')" required>
+                            <div class="suggest-box" id="{{id}}_box"></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-warning w-100 fw-bold">ذخیره تغییرات</button>
+                    </div>
+                    <div class="mt-2">
+                        <a class="btn btn-primary w-100 fw-bold" href="{{url_for('phone_bp.phone', **request.args)}}">بازگشت</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS -->
+<style>
+.suggest-box {
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #0d6efd;
+    border-radius: 0.25rem;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    z-index: 2000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.suggest-item {
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+.suggest-item:hover {
+    background: #e3f2fd;
+}
+</style>
+
+<!-- JS -->
+<script>
+async function loadSuggestions(fieldId) {
+    const input = document.getElementById(fieldId);
+    const box = document.getElementById(fieldId + '_box');
+    const term = input.value.trim();
+
+    const response = await fetch(`/phone/field_suggestions?field=${fieldId}&term=${term}`);
+    const suggestions = await response.json();
+
+    if (suggestions.length === 0) {
+        box.style.display = 'none';
+        box.innerHTML = '';
+        return;
+    }
+
+    box.innerHTML = '';
+    suggestions.forEach(val => {
+        const div = document.createElement('div');
+        div.textContent = val;
+        div.classList.add('suggest-item');
+        div.addEventListener('click', () => {
+            input.value = val;
+            box.style.display = 'none';
+        });
+        box.appendChild(div);
+    });
+
+    box.style.display = 'block';
+}
+
+// بستن لیست هنگام کلیک خارج از input
+document.addEventListener('click', function(e) {
+    document.querySelectorAll('.suggest-box').forEach(box => {
+        const input = document.getElementById(box.id.replace('_box',''));
+        if (!box.contains(e.target) && !input.contains(e.target)) {
+            box.style.display = 'none';
+        }
+    });
+});
+</script>
+
+{% endblock %}

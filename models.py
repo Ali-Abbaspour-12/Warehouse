@@ -88,10 +88,10 @@ class Repair(db.Model):
     current_location = db.Column(db.String(100), nullable=False)
 
 
-class PhoneNumber(db.Model):
+class Phone(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
-    porject = db.Column(db.String(100), nullable=False)
+    project = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(100), nullable=False)
     pre_phone_number = db.Column(db.String(100), nullable=False)
 
