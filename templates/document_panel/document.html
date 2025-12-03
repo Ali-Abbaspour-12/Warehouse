@@ -1,76 +1,62 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container py-5">
-    <h2 class="mb-4 text-primary">مدیریت اسناد PDF</h2>
 
-    <!-- Flash messages -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="mb-3">
-          {% for msg in messages %}
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-              {{ msg }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          {% endfor %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="col-md-6 mx-auto mb-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-      {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
     {% endwith %}
 
 
-    {% if current_user.is_authenticated and current_user.is_admin %}
-    <!-- Upload form -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <form method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="file" class="form-label">انتخاب PDF برای آپلود</label>
-                    <input class="form-control" type="file" id="file" name="file" accept=".pdf" required>
-                </div>
-                <button type="submit" class="btn btn-primary">آپلود</button>
-            </form>
+<div class="container mt-4">
+
+    
+
+    <!-- کارت لیست فایل‌ها -->
+    <div class="card shadow-lg border-0 mb-4  border-primary">
+        <div class="card-header bg-primary text-white text-center  border-primary">
+            <h5 class="mb-0">فایل ها</h5>
+        </div>
+
+        <div class="card-body p-0 ">
+            <table class="table table-striped table-hover m-0 text-center">
+                <thead class="table-primary">
+                    <tr>
+                        <th>نام فایل</th>
+                        <th>دانلود</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <td class="align-middle">{{ file }}</td>
+
+                        <td class="align-middle">
+                            <a href="{{ url_for('document_bp.download_file', filename=file) }}"
+                               class="btn btn-primary btn-sm">
+                                دانلود
+                            </a>
+                        </td>
+
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="text-muted py-3">هیچ فایلی وجود ندارد.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    {%endif%}
-
-    <!-- List of uploaded files -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            اسناد آپلود شده
-        </div>
-        <ul class="list-group list-group-flush">
-            {% for file in files %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ file }}
-                <div>
-                    <a href="{{ url_for('document_bp.uploaded_file', filename=file) }}" class="btn btn-sm btn-success me-2" target="_blank">دانلود</a>
-                    {% if current_user.is_authenticated and current_user.is_admin %}
-                    <form method="POST" action="{{ url_for('document_bp.delete_file', filename=file) }}" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید که می‌خواهید این فایل حذف شود؟');">
-                        <button type="submit" class="btn btn-sm btn-danger" >حذف</button>
-                    </form>
-                    {%endif%}
-                </div>
-            </li>
-            {% else %}
-            <li class="list-group-item text-muted">هیچ فایلی آپلود نشده است.</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
 
 
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.delete-form').forEach(function(form) {
-        form.addEventListener('submit', function(e) {
-            if (!confirm('آیا مطمئن هستید که می‌خواهید این فایل حذف شود؟')) {
-                e.preventDefault(); // جلوگیری از ارسال فرم
-            }
-        });
-    });
-});
-</script>
 {% endblock %}

@@ -135,6 +135,7 @@
 
 <!-- استایل پیشنهادها -->
 <style>
+    /* --- Suggest Box --- */
     .suggest-box {
         position: absolute;
         width: 100%;
@@ -159,39 +160,65 @@
         background: #e3f2fd;
     }
 
-    /* بهبود نمایش در دستگاه‌های مختلف */
-    @media (max-width: 768px) {
+    /* --- Improving general responsiveness --- */
+    @media (max-width: 576px) {
         .card-body {
-            padding: 1rem !important;
+            padding: 0.75rem !important;
         }
 
-        .col-xl-3,
-        .col-lg-4,
-        .col-md-6 {
-            margin-bottom: 0.75rem;
+        .form-label {
+            font-size: 0.8rem !important;
         }
 
-        .btn-lg {
-            width: 100%;
+        input.form-control {
+            font-size: 0.8rem !important;
+            padding: 0.4rem 0.6rem;
+        }
+
+        .btn-lg,
+        .btn {
+            width: 100% !important;
             margin-bottom: 0.5rem !important;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table th,
+        table td {
+            white-space: nowrap;  /* جلوگیری از شکستگی فرم جدول */
         }
     }
 
-    @media (min-width: 769px) and (max-width: 1200px) {
-        .col-xl-3 {
+    /* Medium screens */
+    @media (min-width: 577px) and (max-width: 992px) {
+        .col-xl-3,
+        .col-lg-4,
+        .col-md-6 {
             flex: 0 0 50%;
             max-width: 50%;
         }
     }
 
-    @media (min-width: 1201px) {
+    /* Large screens */
+    @media (min-width: 993px) and (max-width: 1400px) {
+        .col-xl-3 {
+            flex: 0 0 33.33%;
+            max-width: 33.33%;
+        }
+    }
+
+    /* Extra large screens */
+    @media (min-width: 1401px) {
         .col-xl-3 {
             flex: 0 0 25%;
             max-width: 25%;
         }
     }
 
-    /* بهبود ظاهر فرم */
+    /* Form and Card improvements */
     .form-control {
         transition: all 0.3s ease;
     }
@@ -202,11 +229,11 @@
     }
 
     .card {
-        border-radius: 0.5rem;
+        border-radius: 0.7rem;
     }
 
     .card-header {
-        border-radius: 0.5rem 0.5rem 0 0 !important;
+        border-radius: 0.7rem 0.7rem 0 0 !important;
         padding: 1rem;
         font-size: 1.1rem;
     }
@@ -214,8 +241,23 @@
     .table th {
         font-weight: bold;
         background-color: #e3f2fd;
+        font-size: 0.9rem;
+    }
+
+    .table td {
+        font-size: 0.85rem;
+    }
+
+    /* Back To Top Button */
+    #backToTopBtn {
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+        padding: 0;
     }
 </style>
+
 
 <!-- اسکریپت پیشنهاددهی و دکمه بالا -->
 <script>
