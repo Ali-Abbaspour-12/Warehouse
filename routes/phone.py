@@ -31,7 +31,6 @@ def phone():
     
 
 @phone_bp.route("/add_phone", methods=["GET", "POST"])
-@admin_required
 @login_required
 def add_phone():
     if request.method == 'POST':
@@ -51,7 +50,6 @@ def add_phone():
 
 @phone_bp.route("/edit_phone_<int:id>", methods=["GET", "POST"])
 @login_required
-@admin_required
 def edit_phone(id):
     phone = Phone.query.get_or_404(id)
     if request.method == 'POST':
@@ -69,7 +67,6 @@ def edit_phone(id):
 
 @phone_bp.route("/delete_phone_<int:id>", methods=["GET", "POST"])
 @login_required
-@admin_required
 def delete_phone(id):
     phone = Phone.query.get_or_404(id)
     db.session.delete(phone)
@@ -94,7 +91,6 @@ def phone_suggestions():
 
 @phone_bp.route('/field_suggestions')
 @login_required
-@admin_required
 def field_suggestions():
     field = request.args.get('field')
     term = request.args.get('term', '').strip()
@@ -112,7 +108,6 @@ def field_suggestions():
 
 @phone_bp.route('/show_exel_records', methods=['GET', 'POST'])
 @login_required
-@admin_required
 def show_exel_records():
     filepath = session.get('uploaded_file')
     if not filepath or not os.path.exists(filepath):
@@ -137,7 +132,6 @@ def allowed_file(filename):
 
 @phone_bp.route('/add_multy_phone', methods=['GET', 'POST'])
 @login_required
-@admin_required
 def add_multy_phone():
     if request.method == 'POST':
         file = request.files.get('file')
@@ -162,7 +156,6 @@ def add_multy_phone():
 
 @phone_bp.route('/add_multy_phone_to_database', methods=['POST'])
 @login_required
-@admin_required
 def add_multy_phone_to_database():
     filepath = session.get('uploaded_file')
     if not filepath or not os.path.exists(filepath):

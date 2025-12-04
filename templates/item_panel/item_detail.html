@@ -7,7 +7,7 @@
     <div class="card shadow-lg w-75 border-primary">
 
         <!-- عنوان کارت -->
-        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+        <div class="card-header bg-primary text-white fw-bold fs-5">
             جزئیات آیتم
         </div>
 
@@ -105,7 +105,7 @@
         ویرایش آیتم
     </a>
     {%endif%}
-    <a href="{{ url_for('item_bp.search', **request.args) }}" class="btn btn-secondary">
+    <a href="{{ url_for('item_bp.item', **request.args) }}" class="btn btn-secondary">
         بازگشت
     </a>
 </div>

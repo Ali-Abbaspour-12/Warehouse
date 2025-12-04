@@ -7,9 +7,16 @@
         <!-- فرم جستجو در بالای صفحه -->
         <div class="col-12">
             <div class="card shadow-lg border-primary w-100 d-flex flex-column">
-                <div class="card-header bg-primary text-white fw-bold text-center">
-                گزارش گیری آیتم
+                <div
+                    class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
+                    <span class="mx-auto">گزارش گیری آیتم</span>
+
+                    <!-- دکمه خروجی اکسل – کنار عنوان -->
+                    <a href="{{ url_for('report_bp.export_report') }}" class="btn btn-light btn-sm">
+                        📄 خروجی اکسل
+                    </a>
                 </div>
+
 
                 <div class="card-body text-end p-3">
                     <form method="get" autocomplete="off" class="text-end">
@@ -45,7 +52,7 @@
                             </div>
                             {% endfor %}
 
-                            
+
 
                             <div class="col-lg-3 col-md-6 col-sm-12 mb-3 position-relative text-end">
                                 <label class="form-label fw-bold d-block" style="font-size:0.85rem; text-align:right;">
@@ -72,16 +79,13 @@
 
 
                         <div class="row mt-3">
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg mx-2 px-4">جستجو</button>
-                                <br><br>
-                                <hr>
-                                <a href="{{ url_for('report_bp.export_report') }}"
-                                    class="btn btn-success btn-lg mx-2 px-4">
-                                    خروجی گرفتن اکسل
-                                </a>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
+                                    جستجو
+                                </button>
                             </div>
                         </div>
+
 
 
                     </form>
@@ -170,17 +174,17 @@
         .col-md-6 {
             margin-bottom: 0.5rem;
         }
-        
+
         .card-header {
             padding: 1rem !important;
         }
     }
-    
+
     /* بهبود ظاهر کارت */
     .card {
         border-radius: 0.5rem;
     }
-    
+
     .card-header {
         border-radius: 0.5rem 0.5rem 0 0 !important;
         padding: 1rem;

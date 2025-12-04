@@ -145,11 +145,12 @@
             {% endif %}
 
 
-            <li>
-                <a href="{{ url_for('login_bp.logout') }}">
+            <li style="margin-left: auto;">
+                <a href="{{ url_for('login_bp.logout') }}"  onclick="return confirm('آیا میخواهید خارج شوید ؟');">
                     <span class="icon">🚪</span> خروج
                 </a>
             </li>
+
         </ul>
     </div>
 

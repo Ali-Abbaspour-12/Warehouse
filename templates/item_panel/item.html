@@ -20,9 +20,32 @@
         <!-- فرم جستجو در بالای صفحه -->
         <div class="col-12">
             <div class="card shadow-lg border-primary w-100 d-flex flex-column">
-                <div class="card-header bg-primary text-white fw-bold text-center">
-                    جستجو آیتم
+                <div
+                    class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
+
+                    <span class="ms-auto">جستجو آیتم</span>
+
+                    <div class="d-flex gap-2">
+                        <!-- اموال تعمیری -->
+                        <a href="{{url_for('item_bp.repair_item')}}" class="btn btn-light btn-sm">
+                            🛠️ اموال تعمیری
+                        </a>
+
+                        <!-- افزودن آیتم جدید -->
+                        {% if current_user.is_authenticated and current_user.is_admin %}
+                        <a href="{{url_for('item_bp.add_item')}}" class="btn btn-light btn-sm">
+                            ➕ افزودن آیتم جدید
+                        </a>
+                        {% endif %}
+
+                        <!-- آخرین تغییرات -->
+                        <a href="{{url_for('item_bp.show_latest_changes')}}" class="btn btn-light btn-sm">
+                            🔄 آخرین تغییرات
+                        </a>
+                    </div>
+
                 </div>
+
                 <div class="card-body text-end p-3">
                     <form method="get" autocomplete="off" class="text-end">
                         {% set fields = [
@@ -61,26 +84,6 @@
                             {% endfor %}
                         </div>
                         <button type="submit" class="btn btn-primary w-100 btn-lg mx-2 px-4">جستجو</button>
-                        <hr>
-                        <div class="row mt-3">
-                            <div class="col-12 text-center d-flex">
-
-                                <a href="{{url_for('item_bp.show_all_records')}}"
-                                    class="btn btn-success btn-lg mx-2 px-4 flex-fill">
-                                    نمایش همه رکوردها
-                                </a>
-                                {% if current_user.is_authenticated and current_user.is_admin %}
-                                <a href="{{url_for('item_bp.add_item')}}"
-                                    class="btn btn-success btn-lg mx-2 px-4 flex-fill">
-                                    افزودن آیتم جدید
-                                </a>
-                                {% endif %}
-                                <a href="{{url_for('item_bp.show_latest_changes')}}"
-                                    class="btn btn-success btn-lg mx-2 px-4 flex-fill">
-                                    آخرین تغییرات
-                                </a>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>

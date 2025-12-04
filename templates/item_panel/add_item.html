@@ -7,13 +7,13 @@
         <!-- فرم جستجو در بالای صفحه -->
         <div class="col-12">
             <div class="card shadow-lg border-primary w-100 d-flex flex-column">
-                <div class="card-header bg-primary text-white fw-bold text-center">
-                افزودن آیتم
+                <div class="card-header bg-primary text-white fw-bold">
+                    افزودن آیتم
                 </div>
 
                 <div class="card-body text-end p-3">
                     <!-- پیام‌های فلش -->
-                    
+
 
                     <form method="post" autocomplete="off" class="text-end">
                         {% set fields = [
@@ -24,8 +24,8 @@
                         ('user', 'کاربر'),
                         ('recipient_delivery', 'تحویل گیرنده'),
                         ('system_identification_code', 'کد شناسایی سیستم'),
-                         ('current_location', 'محل استقرار'),
-                          ('unit', 'واحد'),
+                        ('current_location', 'محل استقرار'),
+                        ('unit', 'واحد'),
                         ('category', 'گروه بندی'),
                         ('model', 'مدل'),
                         ('serial_number', 'شماره سریال'),
@@ -49,9 +49,11 @@
                             {% endfor %}
                         </div>
 
-                        <div class="row mt-4">
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg mx-2 px-4">ثبت اطلاعات</button>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
+                                    ثبت اطلاعات
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -150,7 +152,7 @@
         const keys = ["company", "user", "category", "project_code", "property_code",
             "serial_number", "personnel_code", "current_location",
             "system_identification_code", "model", "serial_number",
-            "recipient_delivery", "closed", "warehouse_location", "row","description","closed_time"];
+            "recipient_delivery", "closed", "warehouse_location", "row", "description", "closed_time"];
 
         const params = {};
         keys.forEach(k => {

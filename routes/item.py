@@ -1,97 +1,22 @@
 from flask import Blueprint, render_template,request,redirect,url_for,flash,session
-from models import Item,ItemHistory
+from models import Item,ItemHistory,Repair
 from extensions import db
 from .login import admin_required
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
-from datetime import datetime
-from persiantools.jdatetime import JalaliDateTime
 from sqlalchemy import event
 import json,os
-
-
-LOG_FILE_PATH = "logs/item_changes.log"
 
 
 item_bp = Blueprint("item_bp", __name__,url_prefix="/item")
 
 
 
-def write_log(data):
-    line = json.dumps(data, ensure_ascii=False)
-
-    try:
-        with open(LOG_FILE_PATH, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-    except FileNotFoundError:
-        lines = []
-
-    lines.append(line + "\n")
-
-    # فقط 30 لاگ آخر
-    lines = lines[-30:]
-
-    with open(LOG_FILE_PATH, "w", encoding="utf-8") as f:
-        f.writelines(lines)
-
-
-@event.listens_for(Item, "after_insert")
-def after_insert(mapper, connection, target):
-    data = {
-        "action": "insert",
-        "time": str(datetime.datetime.now()),
-        "item_id": target.id,
-        "changes": {col.name: getattr(target, col.name) for col in target.__table__.columns}
-    }
-    write_log(data)
-
-
-@event.listens_for(Item, "after_update")
-def after_update(mapper, connection, target):
-    data = {
-        "action": "update",
-        "time": str(datetime.datetime.now()),
-        "item_id": target.id,
-        "changes": {}
-    }
-
-    for attr in target.__mapper__.columns:
-        history = getattr(target, attr.name).history
-        if history.has_changes():
-            data["changes"][attr.name] = {
-                "old": history.deleted[0] if history.deleted else None,
-                "new": history.added[0] if history.added else None
-            }
-
-    write_log(data)
-
-
-
-
 @item_bp.route("/show_latest_changes")
 def show_latest_changes():
-    log_path = "logs/item_changes.log"
-    logs = []
-
-    if os.path.exists(log_path):
-        with open(log_path, "r", encoding="utf-8") as f:
-            for line in f:
-                data = json.loads(line)
-
-                # تبدیل تاریخ میلادی به شمسی
-                try:
-                    dt = JalaliDateTime.fromisoformat(data["time"])
-                    data["jalali_time"] = dt.strftime("%Y/%m/%d - %H:%M")
-                except:
-                    data["jalali_time"] = data["time"]
-
-                logs.append(data)
-
-    logs.reverse()  # جدیدترین بالا
-
-    return render_template("item_panel/show_latest_changes.html", logs=logs)
+    return render_template("item_panel/show_latest_changes.html")
 
 
 
@@ -345,6 +270,65 @@ def import_to_database():
     return redirect(url_for("item_bp.excel_import"))
 
 
+
+@item_bp.route("/repair_item", methods=["GET"])
+@login_required
+def repair_item():
+    repairs = Repair.query.all()
+    return render_template("item_panel/repair/repair_item.html", repairs=repairs)
+
+
+@item_bp.route("/add_repair_item", methods=["GET", "POST"])
+@login_required
+@admin_required
+def add_repair_item():
+    if request.method == "POST":
+        new_repair = Repair(
+            device_type=request.form['device_type'],
+            model=request.form['model'],
+            serial_number=request.form['serial_number'],
+            property_code=request.form['property_code'],
+            description=request.form['description'],
+            status=request.form['status'],
+            current_location=request.form['current_location']
+        )
+
+        db.session.add(new_repair)
+        db.session.commit()
+        return redirect(url_for("item_bp.repair_item"))
+
+    return render_template("item_panel/repair/add_repair_item.html")
+
+
+@item_bp.route("/edit_repair_item_<int:id>", methods=["GET", "POST"])
+@login_required
+@admin_required
+def edit_repair_item(id):
+    repair = Repair.query.get_or_404(id)
+
+    if request.method == "POST":
+        repair.device_type = request.form['device_type']
+        repair.model = request.form['model']
+        repair.serial_number = request.form['serial_number']
+        repair.property_code = request.form['property_code']
+        repair.description = request.form['description']
+        repair.status = request.form['status']
+        repair.current_location = request.form['current_location']
+
+        db.session.commit()
+        return redirect(url_for("item_bp.repair_item"))
+
+    return render_template("item_panel/repair/edit_repair_item.html", repair=repair)
+
+
+@item_bp.route("/delete_repair_item_<int:id>", methods=["POST"])
+@login_required
+@admin_required
+def delete_repair_item(id):
+    repair = Repair.query.get_or_404(id)
+    db.session.delete(repair)
+    db.session.commit()
+    return redirect(url_for("item_bp.repair_item"))
 
 
 
