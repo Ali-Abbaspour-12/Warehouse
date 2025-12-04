@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template,request,redirect,url_for,flash,session
-from models import Item,ItemHistory,Repair
+from models import Item,ItemHistory,Repair,ItemLog
 from extensions import db
 from .login import admin_required
 from flask_login import login_required
@@ -13,10 +13,31 @@ import json,os
 item_bp = Blueprint("item_bp", __name__,url_prefix="/item")
 
 
+def log_item_change(item_data):
+    # حذف کلیدهایی که در ItemLog وجود ندارند
+    allowed_fields = {c.name for c in ItemLog.__table__.columns}
+    filtered_data = {k: v for k, v in item_data.items() if k in allowed_fields}
+
+    # ایجاد لاگ جدید
+    new_log = ItemLog(**filtered_data)
+    db.session.add(new_log)
+    db.session.commit()
+
+    # محدود کردن تعداد لاگ‌ها به 50
+    total_logs = ItemLog.query.count()
+    if total_logs > 50:
+        logs_to_delete = ItemLog.query.order_by(ItemLog.id).limit(total_logs - 50).all()
+        for log in logs_to_delete:
+            db.session.delete(log)
+        db.session.commit()
+
+
 
 @item_bp.route("/show_latest_changes")
 def show_latest_changes():
-    return render_template("item_panel/show_latest_changes.html")
+    logs = ItemLog.query.order_by(ItemLog.id.desc()).limit(50).all()
+    return render_template("item_panel/show_latest_changes.html", logs=logs)
+
 
 
 
@@ -114,31 +135,7 @@ def edit_item(item_id):
     item = Item.query.get_or_404(item_id)
 
     if request.method == "POST":
-        
-        # ذخیره نسخه قدیمی در تاریخچه
-        record = ItemHistory(
-            project_code=item.project_code,
-            warehouse_location=item.warehouse_location,
-            row=item.row,
-            user=item.user,
-            company=item.company,
-            unit=item.unit,
-            personnel_code=item.personnel_code,
-            current_location=item.current_location,
-            system_identification_code=item.system_identification_code,
-            category=item.category,
-            model=item.model,
-            serial_number=item.serial_number,
-            property_code=item.property_code,
-            recipient_delivery=item.recipient_delivery,
-            description=item.description,
-            closed=item.closed,
-            closed_time=item.closed_time,
-            item_id=item.id
-        )
-        db.session.add(record)
-
-        # آپدیت فیلدهای آیتم
+        # --- آپدیت فیلدها ---
         for field in [
             "project_code","warehouse_location","row","user","company","unit",
             "personnel_code","current_location","system_identification_code",
@@ -147,9 +144,20 @@ def edit_item(item_id):
         ]:
             setattr(item, field, request.form.get(field))
 
-        db.session.commit()
-        write_log("CREATE", record.to_dict())
+        db.session.commit()  # commit بعد از اعمال تغییرات
 
+        # --- لاگ نسخه جدید آیتم ---
+        # بعد از commit کردن تغییرات
+        new_data = {field: getattr(item, field) for field in [
+            "project_code","warehouse_location","row","user","company","unit",
+            "personnel_code","current_location","system_identification_code",
+            "category","model","serial_number","property_code",
+            "recipient_delivery","closed","description","closed_time"
+        ]}
+        log_item_change(new_data)
+
+
+        flash("آیتم با موفقیت ویرایش شد!", "success")
         return redirect(url_for("item_bp.item_detail", item_id=item.id))
 
     return render_template("item_panel/edit_item.html", item=item)
@@ -160,7 +168,8 @@ def edit_item(item_id):
 
 
 
-@item_bp.route("/add_item",methods=['GET', 'POST'])
+
+@item_bp.route("/add_item", methods=['GET', 'POST'])
 @login_required
 @admin_required
 def add_item():
@@ -185,9 +194,16 @@ def add_item():
             closed_time=request.form.get('closed_time'),
         )
         db.session.add(record)
-        db.session.commit()
-        
+        db.session.commit()  # commit برای داشتن id
 
+        # --- لاگ نسخه جدید ---
+        new_data = {field: getattr(item, field) for field in [
+            "project_code","warehouse_location","row","user","company","unit",
+            "personnel_code","current_location","system_identification_code",
+            "category","model","serial_number","property_code",
+            "recipient_delivery","closed","description","closed_time"
+        ]}
+        log_item_change(new_data)
 
         flash("آیتم با موفقیت اضافه شد!", "success")
         return redirect(url_for("item_bp.item"))
