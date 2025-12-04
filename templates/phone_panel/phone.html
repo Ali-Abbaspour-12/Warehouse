@@ -79,7 +79,7 @@
                     <thead class="table-primary text-center">
                         <tr>
                             <th>نام کاربری</th>
-                            <th>پروژه</th>
+                            <th>مکان</th>
                             <th>شماره تلفن</th>
                             <th>پیش شماره</th>
                             {% if current_user.is_authenticated and current_user.is_admin %}
@@ -92,7 +92,7 @@
                         {% for p in results %}
                         <tr>
                             <td>{{ p.username }}</td>
-                            <td>{{ p.project }}</td>
+                            <td>{{ p.place }}</td>
                             <td>{{ p.phone_number }}</td>
                             <td>{{ p.pre_phone_number }}</td>
                             {% if current_user.is_authenticated and current_user.is_admin %}

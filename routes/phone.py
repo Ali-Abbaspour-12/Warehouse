@@ -21,7 +21,7 @@ def phone():
     if query:
         results = Phone.query.filter(
             (Phone.username.ilike(f"%{query}%")) |
-            (Phone.project.ilike(f"%{query}%")) |
+            (Phone.place.ilike(f"%{query}%")) |
             (Phone.phone_number.ilike(f"%{query}%")) |
             (Phone.pre_phone_number.ilike(f"%{query}%"))
         ).all()
@@ -37,7 +37,7 @@ def add_phone():
     if request.method == 'POST':
         new_phone_number = Phone(
             username=request.form['username'],
-            project=request.form['project'],
+            place=request.form['place'],
             phone_number=request.form['phone_number'],
             pre_phone_number=request.form['pre_phone_number']
         )
@@ -56,7 +56,7 @@ def edit_phone(id):
     phone = Phone.query.get_or_404(id)
     if request.method == 'POST':
         Phone.username = request.form['username']
-        Phone.project = request.form['project']
+        Phone.place = request.form['place']
         Phone.phone_number = request.form['phone_number']
         Phone.pre_phone_number = request.form['pre_phone_number']
 
@@ -174,7 +174,7 @@ def add_multy_phone_to_database():
     # پر کردن تمام سلول‌های خالی با خط تیره
     df = df.fillna('-')
 
-    db_fields = ['username', 'project', 'phone_number', 'pre_phone_number']
+    db_fields = ['username', 'place', 'phone_number', 'pre_phone_number']
 
     # ساخت و ذخیره ردیف‌ها
     for _, row in df.iterrows():

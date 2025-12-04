@@ -92,7 +92,7 @@ class Repair(db.Model):
 class Phone(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
-    project = db.Column(db.String(100), nullable=False)
+    place = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(100), nullable=False)
     pre_phone_number = db.Column(db.String(100), nullable=False)
 
