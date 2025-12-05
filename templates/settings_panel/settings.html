@@ -3,6 +3,19 @@
 
 {% block content %}
 
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="alert alert-info">
+    <ul class="mb-0">
+        {% for category, message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endwith %}
+
 <h1 class="text-center text-primary fw-bold mb-4">مدیریت دیتابیس</h1>
 
 <div class="card border-primary shadow">
@@ -11,7 +24,7 @@
     </div>
 
     <div class="card-body p-0">
-        <table class="table table-bordered table-hover mb-0">
+        <table class="table table-bordered table-hover mb-0 text-center">
             <thead class="table-primary">
                 <tr>
                     <th>نام جدول</th>
@@ -28,13 +41,13 @@
                     <td>
 
                         <a href="{{ url_for('settings_bp.delete_records', table_name=table.name) }}"
-                           class="btn btn-primary btn-sm">
+                            class="btn btn-primary btn-sm">
                             حذف همه رکوردها
                         </a>
 
                         <a href="{{ url_for('settings_bp.drop_table', table_name=table.name) }}"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('آیا مطمئنید؟ جدول کاملاً حذف می‌شود؟');">
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('آیا مطمئنید؟ جدول کاملاً حذف می‌شود؟');">
                             حذف کامل جدول
                         </a>
 

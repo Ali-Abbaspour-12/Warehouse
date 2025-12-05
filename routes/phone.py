@@ -12,21 +12,26 @@ phone_bp = Blueprint("phone_bp", __name__,url_prefix="/phone")
 
 
 
-@phone_bp.route("/phone", methods=["GET", "POST"])
+@phone_bp.route("/phone", methods=["GET"])
 @login_required
 def phone():
-    query = request.args.get("q", "").strip()
+    username = request.args.get("username", "").strip()
+    place = request.args.get("place", "").strip()
 
-    results = []
-    if query:
-        results = Phone.query.filter(
-            (Phone.username.ilike(f"%{query}%")) |
-            (Phone.place.ilike(f"%{query}%")) |
-            (Phone.phone_number.ilike(f"%{query}%")) |
-            (Phone.pre_phone_number.ilike(f"%{query}%"))
-        ).all()
+    query = Phone.query
 
-    return render_template("phone_panel/phone.html", results=results, query=query)
+    if username:
+        query = query.filter(Phone.username.ilike(f"%{username}%"))
+    if place:
+        query = query.filter(Phone.place.ilike(f"%{place}%"))
+
+    results = query.all()
+
+    return render_template("phone_panel/phone.html",
+                           results=results,
+                           username=username,
+                           place=place)
+
     
     
 
@@ -83,7 +88,7 @@ def phone_suggestions():
     query = Phone.query
     if term:
         query = query.filter(Phone.username.ilike(f'%{term}%'))
-    users = query.order_by(Phone.username).limit(50).all()  # حداکثر 50 مورد
+    users = query.order_by(Phone.username).all()  # حداکثر 50 مورد
     suggestions = [user.username for user in users]
     return jsonify(suggestions)
 
@@ -101,7 +106,7 @@ def field_suggestions():
     if term:
         query = query.filter(getattr(Phone, field).ilike(f'%{term}%'))
 
-    results = query.with_entities(getattr(Phone, field)).distinct().limit(20).all()
+    results = query.with_entities(getattr(Phone, field)).distinct().all()
     suggestions = [r[0] for r in results if r[0]]  # حذف None
     return jsonify(suggestions)
 
@@ -114,7 +119,7 @@ def show_exel_records():
         flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
         return redirect(url_for('phone_bp.add_multy_phone'))
 
-    df = pd.read_excel(filepath)
+    df = pd.read_excel(filepath,dtype=str)
     df.fillna('', inplace=True)
     columns = df.columns.tolist()
     data_preview = df.head(50).to_dict(orient='records')  # پیش نمایش 50 ردیف
@@ -162,7 +167,7 @@ def add_multy_phone_to_database():
         flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
         return redirect(url_for('phone_bp.add_multy_phone'))
 
-    df = pd.read_excel(filepath)
+    df = pd.read_excel(filepath , dtype=str)
 
     # پر کردن تمام سلول‌های خالی با خط تیره
     df = df.fillna('-')

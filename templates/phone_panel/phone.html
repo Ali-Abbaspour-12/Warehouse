@@ -48,14 +48,28 @@
             <div class="card-body">
                 <form action="{{ url_for('phone_bp.phone') }}" method="get" autocomplete="off">
 
-                    <!-- فیلد نام کاربری -->
+
                     <div class="position-relative w-100 mb-3">
                         <label for="username" class="form-label fw-bold" style="font-size:0.85rem;">نام کاربری</label>
-                        <input type="text" id="username" name="q"
-                            class="form-control border-primary form-control-sm w-100" onclick="loadSuggestions()"
-                            oninput="loadSuggestions()">
+                        <input type="text" id="username" name="username"
+                            class="form-control border-primary form-control-sm w-100"
+                            onclick="loadDynamicSuggestions('username')" oninput="loadDynamicSuggestions('username')">
                         <div class="suggest-box" id="username_box"></div>
                     </div>
+
+
+
+
+                    <!-- فیلد مکان -->
+                    <div class="position-relative w-100 mb-3">
+                        <label for="place" class="form-label fw-bold" style="font-size:0.85rem;">مکان</label>
+                        <input type="text" id="place" name="place"
+                            class="form-control border-primary form-control-sm w-100"
+                            onclick="loadDynamicSuggestions('place')" oninput="loadDynamicSuggestions('place')">
+                        <div class="suggest-box" id="place_box"></div>
+                    </div>
+
+
 
                     <!-- دکمه جستجو -->
                     <button class="btn btn-primary w-100 mb-3 btn-lg">جستجو</button>
@@ -141,13 +155,13 @@
 
 
 <script>
-    async function loadSuggestions() {
-        const input = document.getElementById('username');
-        const box = document.getElementById('username_box');
+
+    async function loadDynamicSuggestions(fieldName) {
+        const input = document.getElementById(fieldName);
+        const box = document.getElementById(fieldName + '_box');
         const term = input.value.trim();
 
-        // درخواست به سرور
-        const response = await fetch(`/phone/suggestions?term=${term}`);
+        const response = await fetch(`/phone/field_suggestions?field=${fieldName}&term=${term}`);
         const suggestions = await response.json();
 
         if (suggestions.length === 0) {
@@ -156,14 +170,13 @@
             return;
         }
 
-        // ساخت لیست پیشنهادها
         box.innerHTML = '';
-        suggestions.forEach(name => {
+        suggestions.forEach(value => {
             const div = document.createElement('div');
-            div.textContent = name;
+            div.textContent = value;
             div.classList.add('suggest-item');
             div.addEventListener('click', () => {
-                input.value = name;
+                input.value = value;
                 box.style.display = 'none';
             });
             box.appendChild(div);
@@ -172,14 +185,19 @@
         box.style.display = 'block';
     }
 
-    // بستن لیست هنگام کلیک خارج از input
+    // بستن لیست هنگام کلیک بیرون
     document.addEventListener('click', function (e) {
-        const input = document.getElementById('username');
-        const box = document.getElementById('username_box');
-        if (!box.contains(e.target) && !input.contains(e.target)) {
-            box.style.display = 'none';
-        }
+        document.querySelectorAll('.suggest-box').forEach(box => {
+            const inputId = box.id.replace('_box', '');
+            const input = document.getElementById(inputId);
+
+            if (!box.contains(e.target) && !input.contains(e.target)) {
+                box.style.display = 'none';
+            }
+        });
     });
+
+
 </script>
 
 
