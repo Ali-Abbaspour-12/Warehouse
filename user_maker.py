@@ -6,8 +6,8 @@ from werkzeug.security import generate_password_hash
 
 
 new_users = [
-    {"username": "admin", "password": "1234", "is_admin": True},
-    {"username": "user1", "password": "1111", "is_admin": False}
+    {"username": "admin", "password": "P@ssw0rdF$tIT", "is_admin": True},
+    {"username": "user", "password": "P@ssw0rdF$t", "is_admin": False}
     
 ]
 

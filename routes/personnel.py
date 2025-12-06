@@ -125,7 +125,7 @@ def show_exel_records():
         flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
         return redirect(url_for('personnel_bp.add_multy_personnel'))
 
-    df = pd.read_excel(filepath)
+    df = pd.read_excel(filepath,dtype=str)
     df.fillna('', inplace=True)
     columns = df.columns.tolist()
     data_preview = df.head(50).to_dict(orient='records')  # پیش نمایش 50 ردیف
@@ -175,7 +175,7 @@ def add_multy_personnel_to_database():
         flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
         return redirect(url_for('personnel_bp.add_multy_personnel'))
 
-    df = pd.read_excel(filepath)
+    df = pd.read_excel(filepath,dtype=str)
 
     # پر کردن تمام سلول‌های خالی با خط تیره
     df = df.fillna('-')
