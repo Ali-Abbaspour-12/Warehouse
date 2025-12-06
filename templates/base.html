@@ -30,20 +30,41 @@
             color: white;
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 10px;
             z-index: 1050;
+
+            overflow-x: auto;
+            /* ← اسکرول افقی */
+            overflow-y: hidden;
+            white-space: nowrap;
+            /* ← جلوگیری از رفتن آیتم‌ها به خط بعد */
+            scrollbar-width: thin;
+            /* Firefox scrollbar */
         }
 
-        /* لیست منوی افقی */
+        /* اسکرول‌بار برای کروم */
+        #topbar::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        #topbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
         #topbar ul {
             list-style: none;
-            display: flex;
+            display: inline-flex;
+            /* ← مهم برای جلوگیری از شکستن */
             margin: 0;
             padding: 0;
+            align-items: center;
+            gap: 10px;
+            /* فاصله بین آیتم‌ها */
         }
 
         #topbar ul li {
-            margin-left: 15px;
+            display: inline-flex;
         }
 
         #topbar ul li a {
@@ -54,6 +75,9 @@
             display: flex;
             align-items: center;
             transition: background 0.2s;
+            font-size: 15px;
+            white-space: nowrap;
+            /* ← جلوگیری از شکستن متن */
         }
 
         #topbar ul li a.active,
@@ -69,9 +93,9 @@
         /* محتوا بعد از نوار بالا */
         main {
             padding: 80px 20px;
-            /* فاصله از نوار بالا */
         }
     </style>
+
 </head>
 
 <body>
@@ -118,10 +142,19 @@
 
 
             <li>
-                <a href="#" data-path="{{ url_for('settings_bp.settings') }}">
-                    <span class="icon">📡</span> روتر/سوییچ
+                <a href="{{ url_for('switch_bp.switch') }}" data-path="{{ url_for('switch_bp.switch') }}">
+                    <span class="icon">🖧</span> سوییچ
                 </a>
             </li>
+
+
+            <li>
+                <a href="{{ url_for('router_bp.router') }}" data-path="{{ url_for('router_bp.router') }}">
+                    <span class="icon">📡</span>روتر
+                </a>
+            </li>
+
+
 
 
 
@@ -146,7 +179,7 @@
 
 
             <li style="margin-left: auto;">
-                <a href="{{ url_for('login_bp.logout') }}"  onclick="return confirm('آیا میخواهید خارج شوید ؟');">
+                <a href="{{ url_for('login_bp.logout') }}" onclick="return confirm('آیا میخواهید خارج شوید ؟');">
                     <span class="icon">🚪</span> خروج
                 </a>
             </li>
