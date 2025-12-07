@@ -102,7 +102,7 @@
                                             href="{{url_for('phone_bp.edit_phone', phone_id=phone.id, **request.args)}}">ویرایش</a>
                                         
                                         <a class="btn btn-warning btn-sm"
-                                            href="{{url_for('phone_bp.delete_item', phone_id=phone.id, **request.args)}}" onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">حذف</a>
+                                            href="{{url_for('phone_bp.delete_phone', phone_id=phone.id, **request.args)}}" onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">حذف</a>
                                         
                                     </td>
                                 </tr>

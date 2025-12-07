@@ -12,9 +12,9 @@ personnel_bp = Blueprint("personnel_bp", __name__,url_prefix="/personnel")
 
 
 
-@personnel_bp.route("/item")
+@personnel_bp.route("/personnel")
 @login_required
-def item():
+def personnel():
     args = request.args
 
     field_mapping = {
@@ -39,7 +39,7 @@ def item():
         return render_template("personnel_panel/personnel.html", personnels=[])
 
     # مرتب‌سازی نزولی بر اساس property_code
-    personnels = query.order_by(Item.property_code.desc()).all()
+    personnels = query.all()
 
     return render_template("personnel_panel/personnel.html", personnels=personnels)
     
@@ -66,11 +66,11 @@ def add_personnel():
     return render_template('personnel_panel/add_personnel.html')
 
 
-@personnel_bp.route("/edit_personnel_<int:id>", methods=["GET", "POST"])
+@personnel_bp.route("/edit_personnel_<int:personnel_id>", methods=["GET", "POST"])
 @login_required
 @admin_required
-def edit_personnel(id):
-    person = Personnel.query.get_or_404(id)
+def edit_personnel(personnel_id):
+    person = Personnel.query.get_or_404(personnel_id)
     if request.method == 'POST':
         person.username = request.form['username']
         person.personnel_code = request.form['personnel_code']
@@ -86,12 +86,12 @@ def edit_personnel(id):
     return render_template('personnel_panel/edit_personnel.html', person=person)
 
 
-@personnel_bp.route("/delete_personnel_<int:id>", methods=["GET", "POST"])
+@personnel_bp.route("/delete_personnel_<int:personnel_id>", methods=["GET", "POST"])
 @login_required
 @admin_required
-def delete_personnel(id):
-    person = Personnel.query.get_or_404(id)
-    db.session.delete(person)
+def delete_personnel(personnel_id):
+    personnel = Personnel.query.get_or_404(personnel_id)
+    db.session.delete(personnel)
     db.session.commit()
     flash('پرسنل با موفقیت حذف شد.', 'success')
     return redirect(url_for('personnel_bp.personnel'))

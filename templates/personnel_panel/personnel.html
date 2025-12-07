@@ -100,18 +100,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for phone in phones %}
+                                {% for personnel in personnels %}
                                 <tr>
-                                    <td>{{phone.username}}</td>
-                                    <td>{{phone.place}}</td>
-                                    <td>{{phone.phone_number}}</td>
-                                    <td>{{phone.pre_phone_number}}</td>
+                                    <td>{{personnel.username}}</td>
+                                    <td>{{personnel.personnel_code}}</td>
+                                    <td>{{personnel.company}}</td>
+                                    <td>{{personnel.unit}}</td>
+                                    <td>{{personnel.national_code}}</td>
+                                    <td>{{personnel.current_location}}</td>
                                     <td>
                                         <a class="btn btn-primary btn-sm"
-                                            href="{{url_for('phone_bp.edit_phone', phone_id=phone.id, **request.args)}}">ویرایش</a>
+                                            href="{{url_for('personnel_bp.edit_personnel', personnel_id=personnel.id, **request.args)}}">ویرایش</a>
                                         
                                         <a class="btn btn-warning btn-sm"
-                                            href="{{url_for('phone_bp.delete_item', phone_id=phone.id, **request.args)}}" onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">حذف</a>
+                                            href="{{url_for('personnel_bp.delete_personnel', personnel_id=personnel.id, **request.args)}}" onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">حذف</a>
                                         
                                     </td>
                                 </tr>

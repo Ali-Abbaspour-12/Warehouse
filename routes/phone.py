@@ -62,10 +62,10 @@ def add_phone():
     return render_template('phone_panel/add_phone.html')
 
 
-@phone_bp.route("/edit_phone_<int:id>", methods=["GET", "POST"])
+@phone_bp.route("/edit_phone_<int:phone_id>", methods=["GET", "POST"])
 @login_required
-def edit_phone(id):
-    phone = Phone.query.get_or_404(id)
+def edit_phone(phone_id):
+    phone = Phone.query.get_or_404(phone_id)
     if request.method == 'POST':
         Phone.username = request.form['username']
         Phone.place = request.form['place']
@@ -79,10 +79,10 @@ def edit_phone(id):
     return render_template('phone_panel/edit_phone.html', phone=phone)
 
 
-@phone_bp.route("/delete_phone_<int:id>", methods=["GET", "POST"])
+@phone_bp.route("/delete_phone_<int:phone_id>", methods=["GET", "POST"])
 @login_required
-def delete_phone(id):
-    phone = Phone.query.get_or_404(id)
+def delete_phone(phone_id):
+    phone = Phone.query.get_or_404(phone_id)
     db.session.delete(phone)
     db.session.commit()
     flash('شماره تلفن با موفقیت حذف شد.', 'success')
