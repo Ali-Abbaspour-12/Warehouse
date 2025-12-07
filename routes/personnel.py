@@ -12,23 +12,36 @@ personnel_bp = Blueprint("personnel_bp", __name__,url_prefix="/personnel")
 
 
 
-@personnel_bp.route("/personnel", methods=["GET", "POST"])
+@personnel_bp.route("/item")
 @login_required
-def personnel():
-    query = request.args.get("q", "").strip()
+def item():
+    args = request.args
 
-    results = []
-    if query:
-        results = Personnel.query.filter(
-            (Personnel.username.ilike(f"%{query}%")) |
-            (Personnel.personnel_code.ilike(f"%{query}%")) |
-            (Personnel.company.ilike(f"%{query}%")) |
-            (Personnel.unit.ilike(f"%{query}%")) |
-            (Personnel.national_code.ilike(f"%{query}%")) |
-            (Personnel.current_location.ilike(f"%{query}%"))
-        ).all()
+    field_mapping = {
+        "username": Personnel.username,
+        "personnel_code": Personnel.personnel_code,
+        "company": Personnel.company,
+        "unit": Personnel.unit,
+        "national_code": Personnel.national_code,
+        "current_location": Personnel.current_location,
+    }
 
-    return render_template("personnel_panel/personnel.html", results=results, query=query)
+    query = Personnel.query
+    has_filter = False
+
+    for arg_key, model_field in field_mapping.items():
+        value = args.get(arg_key)
+        if value:
+            has_filter = True
+            query = query.filter(model_field.ilike(f"%{value}%"))
+
+    if not has_filter:
+        return render_template("personnel_panel/personnel.html", personnels=[])
+
+    # مرتب‌سازی نزولی بر اساس property_code
+    personnels = query.order_by(Item.property_code.desc()).all()
+
+    return render_template("personnel_panel/personnel.html", personnels=personnels)
     
     
 
@@ -85,35 +98,81 @@ def delete_personnel(id):
 
 
 
-@personnel_bp.route('/suggestions')
+@personnel_bp.route("/suggest", methods=["GET"])
 @login_required
-def personnel_suggestions():
-    term = request.args.get('term', '').strip()
+def suggest():
+    args = request.args
+
+    field = args.get("field")
+    value = args.get("value", "")
+
+    # مپ فیلدها
+    field_mapping = {
+        "username": Personnel.username,
+        "personnel_code": Personnel.personnel_code,
+        "company": Personnel.company,
+        "unit": Personnel.unit,
+        "national_code": Personnel.national_code,
+        "current_location": Personnel.current_location,
+    }
+
+    if field not in field_mapping:
+        return {"error": "invalid field"}, 400
+
     query = Personnel.query
-    if term:
-        query = query.filter(Personnel.username.ilike(f'%{term}%'))
-    users = query.order_by(Personnel.username).limit(50).all()  # حداکثر 50 مورد
-    suggestions = [user.username for user in users]
-    return jsonify(suggestions)
+
+    # فیلتر سایر فیلدها
+    for key, column in field_mapping.items():
+        if key == field:
+            continue
+        v = args.get(key)
+        if v:
+            query = query.filter(column.ilike(f"%{v}%"))
+
+    # دریافت پیشنهادات
+    suggestions = (
+        query.with_entities(field_mapping[field])
+        .filter(field_mapping[field].ilike(f"%{value}%"))
+        .distinct()
+        .order_by(field_mapping[field])
+        .all()
+    )
+
+    return {"suggestions": [s[0] for s in suggestions if s[0]]}
 
 
-
-@personnel_bp.route('/field_suggestions')
+@personnel_bp.route("/suggest_all", methods=["GET"])
 @login_required
-@admin_required
-def field_suggestions():
-    field = request.args.get('field')
-    term = request.args.get('term', '').strip()
-    if not field or not hasattr(Personnel, field):
-        return jsonify([])
+def suggest_all():
+    args = request.args
 
-    query = Personnel.query
-    if term:
-        query = query.filter(getattr(Personnel, field).ilike(f'%{term}%'))
+    field = args.get("field")
+    value = args.get("value", "")
 
-    results = query.with_entities(getattr(Personnel, field)).distinct().limit(20).all()
-    suggestions = [r[0] for r in results if r[0]]  # حذف None
-    return jsonify(suggestions)
+    field_mapping = {
+        "username": Personnel.username,
+        "personnel_code": Personnel.personnel_code,
+        "company": Personnel.company,
+        "unit": Personnel.unit,
+        "national_code": Personnel.national_code,
+        "current_location": Personnel.current_location,
+    }
+
+    if field not in field_mapping:
+        return {"error": "invalid field"}, 400
+
+    column = field_mapping[field]
+
+    suggestions = (
+        Personnel.query.with_entities(column)
+        .filter(column.isnot(None))
+        .filter(column.ilike(f"%{value}%"))
+        .distinct()
+        .order_by(column)
+        .all()
+    )
+
+    return {"suggestions": [s[0] for s in suggestions if s[0]]}
 
 
 @personnel_bp.route('/show_exel_records', methods=['GET', 'POST'])

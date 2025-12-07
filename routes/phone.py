@@ -12,26 +12,35 @@ phone_bp = Blueprint("phone_bp", __name__,url_prefix="/phone")
 
 
 
-@phone_bp.route("/phone", methods=["GET"])
+@phone_bp.route("/phone")
 @login_required
 def phone():
-    username = request.args.get("username", "").strip()
-    place = request.args.get("place", "").strip()
+    args = request.args
+
+    field_mapping = {
+        "username": Phone.username,
+        "place":Phone.place,
+        "phone_number":Phone.phone_number,
+        "pre_phone_number":Phone.pre_phone_number
+
+    }
 
     query = Phone.query
+    has_filter = False
 
-    if username:
-        query = query.filter(Phone.username.ilike(f"%{username}%"))
-    if place:
-        query = query.filter(Phone.place.ilike(f"%{place}%"))
+    for arg_key, model_field in field_mapping.items():
+        value = args.get(arg_key)
+        if value:
+            has_filter = True
+            query = query.filter(model_field.ilike(f"%{value}%"))
 
-    results = query.all()
+    if not has_filter:
+        return render_template("phone_panel/phone.html", phones=[])
 
-    return render_template("phone_panel/phone.html",
-                           results=results,
-                           username=username,
-                           place=place)
+    # مرتب‌سازی نزولی بر اساس property_code
+    phones = query.order_by(Phone.phone_number.desc()).all()
 
+    return render_template("phone_panel/phone.html", phones=phones)
     
     
 
@@ -81,34 +90,77 @@ def delete_phone(id):
 
 
 
-@phone_bp.route('/suggestions')
+@phone_bp.route("/suggest", methods=["GET"])
 @login_required
-def phone_suggestions():
-    term = request.args.get('term', '').strip()
-    query = Phone.query
-    if term:
-        query = query.filter(Phone.username.ilike(f'%{term}%'))
-    users = query.order_by(Phone.username).all()  # حداکثر 50 مورد
-    suggestions = [user.username for user in users]
-    return jsonify(suggestions)
+def suggest():
+    args = request.args
 
+    field = args.get("field")
+    value = args.get("value", "")
 
+    # مپ فیلدها
+    field_mapping = {
+        "username": Phone.username,
+        "place": Phone.place,
+        "phone_number": Phone.phone_number,
+        "pre_phone_number": Phone.pre_phone_number,
+    }
 
-@phone_bp.route('/field_suggestions')
-@login_required
-def field_suggestions():
-    field = request.args.get('field')
-    term = request.args.get('term', '').strip()
-    if not field or not hasattr(Phone, field):
-        return jsonify([])
+    if field not in field_mapping:
+        return {"error": "invalid field"}, 400
 
     query = Phone.query
-    if term:
-        query = query.filter(getattr(Phone, field).ilike(f'%{term}%'))
 
-    results = query.with_entities(getattr(Phone, field)).distinct().all()
-    suggestions = [r[0] for r in results if r[0]]  # حذف None
-    return jsonify(suggestions)
+    # فیلتر سایر فیلدها
+    for key, column in field_mapping.items():
+        if key == field:
+            continue
+        v = args.get(key)
+        if v:
+            query = query.filter(column.ilike(f"%{v}%"))
+
+    # دریافت پیشنهادات
+    suggestions = (
+        query.with_entities(field_mapping[field])
+        .filter(field_mapping[field].ilike(f"%{value}%"))
+        .distinct()
+        .order_by(field_mapping[field])
+        .all()
+    )
+
+    return {"suggestions": [s[0] for s in suggestions if s[0]]}
+
+
+@phone_bp.route("/suggest_all", methods=["GET"])
+@login_required
+def suggest_all():
+    args = request.args
+
+    field = args.get("field")
+    value = args.get("value", "")
+
+    field_mapping = {
+        "username": Phone.username,
+        "place": Phone.place,
+        "phone_number": Phone.phone_number,
+        "pre_phone_number": Phone.pre_phone_number,
+    }
+
+    if field not in field_mapping:
+        return {"error": "invalid field"}, 400
+
+    column = field_mapping[field]
+
+    suggestions = (
+        Phone.query.with_entities(column)
+        .filter(column.isnot(None))
+        .filter(column.ilike(f"%{value}%"))
+        .distinct()
+        .order_by(column)
+        .all()
+    )
+
+    return {"suggestions": [s[0] for s in suggestions if s[0]]}
 
 
 @phone_bp.route('/show_exel_records', methods=['GET', 'POST'])
