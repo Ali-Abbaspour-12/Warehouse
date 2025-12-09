@@ -46,7 +46,6 @@ def personnel():
     
 
 @personnel_bp.route("/add_personnel", methods=["GET", "POST"])
-@admin_required
 @login_required
 def add_personnel():
     if request.method == 'POST':
@@ -68,7 +67,6 @@ def add_personnel():
 
 @personnel_bp.route("/edit_personnel_<int:personnel_id>", methods=["GET", "POST"])
 @login_required
-@admin_required
 def edit_personnel(personnel_id):
     person = Personnel.query.get_or_404(personnel_id)
     if request.method == 'POST':
@@ -88,7 +86,6 @@ def edit_personnel(personnel_id):
 
 @personnel_bp.route("/delete_personnel_<int:personnel_id>", methods=["GET", "POST"])
 @login_required
-@admin_required
 def delete_personnel(personnel_id):
     personnel = Personnel.query.get_or_404(personnel_id)
     db.session.delete(personnel)
@@ -177,7 +174,6 @@ def suggest_all():
 
 @personnel_bp.route('/show_exel_records', methods=['GET', 'POST'])
 @login_required
-@admin_required
 def show_exel_records():
     filepath = session.get('uploaded_file')
     if not filepath or not os.path.exists(filepath):
@@ -202,7 +198,6 @@ def allowed_file(filename):
 
 @personnel_bp.route('/add_multy_personnel', methods=['GET', 'POST'])
 @login_required
-@admin_required
 def add_multy_personnel():
     if request.method == 'POST':
         file = request.files.get('file')
@@ -227,7 +222,6 @@ def add_multy_personnel():
 
 @personnel_bp.route('/add_multy_personnel_to_database', methods=['POST'])
 @login_required
-@admin_required
 def add_multy_personnel_to_database():
     filepath = session.get('uploaded_file')
     if not filepath or not os.path.exists(filepath):

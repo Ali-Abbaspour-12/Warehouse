@@ -86,13 +86,7 @@ def item():
     return render_template("item_panel/item.html", items=items)
 
 
-   
 
-@item_bp.route("/show_all_records")
-@login_required
-def show_all_records():
-    items = Item.query.all()
-    return render_template("item_panel/show_all_records.html",items=items)
 
 
 @item_bp.route('/item_detail_<int:item_id>')
@@ -135,32 +129,34 @@ def edit_item(item_id):
     item = Item.query.get_or_404(item_id)
 
     if request.method == "POST":
-        # --- آپدیت فیلدها ---
-        for field in [
-            "project_code","warehouse_location","row","user","company","unit",
-            "personnel_code","current_location","system_identification_code",
-            "category","model","serial_number","property_code",
-            "recipient_delivery","closed","description","closed_time"
-        ]:
-            setattr(item, field, request.form.get(field))
 
-        db.session.commit()  # commit بعد از اعمال تغییرات
-
-        # --- لاگ نسخه جدید آیتم ---
-        # بعد از commit کردن تغییرات
-        new_data = {field: getattr(item, field) for field in [
+        # --- 1) قبل از تغییر، از داده‌های قدیمی یک نسخه بگیر ---
+        old_data = {field: getattr(item, field) for field in [
             "project_code","warehouse_location","row","user","company","unit",
             "personnel_code","current_location","system_identification_code",
             "category","model","serial_number","property_code",
             "recipient_delivery","closed","description","closed_time"
         ]}
-        log_item_change(new_data)
 
+        # --- 2) ذخیره نسخه قدیمی در جدول ItemHistory ---
+        history = ItemHistory(
+            item_id=item.id,
+            **old_data
+        )
+        db.session.add(history)
+
+        # --- 3) تغییر مقادیر آیتم ---
+        for field in old_data.keys():
+            setattr(item, field, request.form.get(field))
+
+        # --- 4) ذخیره تغییرات ---
+        db.session.commit()
 
         flash("آیتم با موفقیت ویرایش شد!", "success")
         return redirect(url_for("item_bp.item_detail", item_id=item.id))
 
     return render_template("item_panel/edit_item.html", item=item)
+
 
 
 
