@@ -7,3 +7,5 @@ from .documet import document_bp
 from .personnel import personnel_bp
 from .camera import camera_bp
 from .phone import phone_bp
+from .switch import switch_bp
+from .router import router_bp

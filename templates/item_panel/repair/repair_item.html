@@ -10,10 +10,9 @@
 
     <div class="card-body">
 
-        <table class="table table-bordered table-striped align-middle">
+        <table class="table table-bordered table-striped align-middle text-center">
             <thead class="table-primary">
                 <tr>
-                    <th>ID</th>
                     <th>نوع دستگاه</th>
                     <th>مدل</th>
                     <th>سریال</th>
@@ -27,7 +26,6 @@
             <tbody>
                 {% for r in repairs %}
                 <tr>
-                    <td>{{ r.id }}</td>
                     <td>{{ r.device_type }}</td>
                     <td>{{ r.model }}</td>
                     <td>{{ r.serial_number }}</td>
@@ -36,12 +34,12 @@
                     <td>{{ r.status }}</td>
                     <td>{{ r.current_location }}</td>
                     <td class="text-center">
-                        <a href="{{ url_for('item_bp.edit_repair_item', id=r.id) }}" class="btn btn-sm btn-primary">✏️ ویرایش</a>
+                        <a href="{{ url_for('item_bp.edit_repair_item', id=r.id) }}" class="btn btn-sm btn-primary">✏️
+                            ویرایش</a>
 
-                        <form action="{{ url_for('item_bp.delete_repair_item', id=r.id) }}" 
-                              method="POST" style="display:inline;">
-                            <button onclick="return confirm('حذف شود؟')" 
-                                    class="btn btn-sm btn-danger">🗑️ حذف</button>
+                        <form action="{{ url_for('item_bp.delete_repair_item', id=r.id) }}" method="POST"
+                            style="display:inline;">
+                            <button onclick="return confirm('حذف شود؟')" class="btn btn-sm btn-danger">🗑️ حذف</button>
                         </form>
                     </td>
                 </tr>

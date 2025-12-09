@@ -12,21 +12,35 @@ phone_bp = Blueprint("phone_bp", __name__,url_prefix="/phone")
 
 
 
-@phone_bp.route("/phone", methods=["GET", "POST"])
+@phone_bp.route("/phone")
 @login_required
 def phone():
-    query = request.args.get("q", "").strip()
+    args = request.args
 
-    results = []
-    if query:
-        results = Phone.query.filter(
-            (Phone.username.ilike(f"%{query}%")) |
-            (Phone.place.ilike(f"%{query}%")) |
-            (Phone.phone_number.ilike(f"%{query}%")) |
-            (Phone.pre_phone_number.ilike(f"%{query}%"))
-        ).all()
+    field_mapping = {
+        "username": Phone.username,
+        "place":Phone.place,
+        "phone_number":Phone.phone_number,
+        "pre_phone_number":Phone.pre_phone_number
 
-    return render_template("phone_panel/phone.html", results=results, query=query)
+    }
+
+    query = Phone.query
+    has_filter = False
+
+    for arg_key, model_field in field_mapping.items():
+        value = args.get(arg_key)
+        if value:
+            has_filter = True
+            query = query.filter(model_field.ilike(f"%{value}%"))
+
+    if not has_filter:
+        return render_template("phone_panel/phone.html", phones=[])
+
+    # مرتب‌سازی نزولی بر اساس property_code
+    phones = query.order_by(Phone.phone_number.desc()).all()
+
+    return render_template("phone_panel/phone.html", phones=phones)
     
     
 
@@ -48,10 +62,10 @@ def add_phone():
     return render_template('phone_panel/add_phone.html')
 
 
-@phone_bp.route("/edit_phone_<int:id>", methods=["GET", "POST"])
+@phone_bp.route("/edit_phone_<int:phone_id>", methods=["GET", "POST"])
 @login_required
-def edit_phone(id):
-    phone = Phone.query.get_or_404(id)
+def edit_phone(phone_id):
+    phone = Phone.query.get_or_404(phone_id)
     if request.method == 'POST':
         Phone.username = request.form['username']
         Phone.place = request.form['place']
@@ -65,10 +79,10 @@ def edit_phone(id):
     return render_template('phone_panel/edit_phone.html', phone=phone)
 
 
-@phone_bp.route("/delete_phone_<int:id>", methods=["GET", "POST"])
+@phone_bp.route("/delete_phone_<int:phone_id>", methods=["GET", "POST"])
 @login_required
-def delete_phone(id):
-    phone = Phone.query.get_or_404(id)
+def delete_phone(phone_id):
+    phone = Phone.query.get_or_404(phone_id)
     db.session.delete(phone)
     db.session.commit()
     flash('شماره تلفن با موفقیت حذف شد.', 'success')
@@ -76,34 +90,77 @@ def delete_phone(id):
 
 
 
-@phone_bp.route('/suggestions')
+@phone_bp.route("/suggest", methods=["GET"])
 @login_required
-def phone_suggestions():
-    term = request.args.get('term', '').strip()
-    query = Phone.query
-    if term:
-        query = query.filter(Phone.username.ilike(f'%{term}%'))
-    users = query.order_by(Phone.username).limit(50).all()  # حداکثر 50 مورد
-    suggestions = [user.username for user in users]
-    return jsonify(suggestions)
+def suggest():
+    args = request.args
 
+    field = args.get("field")
+    value = args.get("value", "")
 
+    # مپ فیلدها
+    field_mapping = {
+        "username": Phone.username,
+        "place": Phone.place,
+        "phone_number": Phone.phone_number,
+        "pre_phone_number": Phone.pre_phone_number,
+    }
 
-@phone_bp.route('/field_suggestions')
-@login_required
-def field_suggestions():
-    field = request.args.get('field')
-    term = request.args.get('term', '').strip()
-    if not field or not hasattr(Phone, field):
-        return jsonify([])
+    if field not in field_mapping:
+        return {"error": "invalid field"}, 400
 
     query = Phone.query
-    if term:
-        query = query.filter(getattr(Phone, field).ilike(f'%{term}%'))
 
-    results = query.with_entities(getattr(Phone, field)).distinct().limit(20).all()
-    suggestions = [r[0] for r in results if r[0]]  # حذف None
-    return jsonify(suggestions)
+    # فیلتر سایر فیلدها
+    for key, column in field_mapping.items():
+        if key == field:
+            continue
+        v = args.get(key)
+        if v:
+            query = query.filter(column.ilike(f"%{v}%"))
+
+    # دریافت پیشنهادات
+    suggestions = (
+        query.with_entities(field_mapping[field])
+        .filter(field_mapping[field].ilike(f"%{value}%"))
+        .distinct()
+        .order_by(field_mapping[field])
+        .all()
+    )
+
+    return {"suggestions": [s[0] for s in suggestions if s[0]]}
+
+
+@phone_bp.route("/suggest_all", methods=["GET"])
+@login_required
+def suggest_all():
+    args = request.args
+
+    field = args.get("field")
+    value = args.get("value", "")
+
+    field_mapping = {
+        "username": Phone.username,
+        "place": Phone.place,
+        "phone_number": Phone.phone_number,
+        "pre_phone_number": Phone.pre_phone_number,
+    }
+
+    if field not in field_mapping:
+        return {"error": "invalid field"}, 400
+
+    column = field_mapping[field]
+
+    suggestions = (
+        Phone.query.with_entities(column)
+        .filter(column.isnot(None))
+        .filter(column.ilike(f"%{value}%"))
+        .distinct()
+        .order_by(column)
+        .all()
+    )
+
+    return {"suggestions": [s[0] for s in suggestions if s[0]]}
 
 
 @phone_bp.route('/show_exel_records', methods=['GET', 'POST'])
@@ -114,7 +171,7 @@ def show_exel_records():
         flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
         return redirect(url_for('phone_bp.add_multy_phone'))
 
-    df = pd.read_excel(filepath)
+    df = pd.read_excel(filepath,dtype=str)
     df.fillna('', inplace=True)
     columns = df.columns.tolist()
     data_preview = df.head(50).to_dict(orient='records')  # پیش نمایش 50 ردیف
@@ -162,7 +219,7 @@ def add_multy_phone_to_database():
         flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
         return redirect(url_for('phone_bp.add_multy_phone'))
 
-    df = pd.read_excel(filepath)
+    df = pd.read_excel(filepath , dtype=str)
 
     # پر کردن تمام سلول‌های خالی با خط تیره
     df = df.fillna('-')

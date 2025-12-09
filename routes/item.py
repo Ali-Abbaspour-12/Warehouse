@@ -197,7 +197,7 @@ def add_item():
         db.session.commit()  # commit برای داشتن id
 
         # --- لاگ نسخه جدید ---
-        new_data = {field: getattr(item, field) for field in [
+        new_data = {field: getattr(record, field) for field in [
             "project_code","warehouse_location","row","user","company","unit",
             "personnel_code","current_location","system_identification_code",
             "category","model","serial_number","property_code",

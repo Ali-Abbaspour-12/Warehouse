@@ -1,36 +1,34 @@
 {% extends 'base.html' %}
 
+
 {% block content %}
 
 
-<!-- نمایش پیام flash -->
+<div class="container-fluid mt-4">
+
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-    <div class="col-md-6 mx-auto mb-3">
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
+    <div class="alert alert-info">
+        <ul class="mb-0">
+            {% for category, message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
     </div>
     {% endif %}
     {% endwith %}
 
+    <div class="row g-4">
+        <!-- فرم جستجو در بالای صفحه -->
+        <div class="col-12">
+            <div class="card shadow-lg border-primary w-100 d-flex flex-column">
+                
 
-<div class="container-fluid py-5">
-
-
-    
-
-    <!-- باکس جستجو -->
-    <div class="col-md-6 mx-auto">
-        <div class="card shadow-sm border-primary">
-            <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
+                <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
 
     <span class="ms-auto">افزودن پرسنل</span>
 
-    {% if current_user.is_authenticated and current_user.is_admin %}
+    
     <div class="d-flex gap-2">
 
         <!-- افزودن پرسنل -->
@@ -46,155 +44,97 @@
         </a>
 
     </div>
-    {% endif %}
+    </div>
 
-</div>
+                <div class="card-body text-end p-3">
+                    <form method="get" autocomplete="off" class="text-end">
+                        {% set fields = [
+                        ('username','نام کاربری'),
+                        ('personnel_code','کد پرسنلی'),
+                        ('company','شرکت'),
+                        ('unit','واحد'),
+                        ('national_code','کد ملی'),
+                        ('current_location','محل استقرار'),
+                        ] %}
 
-            <div class="card-body">
-                <form action="{{ url_for('personnel_bp.personnel') }}" method="get" autocomplete="off">
+                        <div class="row">
+                            {% for id,label in fields %}
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3 position-relative text-end">
+                                <label for="{{id}}" class="form-label fw-bold d-block"
+                                    style="font-size:0.85rem; text-align:right;">
+                                    {{label}}
+                                </label>
+                                <input type="text" class="form-control border-primary form-control-sm text-center"
+                                    id="{{id}}" name="{{id}}" onclick="loadSuggestions('{{id}}')"
+                                    oninput="loadSuggestions('{{id}}')">
+                                <div class="suggest-box" id="{{id}}_box"></div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg mx-2 px-4">جستجو</button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-                    <!-- فیلد نام کاربری -->
-                    <div class="position-relative w-100 mb-3">
-                        <label for="username" class="form-label fw-bold" style="font-size:0.85rem;">نام کاربری</label>
-                        <input type="text" id="username" name="q"
-                            class="form-control border-primary form-control-sm w-100" onclick="loadSuggestions()"
-                            oninput="loadSuggestions()">
-                        <div class="suggest-box" id="username_box"></div>
+        <!-- نتایج جستجو در زیر فرم -->
+        <div class="col-12">
+            {% if personnels|length > 0 %}
+            <div class="card shadow border-primary w-100 d-flex flex-column">
+                <div class="card-header bg-primary text-white fw-bold text-center">
+                    نتایج جستجو ({{ personnels|length }} مورد یافت شد)
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table
+                            class="table table-striped table-hover m-0 table-bordered table-sm text-center align-middle w-100">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>نام کاربری</th>
+                                    <th>کد پرسنلی</th>
+                                    <th>شرکت</th>
+                                    <th>واحد</th>
+                                    <th>کد ملی</th>
+                                    <th>محل استقرار</th>
+                                    <th>جزییات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for personnel in personnels %}
+                                <tr>
+                                    <td>{{personnel.username}}</td>
+                                    <td>{{personnel.personnel_code}}</td>
+                                    <td>{{personnel.company}}</td>
+                                    <td>{{personnel.unit}}</td>
+                                    <td>{{personnel.national_code}}</td>
+                                    <td>{{personnel.current_location}}</td>
+                                    <td>
+                                        <a class="btn btn-primary btn-sm"
+                                            href="{{url_for('personnel_bp.edit_personnel', personnel_id=personnel.id, **request.args)}}">ویرایش</a>
+                                        
+                                        <a class="btn btn-warning btn-sm"
+                                            href="{{url_for('personnel_bp.delete_personnel', personnel_id=personnel.id, **request.args)}}" onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">حذف</a>
+                                        
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-
-                    <!-- دکمه جستجو -->
-                    <button class="btn btn-primary w-100 mb-3 btn-lg">جستجو</button>
-
-                </form>
-                
+                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- نتایج جستجو -->
-    {% if results is defined %}
-
-
-    {% if results %}
-
-    <div class="mt-5">
-        <div class="card shadow border-primary w-100 d-flex flex-column">
-            <div class="card-header bg-primary text-white fw-bold text-center">
-                نتایج جستجو
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover m-0 table-bordered table-sm text-center align-middle w-100">
-                    <thead class="table-primary text-center">
-                        <tr>
-                            <th>ID</th>
-                            <th>نام کاربری</th>
-                            <th>کد پرسنلی</th>
-                            <th>شرکت</th>
-                            <th>واحد</th>
-                            <th>کد ملی</th>
-                            <th>محل فعلی</th>
-                            {% if current_user.is_authenticated and current_user.is_admin %}
-                            <th>جزئیات</th>
-                            {%endif%}
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in results %}
-                        <tr>
-                            <td>{{ p.id }}</td>
-                            <td>{{ p.username }}</td>
-                            <td>{{ p.personnel_code }}</td>
-                            <td>{{ p.company }}</td>
-                            <td>{{ p.unit }}</td>
-                            <td>{{ p.national_code }}</td>
-                            <td>{{ p.current_location }}</td>
-                            {% if current_user.is_authenticated and current_user.is_admin %}
-                            <!-- لینک ویرایش -->
-                            <td class="text-center">
-                                <a href="{{ url_for('personnel_bp.edit_personnel', id=p.id) }}"
-                                    class="btn btn-warning btn-sm">ویرایش</a>
-                                <a href="{{ url_for('personnel_bp.delete_personnel', id=p.id) }}"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">
-                                    حذف
-                                </a>
-                            </td>
-                            {%endif%}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% endif %}
         </div>
 
-        {% endif %}
     </div>
-    {% endif %}
-
 </div>
-<style>
-    .card {
-        border-radius: 0.5rem;
-    }
 
-    .card-header {
-        border-radius: 0.5rem 0.5rem 0 0 !important;
-        padding: 1rem;
-        font-size: 1.1rem;
-    }
+<!-- دکمه بازگشت به بالا -->
+<button onclick="scrollToTop()" id="backToTopBtn" title="بازگشت به بالا"
+    style="position:fixed; bottom:20px; right:20px; display:none; z-index:9999;" class="btn btn-primary btn-sm">↑
+    بالا</button>
 
-    .table th {
-        font-weight: bold;
-        background-color: #e3f2fd;
-    }
-</style>
-
-
-<script>
-    async function loadSuggestions() {
-        const input = document.getElementById('username');
-        const box = document.getElementById('username_box');
-        const term = input.value.trim();
-
-        // درخواست به سرور
-        const response = await fetch(`/personnel/suggestions?term=${term}`);
-        const suggestions = await response.json();
-
-        if (suggestions.length === 0) {
-            box.style.display = 'none';
-            box.innerHTML = '';
-            return;
-        }
-
-        // ساخت لیست پیشنهادها
-        box.innerHTML = '';
-        suggestions.forEach(name => {
-            const div = document.createElement('div');
-            div.textContent = name;
-            div.classList.add('suggest-item');
-            div.addEventListener('click', () => {
-                input.value = name;
-                box.style.display = 'none';
-            });
-            box.appendChild(div);
-        });
-
-        box.style.display = 'block';
-    }
-
-    // بستن لیست هنگام کلیک خارج از input
-    document.addEventListener('click', function (e) {
-        const input = document.getElementById('username');
-        const box = document.getElementById('username_box');
-        if (!box.contains(e.target) && !input.contains(e.target)) {
-            box.style.display = 'none';
-        }
-    });
-</script>
-
-
-
+<!-- استایل پیشنهادها -->
 <style>
     .suggest-box {
         position: absolute;
@@ -219,9 +159,135 @@
     .suggest-item:hover {
         background: #e3f2fd;
     }
+
+    /* بهبود نمایش در دستگاه‌های مختلف */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .col-xl-3,
+        .col-lg-4,
+        .col-md-6 {
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-lg {
+            width: 100%;
+            margin-bottom: 0.5rem !important;
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1200px) {
+        .col-xl-3 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @media (min-width: 1201px) {
+        .col-xl-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+    }
+
+    /* بهبود ظاهر فرم */
+    .form-control {
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .table th {
+        font-weight: bold;
+        background-color: #e3f2fd;
+    }
 </style>
 
+<!-- اسکریپت پیشنهاددهی و دکمه بالا -->
+<script>
+    function getAllFieldsExcept(target) {
+        const keys = ["username", "personnel_code", "company", "unit","national_code","current_location"];
+        const params = {};
+        keys.forEach(k => {
+            if (k !== target) {
+                let v = document.getElementById(k)?.value;
+                if (v) params[k] = v;
+            }
+        });
+        return params;
+    }
 
+    function loadSuggestions(field) {
+        let value = document.getElementById(field).value;
 
+        let params = new URLSearchParams();
+        params.append("field", field);
+        params.append("value", value);
+
+        let others = getAllFieldsExcept(field);
+        for (let k in others) params.append(k, others[k]);
+
+        fetch(`/personnel/suggest?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                let box = document.getElementById(field + "_box");
+                box.innerHTML = "";
+                box.style.display = data.suggestions.length ? "block" : "none";
+
+                data.suggestions.forEach(s => {
+                    let div = document.createElement("div");
+                    div.className = "suggest-item";
+                    div.textContent = s;
+
+                    div.onclick = () => {
+                        document.getElementById(field).value = s;
+                        box.style.display = "none";
+                    };
+
+                    box.appendChild(div);
+                });
+            });
+    }
+
+    document.addEventListener("click", (e) => {
+        document.querySelectorAll(".suggest-box").forEach(b => {
+            if (!b.contains(e.target) && !b.previousElementSibling.contains(e.target)) {
+                b.style.display = "none";
+            }
+        });
+    });
+
+    // دکمه بازگشت به بالا
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    window.onscroll = function () { toggleBackToTopBtn(); };
+
+    function toggleBackToTopBtn() {
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            backToTopBtn.style.display = "block";
+        } else {
+            backToTopBtn.style.display = "none";
+        }
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
 
 {% endblock %}

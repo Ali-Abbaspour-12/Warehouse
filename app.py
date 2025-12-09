@@ -4,10 +4,6 @@ from config import Config
 from extensions import db
 from models import User
 from waitress import serve
-
-
-
-
 from routes import (
     login_bp,
     dashboard_bp,
@@ -17,7 +13,9 @@ from routes import (
     personnel_bp,
     item_bp,
     camera_bp,
-    phone_bp
+    phone_bp,
+    switch_bp,
+    router_bp
 )
 
 login_manager = LoginManager()
@@ -55,6 +53,8 @@ def create_app():
     app.register_blueprint(item_bp)
     app.register_blueprint(camera_bp)
     app.register_blueprint(phone_bp)
+    app.register_blueprint(switch_bp)
+    app.register_blueprint(router_bp)
 
     return app
 

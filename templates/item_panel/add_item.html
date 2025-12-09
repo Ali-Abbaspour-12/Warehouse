@@ -7,8 +7,18 @@
         <!-- فرم جستجو در بالای صفحه -->
         <div class="col-12">
             <div class="card shadow-lg border-primary w-100 d-flex flex-column">
-                <div class="card-header bg-primary text-white fw-bold">
-                    افزودن آیتم
+                <div
+                    class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
+
+                    <span class="ms-auto">جستجو آیتم</span>
+
+                    <div class="d-flex gap-2">
+                        <!-- اموال تعمیری -->
+                        <a href="{{url_for('item_bp.excel_import')}}" class="btn btn-light btn-sm">
+                            ➕ افزودن دسته جمعی آیتم ها 
+                        </a>
+                    </div>
+
                 </div>
 
                 <div class="card-body text-end p-3">
@@ -41,7 +51,7 @@
                                     style="font-size:0.85rem; text-align:right;">
                                     {{label}}
                                 </label>
-                                <input type="text" class="form-control border-primary form-control-sm text-end"
+                                <input type="text" class="form-control border-primary form-control-sm text-center"
                                     id="{{id}}" name="{{id}}" onclick="loadSuggestions('{{id}}')"
                                     oninput="loadSuggestions('{{id}}')">
                                 <div class="suggest-box" id="{{id}}_box"></div>
