@@ -2,41 +2,44 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4 text-primary">آخرین تغییرات آیتم‌ها</h2>
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered table-hover">
-            <thead class="table-primary">
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Project Code</th>
-                    <th scope="col">Warehouse Location</th>
-                    <th scope="col">User</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Changed At</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for log in logs %}
-                <tr>
-                    <td>{{ log.id }}</td>
-                    <td>{{ log.project_code }}</td>
-                    <td>{{ log.warehouse_location }}</td>
-                    <td>{{ log.user }}</td>
-                    <td>{{ log.description }}</td>
-                    <td>{{ log.changed_at }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="card">
+        <div class="card-header bg-primary text-white text-center p-3">
+            <h5 class="mb-0">آخرین تغییرات آیتم‌ها</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover mb-0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th scope="col">کاربر</th>
+                            <th scope="col">کد شناسایی سیستم</th>
+                            <th scope="col">انبار</th>
+                            <th scope="col">ردیف</th>
+                            <th scope="col">تحویل گیرنده</th>
+                            <th scope="col">تاریخ تغییر</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ log.user }}</td>
+                            <td>{{ log.system_identification_code }}</td>
+                            <td>{{ log.warehouse_location }}</td>
+                            <td>{{ log.row }}</td>
+                            <td>{{ log.recipient_delivery }}</td>
+                            <td>{{ log.changed_at }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
     body {
         background-color: #f0f8ff; /* پس‌زمینه روشن آبی */
-    }
-    h2 {
-        font-weight: 600;
     }
     table th, table td {
         vertical-align: middle;
