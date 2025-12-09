@@ -33,8 +33,7 @@ class Item(db.Model):
     description = db.Column(db.String(512))   
     closed = db.Column(db.String(80))
     closed_time = db.Column(db.String(80))
-
-    item_history = db.relationship('ItemHistory',backref='Item',lazy=True)
+    item_history = db.relationship('ItemHistory',backref='Item',lazy=True,cascade="all, delete-orphan")
 
 
 class ItemHistory(db.Model):
@@ -59,7 +58,7 @@ class ItemHistory(db.Model):
     closed = db.Column(db.String(80))
     closed_time = db.Column(db.String(80))
     changed_at = db.Column(db.String(80),default = get_now_jalali())
-    item_id = db.Column(db.Integer,db.ForeignKey('items.id'),nullable=False)
+    item_id = db.Column(db.Integer,db.ForeignKey('items.id',ondelete="CASCADE"),nullable=False)
 
 
 

@@ -183,7 +183,7 @@ def show_exel_records():
     df = pd.read_excel(filepath,dtype=str)
     df.fillna('', inplace=True)
     columns = df.columns.tolist()
-    data_preview = df.head(50).to_dict(orient='records')  # پیش نمایش 50 ردیف
+    data_preview = df.to_dict(orient='records')  # پیش نمایش 50 ردیف
 
     return render_template('personnel_panel/show_exel_records.html', columns=columns, data=data_preview)
 
