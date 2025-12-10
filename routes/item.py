@@ -356,6 +356,89 @@ def delete_repair_item(id):
 
 
 
+@item_bp.route('/show_exel_records_repair', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def show_exel_records_repair():
+    filepath = session.get('uploaded_file')
+    if not filepath or not os.path.exists(filepath):
+        flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
+        return redirect(url_for('item_bp.add_multy_repair_item'))
+
+    df = pd.read_excel(filepath,dtype=str)
+    df.fillna('', inplace=True)
+    columns = df.columns.tolist()
+    data_preview = df.to_dict(orient='records')  # پیش نمایش 50 ردیف
+
+    return render_template('item_panel/repair/show_exel_records_repair.html', columns=columns, data=data_preview)
+
+
+
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@item_bp.route('/add_multy_repair_item', methods=['GET', 'POST'])
+@login_required
+def add_multy_repair_item():
+    if request.method == 'POST':
+        file = request.files.get('file')
+        if not file or file.filename == '':
+            flash('لطفا یک فایل اکسل انتخاب کنید.', 'danger')
+            return redirect(request.url)
+        if not allowed_file(file.filename):
+            flash('فرمت فایل باید اکسل باشد.', 'danger')
+            return redirect(request.url)
+
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+
+        # ذخیره مسیر فایل در session برای استفاده در مراحل بعد
+        session['uploaded_file'] = filepath
+
+        return redirect(url_for('item_bp.show_exel_records_repair'))
+
+    return render_template('item_panel/repair/add_multy_repair_item.html')
+
+
+@item_bp.route('/add_multy_repair_item_to_database', methods=['POST'])
+@login_required
+def add_multy_repair_item_to_database():
+    filepath = session.get('uploaded_file')
+    if not filepath or not os.path.exists(filepath):
+        flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
+        return redirect(url_for('item_bp.add_multy_repair_item'))
+
+    df = pd.read_excel(filepath , dtype=str)
+
+    # پر کردن تمام سلول‌های خالی با خط تیره
+    df = df.fillna('-')
+
+    db_fields = ['device_type','model','serial_number','property_code','description','status','current_location']
+
+    # ساخت و ذخیره ردیف‌ها
+    for _, row in df.iterrows():
+        data = {field: row.get(field, '-') for field in db_fields}
+
+        if data.get('username') != '-':  # حداقل شرط معتبر بودن رکورد
+            repair_item = Repair(**data)
+            db.session.add(repair_item)
+
+    db.session.commit()
+
+    flash('چند شماره تلفن با موفقیت وارد دیتابیس شدند.', 'success')
+    session.pop('uploaded_file', None)
+
+    return redirect(url_for('item_bp.repair_item'))
+
+
+
+
+
 
 @item_bp.route("/suggest", methods=["GET"])
 @login_required
