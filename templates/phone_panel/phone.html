@@ -1,5 +1,3 @@
-
-
 {% extends "base.html" %}
 
 {% block content %}
@@ -22,24 +20,25 @@
         <!-- فرم جستجو در بالای صفحه -->
         <div class="col-12">
             <div class="card shadow-lg border-primary w-100 d-flex flex-column">
-                <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
+                <div
+                    class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
 
-                <span class="ms-auto">افزودن شماره تلفن</span>
+                    <span class="ms-auto">افزودن شماره تلفن</span>
 
-                <div class="d-flex gap-2">
+                    <div class="d-flex gap-2">
 
-                    <!-- افزودن تلفن -->
-                    <a href="{{ url_for('phone_bp.add_phone') }}" class="btn btn-light btn-sm">
-                        📞 افزودن تلفن
-                    </a>
+                        <!-- افزودن تلفن -->
+                        <a href="{{ url_for('phone_bp.add_phone') }}" class="btn btn-light btn-sm">
+                            📞 افزودن تلفن
+                        </a>
 
-                    <!-- افزودن دسته جمعی تلفن -->
-                    <a href="{{ url_for('phone_bp.add_multy_phone') }}" class="btn btn-light btn-sm">
-                        📚 افزودن دسته جمعی
-                    </a>
+                        <!-- افزودن دسته جمعی تلفن -->
+                        <a href="{{ url_for('phone_bp.add_multy_phone') }}" class="btn btn-light btn-sm">
+                            📚 افزودن دسته جمعی
+                        </a>
 
+                    </div>
                 </div>
-            </div>
 
                 <div class="card-body text-end p-3">
                     <form method="get" autocomplete="off" class="text-end">
@@ -100,10 +99,11 @@
                                     <td>
                                         <a class="btn btn-primary btn-sm"
                                             href="{{url_for('phone_bp.edit_phone', phone_id=phone.id, **request.args)}}">ویرایش</a>
-                                        
+
                                         <a class="btn btn-warning btn-sm"
-                                            href="{{url_for('phone_bp.delete_phone', phone_id=phone.id, **request.args)}}" onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">حذف</a>
-                                        
+                                            href="{{url_for('phone_bp.delete_phone', phone_id=phone.id, **request.args)}}"
+                                            onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">حذف</a>
+
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -245,13 +245,22 @@
 
                     div.onclick = () => {
                         document.getElementById(field).value = s;
+
+                        // بستن باکس جاری
                         box.style.display = "none";
+
+                        // 🔥 وقتی روی یکی کلیک شد، بقیه پیشنهادها بر اساس دیتابیس آپدیت شوند
+                        refreshAllSuggestions(field);
                     };
 
                     box.appendChild(div);
                 });
+
+                // 🔥 وقتی تایپ یا کلیک شد، بقیه پیشنهادها آپدیت شوند
+                refreshAllSuggestions(field);
             });
     }
+
 
     document.addEventListener("click", (e) => {
         document.querySelectorAll(".suggest-box").forEach(b => {

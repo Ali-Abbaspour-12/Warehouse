@@ -1,71 +1,100 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container-fluid mt-5 d-flex justify-content-center">
 
-    <div class="card shadow-lg w-100 border-primary p-4">
+<div class="card shadow-lg w-100 border-primary">
 
-        <div class="card-header bg-primary text-white fw-bold">
-            جستجو آیتم
-        </div>
+    <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center py-3">
 
-        <div class="card-body">
+        <span class="ms-auto">جستجو آیتم</span>
 
-            <form method="POST" class="row g-3" autocomplete="off">
+        <div class="d-flex gap-2">
 
-                {% set fields = [
-                ('project_code','کد پروژه'),
-                ('warehouse_location','انبار'),
-                ('row','ردیف'),
-                ('user','کاربر'),
-                ('company','شرکت'),
-                ('unit','واحد'),
-                ('personnel_code','کد پرسنلی'),
-                ('current_location','مکان فعلی'),
-                ('system_identification_code','کد شناسایی سیستم'),
-                ('category','گروه بندی'),
-                ('model','مدل'),
-                ('serial_number','شماره سریال'),
-                ('property_code','کد اموال'),
-                ('recipient_delivery','تحویل گیرنده'),
-                ('description','توضیحات'),
-                ('closed','مختوم شده'),
-                ('closed_time','تاریخ اختتام'),
-                ] %}
+            <!-- باکس سفید دکمه باز کردن همه -->
+            
+                <button class="btn btn-light btn-sm fw-bold" onclick="unlockAllFields()">
+                    باز کردن همه فیلدهای قفل شده
+                </button>
+            
 
-                {% for id, label in fields %}
-                <div class="col-md-6 position-relative">
-                    <label class="form-label text-primary fw-bold">{{ label }}</label>
 
-                    <input type="text" id="{{ id }}" name="{{ id }}" value="{{ item.__dict__.get(id, '') }}"
-                        class="form-control border-primary" oninput="loadSuggestions('{{ id }}')"
-                        onclick="loadSuggestions('{{ id }}')">
-
-                    <div class="suggest-box" id="{{ id }}_box"></div>
+            <!-- باکس سفید فیلتر -->
+            <div class="bg-light rounded-2 p-2">
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" id="filterMode" checked>
+                    <label class="form-check-label fw-bold text-dark ms-2" for="filterMode">
+                        فیلتر بر اساس سایر فیلدها
+                    </label>
                 </div>
-                {% endfor %}
-
-
-                <div class="col-12 text-center mt-3">
-                    <br>
-                    <button type="submit" class="btn btn-primary px-5">ذخیره تغییرات</button>
-
-                    <a href="{{ url_for('item_bp.item_detail', item_id=item.id) }}" class="btn btn-secondary px-5">
-                        بازگشت
-                    </a>
-                </div>
-
-
-
-            </form>
-
-
+            </div>
 
         </div>
 
     </div>
 
+
+
+
+    <div class="card-body p-4">
+        <form method="POST" class="row g-3" autocomplete="off">
+
+            {% set fields = [
+            ('project_code','کد پروژه'),
+            ('warehouse_location','انبار'),
+            ('row','ردیف'),
+            ('user','کاربر'),
+            ('company','شرکت'),
+            ('unit','واحد'),
+            ('personnel_code','کد پرسنلی'),
+            ('current_location','مکان فعلی'),
+            ('system_identification_code','کد شناسایی سیستم'),
+            ('category','گروه بندی'),
+            ('model','مدل'),
+            ('serial_number','شماره سریال'),
+            ('property_code','کد اموال'),
+            ('recipient_delivery','تحویل گیرنده'),
+            ('description','توضیحات'),
+            ('closed','مختوم شده'),
+            ('closed_time','تاریخ اختتام'),
+            ] %}
+
+
+
+            {% for id, label in fields %}
+            <div class="col-md-6 position-relative mb-3">
+
+                <label class="form-label text-primary fw-bold">{{ label }}</label>
+
+                <div class="input-wrapper d-flex align-items-center">
+                    <input type="text" id="{{ id }}" name="{{ id }}" value="{{ item.__dict__.get(id, '') }}"
+                        class="form-control border-primary" oninput="safeSuggestions('{{ id }}')"
+                        onclick="safeSuggestions('{{ id }}')">
+                </div>
+
+                <div class="suggest-box" id="{{ id }}_box"></div>
+
+            </div>
+            {% endfor %}
+
+
+
+
+            <div class="col-12 text-center mt-3">
+                <br>
+                <button type="submit" class="btn btn-primary px-5">ذخیره تغییرات</button>
+
+                <a href="{{ url_for('item_bp.item_detail', item_id=item.id) }}" class="btn btn-secondary px-5">
+                    بازگشت
+                </a>
+            </div>
+
+
+
+        </form>
+    </div>
+
 </div>
+
 
 <style>
     .suggest-box {
@@ -91,9 +120,35 @@
     .suggest-item:hover {
         background: #e3f2fd;
     }
+
+    .locked-input {
+        background: #e9e9e9 !important;
+        cursor: not-allowed;
+    }
+
+
+    .lock-icon {
+        cursor: pointer;
+        font-size: 20px;
+        color: #0d6efd;
+    }
 </style>
 
 <script>
+
+    function safeSuggestions(fieldId) {
+        const input = document.getElementById(fieldId);
+
+        // اگر readonly است → لیست پیشنهادها را باز نکن
+        if (input.hasAttribute("readonly")) {
+            return;
+        }
+
+        // اگر باز است → اجرا شود
+        loadSuggestions(fieldId);
+    }
+
+
     function loadSuggestions(field) {
         let value = document.getElementById(field).value;
 
@@ -101,11 +156,34 @@
         params.append("field", field);
         params.append("value", value);
 
-        fetch(`/item/suggest_all?${params.toString()}`)
+        // بررسی وضعیت سوییچ
+        let filterMode = document.getElementById("filterMode").checked;
+
+        let url = filterMode
+            ? "/item/suggest"      // پیشنهاد بر اساس سایر فیلدها
+            : "/item/suggest_all"; // همه مقادیر بدون توجه به فیلدهای دیگر
+
+        // اگر حالت فیلتر فعال باشد، مقدار سایر فیلدها نیز ارسال شود
+        if (filterMode) {
+            const allFields = [
+                "project_code", "warehouse_location", "row", "user", "company", "unit",
+                "personnel_code", "current_location", "system_identification_code",
+                "category", "model", "serial_number", "property_code", "recipient_delivery",
+                "description", "closed", "closed_time"
+            ];
+
+            allFields.forEach(f => {
+                if (f !== field) {
+                    let v = document.getElementById(f)?.value;
+                    if (v) params.append(f, v);
+                }
+            });
+        }
+
+        fetch(`${url}?${params.toString()}`)
             .then(res => res.json())
             .then(data => {
                 let box = document.getElementById(field + "_box");
-
                 box.innerHTML = "";
                 box.style.display = data.suggestions.length ? "block" : "none";
 
@@ -124,6 +202,7 @@
             });
     }
 
+
     document.addEventListener("click", (e) => {
         document.querySelectorAll(".suggest-box").forEach(b => {
             if (!b.contains(e.target) &&
@@ -132,6 +211,45 @@
             }
         });
     });
+
+    const unlockedFields = ["project_code", "warehouse_location", "row", "user", "company", "unit",
+        "personnel_code", "current_location", "system_identification_code",
+        "recipient_delivery",
+        "description", "closed", "closed_time"]; // فیلدهای باز
+
+    window.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("input.form-control").forEach(input => {
+            const id = input.id;
+
+            if (!unlockedFields.includes(id)) {
+                input.setAttribute("readonly", true);
+                input.classList.add("locked-input");
+            }
+        });
+    });
+
+
+
+    function unlockAllFields() {
+        document.querySelectorAll("input.form-control").forEach(input => {
+
+            if (input.hasAttribute("readonly")) {
+                input.removeAttribute("readonly");
+                input.classList.remove("locked-input");
+
+                // اگر آیکون داشت (در صورت وجود)
+                const icon = input.parentElement.querySelector(".lock-icon i");
+                if (icon) {
+                    icon.classList.remove("bi-lock");
+                    icon.classList.add("bi-unlock");
+                }
+            }
+        });
+
+    }
+
+
+
 </script>
 
 
