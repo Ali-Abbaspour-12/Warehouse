@@ -206,6 +206,17 @@ def add_item():
 
 
 
+@item_bp.route("/delete_item_<int:item_id>", methods=["GET", "POST"])
+@login_required
+def delete_item(item_id):
+    item = Item.query.get_or_404(item_id)
+    db.session.delete(item)
+    db.session.commit()
+    flash(' آیتم با موفقیت حذف شد.', 'success')
+    return redirect(url_for('item_bp.item'))
+
+
+
 
 @item_bp.route('/show_exel_records', methods=['GET', 'POST'])
 @login_required

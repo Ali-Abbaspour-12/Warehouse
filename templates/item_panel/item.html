@@ -133,6 +133,10 @@
                                         {% if current_user.is_authenticated and current_user.is_admin %}
                                         <a class="btn btn-warning btn-sm"
                                             href="{{url_for('item_bp.edit_item', item_id=item.id, **request.args)}}">ویرایش</a>
+
+                                            <a class="btn btn-danger btn-sm"
+                                            href="{{ url_for('item_bp.delete_item', item_id=item.id,**request.args) }}"
+                                            onclick="return confirm('آیا از حذف این آیتم مطمئن هستید؟');">حذف</a>
                                         {% endif %}
                                     </td>
                                 </tr>
