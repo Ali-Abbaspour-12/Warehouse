@@ -1,48 +1,77 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 </head>
+
 <body class="bg-light">
 
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card shadow-lg border-primary p-4" style="width: 350px;">
 
-        <h3 class="card-title text-center text-primary mb-3 fw-bold">ورود به سیستم</h3>
+      <h3 class="card-title text-center text-primary mb-3 fw-bold">ورود به سیستم</h3>
 
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <div class="alert alert-danger">
-              <ul class="mb-0">
-                {% for msg in messages %}
-                  <li>{{ msg }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
-        {% endwith %}
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          {% for msg in messages %}
+          <li>{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% endwith %}
 
-        <form method="POST" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label for="username" class="form-label fw-bold text-primary">نام کاربری:</label>
-                <input type="text" name="username" id="username" class="form-control border-primary" required>
-            </div>
+      <form method="POST" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="username" class="form-label fw-bold text-primary">نام کاربری:</label>
+          <input type="text" name="username" id="username" class="form-control border-primary pe-5" required>
+        </div>
 
-            <div class="mb-3">
-                <label for="password" class="form-label fw-bold text-primary">رمز عبور:</label>
-                <input type="password" name="password" id="password" class="form-control border-primary" required>
-            </div>
+        <div class="mb-3">
+          <label for="password" class="form-label fw-bold text-primary">رمز عبور:</label>
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary fw-bold">ورود</button>
-            </div>
-        </form>
+          <div class="position-relative">
+            <input type="password" name="password" id="password" class="form-control border-primary pe-5" required>
+
+            <span onclick="togglePassword()" class="position-absolute top-50 translate-middle-y"
+              style="left:10px; cursor:pointer; z-index:10;">
+              👁
+            </span>
+          </div>
+        </div>
+
+
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary fw-bold">ورود</button>
+        </div>
+      </form>
     </div>
-</div>
+  </div>
 
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  <script>
+    function togglePassword() {
+      const password = document.getElementById("password");
+
+      if (password.type === "password") {
+        password.type = "text";
+      } else {
+        password.type = "password";
+      }
+    }
+  </script>
+
+
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
+
+
+
+
 </html>
