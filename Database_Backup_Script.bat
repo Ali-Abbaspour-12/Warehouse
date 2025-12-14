@@ -2,14 +2,14 @@
 setlocal enabledelayedexpansion
 
 REM ===== تنظیمات =====
-set PG_DUMP=D:\ALLAH\Postgresql\bin\pg_dump.exe
+set PG_DUMP=D:\ALLAH\Database\bin\pg_dump.exe
 set DB_NAME=Database
 set DB_USER=postgres
 set DB_PASSWORD=Aass13579
 set HOST=localhost
 set PORT=5002
-set BACKUP_DIR=M:\Database
-set LOG_FILE=M:\Database\logs.txt
+set BACKUP_DIR=N:\A.Abbaspour\Database
+set LOG_FILE=N:\A.Abbaspour\Database\logs.txt
 REM =====================
 
 REM تاریخ و ساعت
