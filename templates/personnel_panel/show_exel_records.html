@@ -1,11 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<style>
+    /* اسکرول افقی در کل صفحه فعال باشد */
+    html,
+    body {
+        overflow-x: auto !important;
+    }
+
+    /* جمع‌وجور کردن جدول برای دیدن 19 ستون */
+    .table-condensed-custom th,
+    .table-condensed-custom td {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    /* جلوگیری از جمع شدن جدول و نمایش درست اسکرول */
+    .table-responsive {
+        min-width: max-content !important;
+    }
+</style>
+
 <div class="container py-5">
-    <h2 class="text-center text-primary mb-4">پیش‌نمایش ریکوردهای فایل اکسل</h2>
 
     <form method="post" action="{{ url_for('personnel_bp.add_multy_personnel_to_database') }}">
         <div class="table-responsive mb-4">
-            <table class="table table-bordered table-striped table-hover">
+            <table class="table table-bordered table-striped table-hover table-condensed-custom">
                 <thead>
                     <tr>
                         {% for col in columns %}
@@ -23,8 +45,13 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <button class="btn btn-primary w-100">وارد کردن به دیتابیس</button>
         </div>
-        <button class="btn btn-primary w-100">وارد کردن به دیتابیس</button>
+
     </form>
+
+
+
 </div>
+
 {% endblock %}

@@ -64,5 +64,8 @@ app = create_app()
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host="0.0.0.0", port=5001,debug=True)
-    #serve(app, host="0.0.0.0", port=5001)
+    #app.run(host="0.0.0.0", port=5001,debug=True)
+    serve(app, host="0.0.0.0", port=5001,threads=8,
+          channel_timeout=120,backlog=120
+          ,cleanup_interval=30,recv_bytes=65536,
+          send_bytes=65536,log_socket_errors=True)

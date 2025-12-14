@@ -3,14 +3,32 @@
 {% block content %}
 
 <div class="card shadow mt-4">
-    <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
-        <h4 class="m-0">لیست تعمیرات</h4>
-        <a href="{{ url_for('item_bp.add_repair_item') }}" class="btn btn-light">➕ افزودن تعمیر جدید</a>
-    </div>
 
-    <div class="card-body">
+        <div
+                    class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
 
-        <table class="table table-bordered table-striped align-middle text-center">
+                    <span class="ms-auto">جستجو آیتم</span>
+
+                    <div class="d-flex gap-2">
+                        
+                        {% if current_user.is_authenticated and current_user.is_admin %}
+                        <a href="{{url_for('item_bp.add_repair_item')}}" class="btn btn-light btn-sm">
+                            🛠️ افزودن تعمیر جدید
+                        </a>
+
+                
+                        <a href="{{url_for('item_bp.add_multy_repair_item')}}" class="btn btn-light btn-sm">
+                            🛠️  افزودن تعمیر دسته جمعی
+                        </a>
+                        {% endif %}
+
+                        
+                    </div>
+
+                </div>
+
+    <div class="card-body p-0">
+        <table class="table table-bordered table-striped align-middle text-center mb-0">
             <thead class="table-primary">
                 <tr>
                     <th>نوع دستگاه</th>
@@ -20,7 +38,9 @@
                     <th>توضیحات</th>
                     <th>وضعیت</th>
                     <th>محل فعلی</th>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
                     <th>عملیات</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -33,20 +53,18 @@
                     <td>{{ r.description }}</td>
                     <td>{{ r.status }}</td>
                     <td>{{ r.current_location }}</td>
-                    <td class="text-center">
-                        <a href="{{ url_for('item_bp.edit_repair_item', id=r.id) }}" class="btn btn-sm btn-primary">✏️
-                            ویرایش</a>
-
-                        <form action="{{ url_for('item_bp.delete_repair_item', id=r.id) }}" method="POST"
-                            style="display:inline;">
-                            <button onclick="return confirm('حذف شود؟')" class="btn btn-sm btn-danger">🗑️ حذف</button>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                    <td class="text-center d-flex">
+                        <a href="{{ url_for('item_bp.edit_repair_item', id=r.id) }}" class="btn btn-sm btn-primary fill-flex">ویرایش</a>
+                        <form action="{{ url_for('item_bp.delete_repair_item', id=r.id) }}" method="POST" style="display:inline;">
+                            <button onclick="return confirm('حذف شود؟')" class="btn btn-sm btn-danger fill-flex">حذف</button>
                         </form>
                     </td>
+                    {%endif%}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-
     </div>
 </div>
 

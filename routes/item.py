@@ -86,13 +86,7 @@ def item():
     return render_template("item_panel/item.html", items=items)
 
 
-   
 
-@item_bp.route("/show_all_records")
-@login_required
-def show_all_records():
-    items = Item.query.all()
-    return render_template("item_panel/show_all_records.html",items=items)
 
 
 @item_bp.route('/item_detail_<int:item_id>')
@@ -135,37 +129,37 @@ def edit_item(item_id):
     item = Item.query.get_or_404(item_id)
 
     if request.method == "POST":
-        # --- آپدیت فیلدها ---
-        for field in [
-            "project_code","warehouse_location","row","user","company","unit",
-            "personnel_code","current_location","system_identification_code",
-            "category","model","serial_number","property_code",
-            "recipient_delivery","closed","description","closed_time"
-        ]:
-            setattr(item, field, request.form.get(field))
 
-        db.session.commit()  # commit بعد از اعمال تغییرات
-
-        # --- لاگ نسخه جدید آیتم ---
-        # بعد از commit کردن تغییرات
-        new_data = {field: getattr(item, field) for field in [
+        # --- 1) ذخیره داده‌های قدیمی ---
+        old_data = {field: getattr(item, field) for field in [
             "project_code","warehouse_location","row","user","company","unit",
             "personnel_code","current_location","system_identification_code",
             "category","model","serial_number","property_code",
             "recipient_delivery","closed","description","closed_time"
         ]}
-        log_item_change(new_data)
 
+        # --- 2) ذخیره نسخه قدیمی در ItemHistory ---
+        history = ItemHistory(
+            item_id=item.id,
+            **old_data
+        )
+        db.session.add(history)
+
+        # --- 3) اعمال تغییرات جدید روی آیتم ---
+        for field in old_data.keys():
+            setattr(item, field, request.form.get(field))
+
+        # --- 4) ذخیره در دیتابیس ---
+        db.session.commit()
+
+        # --- 5) لاگ‌گذاری نسخه جدید مثل add_item ---
+        new_data = {field: getattr(item, field) for field in old_data.keys()}
+        log_item_change(new_data)  # <-- این اضافه شده
 
         flash("آیتم با موفقیت ویرایش شد!", "success")
         return redirect(url_for("item_bp.item_detail", item_id=item.id))
 
     return render_template("item_panel/edit_item.html", item=item)
-
-
-
-
-
 
 
 
@@ -212,78 +206,100 @@ def add_item():
 
 
 
+@item_bp.route("/delete_item_<int:item_id>", methods=["GET", "POST"])
+@login_required
+def delete_item(item_id):
+    item = Item.query.get_or_404(item_id)
+    db.session.delete(item)
+    db.session.commit()
+    flash(' آیتم با موفقیت حذف شد.', 'success')
+    return redirect(url_for('item_bp.item'))
 
-@item_bp.route("/excel_import/show_records", methods=["POST"])
+
+
+
+@item_bp.route('/show_exel_records', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def show_records():
-    file = request.files.get("excel_file")
+def show_exel_records():
+    filepath = session.get('uploaded_file')
+    if not filepath or not os.path.exists(filepath):
+        flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
+        return redirect(url_for('item_bp.add_multy_item'))
 
-    if not file or file.filename == "":
-        flash("لطفاً یک فایل اکسل انتخاب کنید!", "danger")
-        return redirect(url_for("item_bp.excel_import"))
+    df = pd.read_excel(filepath,dtype=str)
+    df.fillna('', inplace=True)
+    columns = df.columns.tolist()
+    data_preview = df.to_dict(orient='records')  # پیش نمایش 50 ردیف
 
-    # ذخیره موقت
-    filename = secure_filename(file.filename)
-    temp_path = os.path.join("uploads", filename)
-    os.makedirs("uploads", exist_ok=True)
-    file.save(temp_path)
+    return render_template('item_panel/show_exel_records.html', columns=columns, data=data_preview)
 
-    # خواندن فایل
-    df = pd.read_excel(temp_path).astype(str)
 
-    # ذخیره نام فایل برای مرحله بعد (import)
-    session["uploaded_excel"] = filename
 
-    # ارسال DataFrame به صفحه HTML
-    records = df.to_dict(orient="records")
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-    return render_template("item_panel/show_records.html", records=records)
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@item_bp.route('/excel_import')
+@item_bp.route('/add_multy_item', methods=['GET', 'POST'])
 @login_required
-@admin_required
-def excel_import():
-    return render_template('item_panel/excel_import.html')
+def add_multy_item():
+    if request.method == 'POST':
+        file = request.files.get('file')
+        if not file or file.filename == '':
+            flash('لطفا یک فایل اکسل انتخاب کنید.', 'danger')
+            return redirect(request.url)
+        if not allowed_file(file.filename):
+            flash('فرمت فایل باید اکسل باشد.', 'danger')
+            return redirect(request.url)
+
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+
+        # ذخیره مسیر فایل در session برای استفاده در مراحل بعد
+        session['uploaded_file'] = filepath
+
+        return redirect(url_for('item_bp.show_exel_records'))
+
+    return render_template('item_panel/add_multy_item.html')
 
 
-
-@item_bp.route("/excel_import/import_to_database", methods=["POST"])
+@item_bp.route('/add_multy_item_to_database', methods=['POST'])
 @login_required
-@admin_required
-def import_to_database():
+def add_multy_item_to_database():
+    filepath = session.get('uploaded_file')
+    if not filepath or not os.path.exists(filepath):
+        flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
+        return redirect(url_for('item_bp.add_multy_item'))
 
-    filename = session.get("uploaded_excel")
+    df = pd.read_excel(filepath , dtype=str)
 
-    if not filename:
-        flash("هیچ فایلی برای وارد کردن یافت نشد!", "danger")
-        return redirect(url_for("item_bp.excel_import"))
+    # پر کردن تمام سلول‌های خالی با خط تیره
+    df = df.fillna('-')
 
-    file_path = os.path.join("uploads", filename)
+    db_fields = ['project_code','warehouse_location','row','user','company','unit','personnel_code',
+                 'current_location','system_identification_code','category','model','serial_number','property_code',
+                 'recipient_delivery','description','closed','closed_time']
 
-    # خواندن اکسل و تبدیل نال‌ها به خط تیره
-    excelFile = pd.read_excel(file_path)
-    excelFile = excelFile.fillna("-").astype(str)
+    # ساخت و ذخیره ردیف‌ها
+    for _, row in df.iterrows():
+        data = {field: row.get(field, '-') for field in db_fields}
 
-    db_fields = [
-        "project_code", "warehouse_location", "row", "user", "company", "unit",
-        "personnel_code", "current_location", "system_identification_code",
-        "category", "model", "serial_number", "property_code",
-        "recipient_delivery", "description", "closed", "closed_time"
-    ]
-
-    for _, excelRow in excelFile.iterrows():
-
-        # ساخت دیکشنری امن: اگر ستون نبود → '-'
-        data = {field: excelRow.get(field, "-") for field in db_fields}
-
-        record = Item(**data)
-        db.session.add(record)
+        if data.get('username') != '-':  # حداقل شرط معتبر بودن رکورد
+            item = Item(**data)
+            db.session.add(item)
 
     db.session.commit()
 
-    flash("داده‌ها با موفقیت وارد پایگاه داده شدند!", "success")
-    return redirect(url_for("item_bp.excel_import"))
+    flash('چند شماره تلفن با موفقیت وارد دیتابیس شدند.', 'success')
+    session.pop('uploaded_file', None)
+
+    return redirect(url_for('item_bp.item'))
+
+
 
 
 
@@ -292,6 +308,8 @@ def import_to_database():
 def repair_item():
     repairs = Repair.query.all()
     return render_template("item_panel/repair/repair_item.html", repairs=repairs)
+
+
 
 
 @item_bp.route("/add_repair_item", methods=["GET", "POST"])
@@ -345,6 +363,89 @@ def delete_repair_item(id):
     db.session.delete(repair)
     db.session.commit()
     return redirect(url_for("item_bp.repair_item"))
+
+
+
+
+@item_bp.route('/show_exel_records_repair', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def show_exel_records_repair():
+    filepath = session.get('uploaded_file')
+    if not filepath or not os.path.exists(filepath):
+        flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
+        return redirect(url_for('item_bp.add_multy_repair_item'))
+
+    df = pd.read_excel(filepath,dtype=str)
+    df.fillna('', inplace=True)
+    columns = df.columns.tolist()
+    data_preview = df.to_dict(orient='records')  # پیش نمایش 50 ردیف
+
+    return render_template('item_panel/repair/show_exel_records_repair.html', columns=columns, data=data_preview)
+
+
+
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@item_bp.route('/add_multy_repair_item', methods=['GET', 'POST'])
+@login_required
+def add_multy_repair_item():
+    if request.method == 'POST':
+        file = request.files.get('file')
+        if not file or file.filename == '':
+            flash('لطفا یک فایل اکسل انتخاب کنید.', 'danger')
+            return redirect(request.url)
+        if not allowed_file(file.filename):
+            flash('فرمت فایل باید اکسل باشد.', 'danger')
+            return redirect(request.url)
+
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+
+        # ذخیره مسیر فایل در session برای استفاده در مراحل بعد
+        session['uploaded_file'] = filepath
+
+        return redirect(url_for('item_bp.show_exel_records_repair'))
+
+    return render_template('item_panel/repair/add_multy_repair_item.html')
+
+
+@item_bp.route('/add_multy_repair_item_to_database', methods=['POST'])
+@login_required
+def add_multy_repair_item_to_database():
+    filepath = session.get('uploaded_file')
+    if not filepath or not os.path.exists(filepath):
+        flash('فایل اکسل پیدا نشد. لطفا دوباره آپلود کنید.', 'danger')
+        return redirect(url_for('item_bp.add_multy_repair_item'))
+
+    df = pd.read_excel(filepath , dtype=str)
+
+    # پر کردن تمام سلول‌های خالی با خط تیره
+    df = df.fillna('-')
+
+    db_fields = ['device_type','model','serial_number','property_code','description','status','current_location']
+
+    # ساخت و ذخیره ردیف‌ها
+    for _, row in df.iterrows():
+        data = {field: row.get(field, '-') for field in db_fields}
+
+        if data.get('username') != '-':  # حداقل شرط معتبر بودن رکورد
+            repair_item = Repair(**data)
+            db.session.add(repair_item)
+
+    db.session.commit()
+
+    flash('چند شماره تلفن با موفقیت وارد دیتابیس شدند.', 'success')
+    session.pop('uploaded_file', None)
+
+    return redirect(url_for('item_bp.repair_item'))
+
 
 
 

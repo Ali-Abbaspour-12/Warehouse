@@ -1,0 +1,9 @@
+flask
+flask_login
+flask_sqlalchemy
+jdatetime
+waitress
+pandas
+openpyxl
+opencv-python
+psycopg2

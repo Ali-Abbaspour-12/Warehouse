@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    /* اسکرول افقی در کل صفحه فعال باشد */
+    html,
+    body {
+        overflow-x: auto !important;
+    }
+
+    /* جمع‌وجور کردن جدول برای دیدن 19 ستون */
+    .table-condensed-custom th,
+    .table-condensed-custom td {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    /* جلوگیری از جمع شدن جدول و نمایش درست اسکرول */
+    .table-responsive {
+        min-width: max-content !important;
+    }
+</style>
+
+<div class="container py-5">
+
+    <form method="post" action="{{ url_for('item_bp.add_multy_repair_item_to_database') }}">
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered table-striped table-hover table-condensed-custom">
+                <thead>
+                    <tr>
+                        {% for col in columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        {% for col in columns %}
+                        <td>{{ row[col] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button class="btn btn-primary w-100">وارد کردن به دیتابیس</button>
+        </div>
+
+    </form>
+
+
+
+</div>
+
+{% endblock %}

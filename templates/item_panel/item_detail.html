@@ -2,12 +2,24 @@
 
 {% block content %}
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="alert alert-info">
+    <ul class="mb-0">
+        {% for category, message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endwith %}
+
 <div class="container mt-5 d-flex justify-content-center">
 
     <div class="card shadow-lg w-75 border-primary">
 
         <!-- عنوان کارت -->
-        <div class="card-header bg-primary text-white fw-bold fs-5">
+        <div class="card-header bg-primary text-white fw-bold fs-5 text-center">
             جزئیات آیتم
         </div>
 
@@ -104,6 +116,9 @@
     <a href="{{ url_for('item_bp.edit_item', item_id=item.id) }}" class="btn btn-warning">
         ویرایش آیتم
     </a>
+    <a class="btn btn-danger"
+                                            href="{{ url_for('item_bp.delete_item', item_id=item.id,**request.args) }}"
+                                            onclick="return confirm('آیا از حذف این آیتم مطمئن هستید؟');">حذف</a>
     {%endif%}
     <a href="{{ url_for('item_bp.item', **request.args) }}" class="btn btn-secondary">
         بازگشت

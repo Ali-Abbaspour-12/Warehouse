@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+
+    <div class="col-md-6 mx-auto">
+        <div class="card shadow-sm border-primary">
+            <div class="card shadow-sm border-primary ">
+            <div class="card-header bg-primary text-white fw-bold">
+                افزودن فایل اکسل آیتم ها
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">انتخاب فایل اکسل</label>
+                        <input type="file" name="file" class="form-control" required>
+                    </div>
+                    <button class="btn btn-success w-100 mb-3">نمایش ریکوردها</button>
+                    <a class="btn btn-secondary w-100" href="{{url_for('item_bp.item')}}">بازگشت</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

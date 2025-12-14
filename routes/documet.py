@@ -5,7 +5,7 @@ from .login import admin_required
 
 document_bp = Blueprint("document_bp", __name__, url_prefix="/document")
 
-UPLOAD_FOLDER = "./uploads"
+UPLOAD_FOLDER = "D:\\ALLAH\\Warehouse\\uploads"
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
