@@ -1,0 +1,23 @@
+@font-face {
+    font-family: "DigiRastinBold";
+    src: url("../fonts/DigiRastinBold.ttf") format("woff2");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "DigiRastinBold";
+    src: url("../fonts/DigiRastinBold.ttf") format("woff2");
+    font-weight: 700;
+}
+
+:root {
+    --md-text-font: "DigiRastinBold";
+    --md-code-font: "DigiRastinBold";
+}
+
+
+:root {
+    --md-primary-fg-color: #0d6efd;
+    --md-primary-fg-color--light: #3d8bfd;
+    --md-primary-fg-color--dark: #0a58ca;
+}

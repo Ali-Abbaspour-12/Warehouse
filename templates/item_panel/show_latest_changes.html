@@ -12,11 +12,13 @@
                     <thead class="table-primary">
                         <tr>
                             <th scope="col">کد اموال</th>
+                            <th scope="col">کد پروژه</th>
                             <th scope="col">کاربر</th>
                             <th scope="col">کد شناسایی سیستم</th>
                             <th scope="col">انبار</th>
                             <th scope="col">ردیف</th>
                             <th scope="col">تحویل گیرنده</th>
+                            <th scope="col">محل استقرار</th>
                             <th scope="col">تاریخ تغییر</th>
                         </tr>
                     </thead>
@@ -24,11 +26,13 @@
                         {% for log in logs %}
                         <tr>
                             <td>{{ log.property_code }}</td>
+                            <td>{{ log.project_code }}</td>
                             <td>{{ log.user }}</td>
                             <td>{{ log.system_identification_code }}</td>
                             <td>{{ log.warehouse_location }}</td>
                             <td>{{ log.row }}</td>
                             <td>{{ log.recipient_delivery }}</td>
+                            <td>{{ log.current_location }}</td>
                             <td>{{ log.changed_at }}</td>
                         </tr>
                         {% endfor %}

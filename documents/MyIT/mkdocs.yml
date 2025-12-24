@@ -1,0 +1,27 @@
+
+site_name: مستندات MyIT
+theme:
+  name: material
+  language: fa
+  direction: rtl
+
+extra_css:
+  - static/css/style.css
+
+nav:
+  -  معرفی پروژه: intro.md
+  - نحوه راه اندازی: install.md
+  -  اعضا و ساختار تیم: members_and_architects.md
+  -  گزارش مدیریت پروژه:
+      - بکلاگ پروژه: backlog.md
+      - تسک ها: tasks.md
+  - گیت: git.md
+  - تست پروژه: project_test.md 
+  - نمودار های پروژه: project_graph.md
+  - بازگشت به برنامه : http://gg223c3.golfa.net:5001
+
+  
+
+
+
+use_directory_urls: false

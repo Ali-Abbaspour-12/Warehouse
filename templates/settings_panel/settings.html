@@ -38,6 +38,7 @@
                 <tr>
                     <td class="fw-semibold">{{ table.name }}</td>
                     <td>{{ table.count }}</td>
+                    
                     <td>
 
                         <a href="{{ url_for('settings_bp.delete_records', table_name=table.name) }}"
@@ -52,6 +53,7 @@
                         </a>
 
                     </td>
+                
                 </tr>
                 {% endfor %}
             </tbody>

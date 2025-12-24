@@ -9,3 +9,4 @@ from .camera import camera_bp
 from .phone import phone_bp
 from .switch import switch_bp
 from .router import router_bp
+from .history import history_bp

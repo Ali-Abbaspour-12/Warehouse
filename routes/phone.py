@@ -67,10 +67,10 @@ def add_phone():
 def edit_phone(phone_id):
     phone = Phone.query.get_or_404(phone_id)
     if request.method == 'POST':
-        Phone.username = request.form['username']
-        Phone.place = request.form['place']
-        Phone.phone_number = request.form['phone_number']
-        Phone.pre_phone_number = request.form['pre_phone_number']
+        phone.username = request.form['username']
+        phone.place = request.form['place']
+        phone.phone_number = request.form['phone_number']
+        phone.pre_phone_number = request.form['pre_phone_number']
 
         db.session.commit()
         flash('شماره تلفن با موفقیت ویرایش شد.', 'success')

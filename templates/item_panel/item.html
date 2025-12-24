@@ -16,7 +16,7 @@
     {% endif %}
     {% endwith %}
 
-    
+
 
     <div class="row g-4">
         <!-- فرم جستجو در بالای صفحه -->
@@ -28,6 +28,11 @@
                     <span class="ms-auto">جستجو آیتم</span>
 
                     <div class="d-flex gap-2">
+
+                        <a href="{{url_for('history_bp.history')}}" class="btn btn-light btn-sm">
+                            📜 جستجو در تاریخچه اموال
+                        </a>
+
                         <!-- اموال تعمیری -->
                         <a href="{{url_for('item_bp.repair_item')}}" class="btn btn-light btn-sm">
                             🛠️ اموال تعمیری
@@ -38,7 +43,7 @@
                         <a href="{{url_for('item_bp.add_item')}}" class="btn btn-light btn-sm">
                             ➕ افزودن آیتم جدید
                         </a>
-                        
+
 
                         <!-- آخرین تغییرات -->
                         <a href="{{url_for('item_bp.show_latest_changes')}}" class="btn btn-light btn-sm">
@@ -86,7 +91,7 @@
                             </div>
                             {% endfor %}
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 btn-lg mx-2 px-4">جستجو</button>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg px-4">جستجو</button>
                     </form>
                 </div>
             </div>
@@ -134,7 +139,7 @@
                                         <a class="btn btn-warning btn-sm"
                                             href="{{url_for('item_bp.edit_item', item_id=item.id, **request.args)}}">ویرایش</a>
 
-                                            <a class="btn btn-danger btn-sm"
+                                        <a class="btn btn-danger btn-sm"
                                             href="{{ url_for('item_bp.delete_item', item_id=item.id,**request.args) }}"
                                             onclick="return confirm('آیا از حذف این آیتم مطمئن هستید؟');">حذف</a>
                                         {% endif %}

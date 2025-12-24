@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="alert alert-info">
+        <ul class="mb-0">
+            {% for category, message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+
+
+    <div class="row g-4">
+        <!-- فرم جستجو در بالای صفحه -->
+        <div class="col-12">
+            <div class="card shadow-lg border-primary w-100 d-flex flex-column">
+                <div
+                    class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
+
+                    <span class="ms-auto">جستجو تاریخچه آیتم</span>
+
+                    <div class="d-flex gap-2">
+                        <!-- اموال تعمیری -->
+                    </div>
+
+                </div>
+
+                <div class="card-body text-end p-3">
+                    <form method="get" autocomplete="off" class="text-end">
+                        {% set fields = [
+                        ('property_code','کد اموال'),
+                        ('project_code','کد پروژه'),
+                        ('warehouse_location','محل'),
+                        ('row','ردیف'),
+                        ('user','کاربر'),
+                        ('company','شرکت'),
+                        ('unit','واحد'),
+                        ('category','گروه بندی'),
+                        ('personnel_code','کد پرسنلی'),
+                        ('current_location','محل استقرار'),
+                        ('system_identification_code','کد شناسایی سیستم'),
+                        ('model','مدل'),
+                        ('serial_number','شماره سریال'),
+                        ('recipient_delivery','تحویل گیرنده'),
+                        ('closed','مختوم شده'),
+                        ('closed_time','زمان اختتام'),
+                        ('description','توضیحات'),
+
+                        ] %}
+
+                        <div class="row">
+                            {% for id,label in fields %}
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3 position-relative text-end">
+                                <label for="{{id}}" class="form-label fw-bold d-block"
+                                    style="font-size:0.85rem; text-align:right;">
+                                    {{label}}
+                                </label>
+                                <input type="text" class="form-control border-primary form-control-sm text-center"
+                                    id="{{id}}" name="{{id}}" onclick="loadSuggestions('{{id}}')"
+                                    oninput="loadSuggestions('{{id}}')">
+                                <div class="suggest-box" id="{{id}}_box"></div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg px-4">جستجو</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% for history in histories|reverse %}
+
+<div class="container mt-5 d-flex justify-content-center">
+
+    <div class="card shadow-lg w-75 border-primary">
+
+        <!-- عنوان کارت -->
+        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+            {{history.changed_at}}
+        </div>
+
+        <!-- اطلاعات آیتم -->
+        <div class="card-body">
+            <ul class="list-group list-group-flush mb-4">
+
+                <li class="list-group-item"><strong>کد پروژه:</strong> {{ history.project_code }}</li>
+                <li class="list-group-item"><strong>انبار:</strong> {{ history.warehouse_location }}</li>
+                <li class="list-group-item"><strong>ردیف:</strong> {{ history.row }}</li>
+                <li class="list-group-item"><strong>کاربر:</strong> {{ history.user }}</li>
+                <li class="list-group-item"><strong>شرکت:</strong> {{ history.company }}</li>
+                <li class="list-group-item"><strong>واحد:</strong> {{ history.unit }}</li>
+                <li class="list-group-item"><strong>کد پرسنلی:</strong> {{ history.personnel_code }}</li>
+                <li class="list-group-item"><strong>مکان فعلی:</strong> {{ history.current_location }}</li>
+                <li class="list-group-item"><strong>کد شناسایی سیستم:</strong> {{ history.system_identification_code }}
+                </li>
+                <li class="list-group-item"><strong>گروه بندی:</strong> {{ history.category }}</li>
+                <li class="list-group-item"><strong>مدل:</strong> {{ history.model }}</li>
+                <li class="list-group-item"><strong>شماره سریال:</strong> {{ history.serial_number }}</li>
+                <li class="list-group-item"><strong>کد اموال:</strong> {{ history.property_code }}</li>
+                <li class="list-group-item"><strong>تحویل گیرنده:</strong> {{ history.recipient_delivery }}</li>
+                <li class="list-group-item"><strong>توضیحات:</strong> {{ history.description }}</li>
+                <li class="list-group-item"><strong>مختوم شده:</strong> {{ history.closed }}</li>
+                <li class="list-group-item"><strong>تاریخ اختتام:</strong> {{ history.closed_time }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- دکمه بازگشت به بالا -->
+<button onclick="scrollToTop()" id="backToTopBtn" title="بازگشت به بالا"
+    style="position:fixed; bottom:20px; right:20px; display:none; z-index:9999;" class="btn btn-primary btn-sm">↑
+    بالا</button>
+
+<!-- استایل پیشنهادها -->
+<style>
+    .suggest-box {
+        position: absolute;
+        width: 100%;
+        background: #fff;
+        border: 1px solid #0d6efd;
+        border-radius: 0.25rem;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 2000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .suggest-item {
+        padding: 6px 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        text-align: right;
+    }
+
+    .suggest-item:hover {
+        background: #e3f2fd;
+    }
+
+    /* بهبود نمایش در دستگاه‌های مختلف */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .col-xl-3,
+        .col-lg-4,
+        .col-md-6 {
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-lg {
+            width: 100%;
+            margin-bottom: 0.5rem !important;
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1200px) {
+        .col-xl-3 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @media (min-width: 1201px) {
+        .col-xl-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+    }
+
+    /* بهبود ظاهر فرم */
+    .form-control {
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .table th {
+        font-weight: bold;
+        background-color: #e3f2fd;
+    }
+</style>
+
+<!-- اسکریپت پیشنهاددهی و دکمه بالا -->
+<script>
+    function getAllFieldsExcept(target) {
+        const keys = ["company", "user", "category", "project_code", "property_code", "serial_number",
+            "personnel_code", "current_location", "system_identification_code", "model",
+            "serial_number", "recipient_delivery", "closed", "warehouse_location", "row", "closed_time", "description"];
+        const params = {};
+        keys.forEach(k => {
+            if (k !== target) {
+                let v = document.getElementById(k)?.value;
+                if (v) params[k] = v;
+            }
+        });
+        return params;
+    }
+
+    function loadSuggestions(field) {
+        let value = document.getElementById(field).value;
+
+        let params = new URLSearchParams();
+        params.append("field", field);
+        params.append("value", value);
+
+        let others = getAllFieldsExcept(field);
+        for (let k in others) params.append(k, others[k]);
+
+        fetch(`/history/suggest?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                let box = document.getElementById(field + "_box");
+                box.innerHTML = "";
+                box.style.display = data.suggestions.length ? "block" : "none";
+
+                data.suggestions.forEach(s => {
+                    let div = document.createElement("div");
+                    div.className = "suggest-item";
+                    div.textContent = s;
+
+                    div.onclick = () => {
+                        document.getElementById(field).value = s;
+                        box.style.display = "none";
+                    };
+
+                    box.appendChild(div);
+                });
+            });
+    }
+
+    document.addEventListener("click", (e) => {
+        document.querySelectorAll(".suggest-box").forEach(b => {
+            if (!b.contains(e.target) && !b.previousElementSibling.contains(e.target)) {
+                b.style.display = "none";
+            }
+        });
+    });
+
+    // دکمه بازگشت به بالا
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    window.onscroll = function () { toggleBackToTopBtn(); };
+
+    function toggleBackToTopBtn() {
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            backToTopBtn.style.display = "block";
+        } else {
+            backToTopBtn.style.display = "none";
+        }
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+{% endblock %}

@@ -13,10 +13,10 @@
                     <div class="row g-3">
                         {% set fields = [
                             ('username','نام کاربری', phone.username),
-                            ('phone.place','مکان', 'place'),
+                            ('place','مکان', phone.place),
                             ('phone_number','شماره تلفن', phone.phone_number),
                             ('pre_phone_number','پیش شماره', phone.pre_phone_number),
-                        ] %}
+                            ] %}
 
                         {% for id,label,value in fields %}
                         <div class="col-md-4 position-relative">

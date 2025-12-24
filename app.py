@@ -15,7 +15,7 @@ from routes import (
     camera_bp,
     phone_bp,
     switch_bp,
-    router_bp
+    router_bp,history_bp
 )
 
 login_manager = LoginManager()
@@ -55,6 +55,7 @@ def create_app():
     app.register_blueprint(phone_bp)
     app.register_blueprint(switch_bp)
     app.register_blueprint(router_bp)
+    app.register_blueprint(history_bp)
 
     return app
 

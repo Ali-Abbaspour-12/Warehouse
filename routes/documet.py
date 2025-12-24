@@ -19,6 +19,11 @@ def document():
     return render_template("document_panel/document.html", files=files)
 
 
+@document_bp.route("/docs/")
+@document_bp.route("/docs/<path:filename>")
+def docs(filename="index.html"):
+    return send_from_directory("static/docs", filename)
+
 # دانلود هر نوع فایل
 @document_bp.route("/download/<filename>")
 @login_required

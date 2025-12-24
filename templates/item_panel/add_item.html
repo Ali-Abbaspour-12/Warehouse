@@ -15,7 +15,7 @@
                     <div class="d-flex gap-2">
                         <!-- اموال تعمیری -->
                         <a href="{{url_for('item_bp.add_multy_item')}}" class="btn btn-light btn-sm">
-                            ➕ افزودن دسته جمعی آیتم ها 
+                            ➕ افزودن دسته جمعی آیتم ها
                         </a>
                     </div>
 
@@ -27,21 +27,23 @@
 
                     <form method="post" autocomplete="off" class="text-end">
                         {% set fields = [
-                        ('property_code', 'کد اموال'),
-                        ('project_code', 'کد پروژه'),
+                        ('project_code','کد پروژه'),
                         ('warehouse_location','محل'),
                         ('row','ردیف'),
-                        ('user', 'کاربر'),
-                        ('recipient_delivery', 'تحویل گیرنده'),
-                        ('system_identification_code', 'کد شناسایی سیستم'),
-                        ('current_location', 'محل استقرار'),
-                        ('unit', 'واحد'),
-                        ('category', 'گروه بندی'),
-                        ('model', 'مدل'),
-                        ('serial_number', 'شماره سریال'),
-                        ('closed', 'مختوم شده'),
-                        ('closed_time', 'توضیحات اختتام'),
-                        ('description', 'جزئیات')
+                        ('user','کاربر'),
+                        ('company','شرکت'),
+                        ('unit','واحد'),
+                        ('personnel_code','کد پرسنلی'),
+                        ('current_location','مکان فعلی'),
+                        ('system_identification_code','کد شناسایی سیستم'),
+                        ('category','گروه بندی'),
+                        ('model','مدل'),
+                        ('serial_number','شماره سریال'),
+                        ('property_code','کد اموال'),
+                        ('recipient_delivery','تحویل گیرنده'),
+                        ('description','توضیحات'),
+                        ('closed','مختوم شده'),
+                        ('closed_time','تاریخ اختتام'),
                         ] %}
 
                         <div class="row">
