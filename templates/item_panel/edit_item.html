@@ -11,17 +11,17 @@
         <div class="d-flex gap-2">
 
             <!-- باکس سفید دکمه باز کردن همه -->
-            
-                <button class="btn btn-light btn-sm fw-bold" onclick="unlockAllFields()">
-                    باز کردن همه فیلدهای قفل شده
-                </button>
-            
+
+            <button class="btn btn-light btn-sm fw-bold" onclick="unlockAllFields()">
+                باز کردن همه فیلدهای قفل شده
+            </button>
+
 
 
             <!-- باکس سفید فیلتر -->
             <div class="bg-light rounded-2 p-2">
                 <div class="form-check form-switch m-0">
-                    <input class="form-check-input" type="checkbox" id="filterMode" checked>
+                    <input class="form-check-input" type="checkbox" id="filterMode" unchecked>
                     <label class="form-check-label fw-bold text-dark ms-2" for="filterMode">
                         فیلتر بر اساس سایر فیلدها
                     </label>
@@ -157,7 +157,7 @@
         params.append("value", value);
 
         // بررسی وضعیت سوییچ
-        let filterMode = document.getElementById("filterMode").checked;
+        let filterMode = document.getElementById("filterMode").unchecked;
 
         let url = filterMode
             ? "/item/suggest"      // پیشنهاد بر اساس سایر فیلدها

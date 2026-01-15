@@ -14,8 +14,7 @@ from routes import (
     item_bp,
     camera_bp,
     phone_bp,
-    switch_bp,
-    router_bp,
+    radio_bp,
     history_bp
 )
 
@@ -54,8 +53,7 @@ def create_app():
     app.register_blueprint(item_bp)
     app.register_blueprint(camera_bp)
     app.register_blueprint(phone_bp)
-    app.register_blueprint(switch_bp)
-    app.register_blueprint(router_bp)
+    app.register_blueprint(radio_bp)
     app.register_blueprint(history_bp)
 
     return app
@@ -66,8 +64,12 @@ app = create_app()
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host="0.0.0.0", port=5001,debug=True)
-    #serve(app, host="0.0.0.0", port=5001,threads=8,
-          #channel_timeout=120,backlog=120
-          #,cleanup_interval=30,recv_bytes=65536,
-          #send_bytes=65536,log_socket_errors=True)
+    app.run(host="0.0.0.0", port=5003,debug=True)
+    '''
+        serve(app, host="0.0.0.0", port=5001,threads=8,
+          channel_timeout=120,backlog=120
+          ,cleanup_interval=30,recv_bytes=65536,
+          send_bytes=65536,log_socket_errors=True)
+
+    '''
+    

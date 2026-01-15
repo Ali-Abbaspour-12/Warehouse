@@ -14,15 +14,7 @@
             <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
 
                 <span class="ms-auto">جستجو آیتم</span>
-                {% if current_user.is_authenticated and current_user.is_admin %}
-                <div class="d-flex gap-2">
 
-                    <a href="{{ url_for('static', filename='docs/index.html') }}" class="btn btn-light btn-sm">
-                        📜 مستندات
-                    </a>
-
-                </div>
-                {% endif %}
             </div>
         </div>
 
