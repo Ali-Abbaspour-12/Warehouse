@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,request,redirect,url_for,flash,session
+from flask import Blueprint, render_template,request,redirect,url_for,flash,session,send_file
 from models import Item,ItemHistory,Repair,ItemLog
 from extensions import db
 from .login import admin_required
@@ -8,6 +8,9 @@ import os
 import pandas as pd
 from sqlalchemy import event
 import json,os
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, PatternFill
+from io import BytesIO
 
 
 item_bp = Blueprint("item_bp", __name__,url_prefix="/item")
@@ -84,6 +87,103 @@ def item():
     items = query.order_by(Item.property_code.desc()).all()
 
     return render_template("item_panel/item.html", items=items)
+
+
+
+from flask import send_file, request
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, PatternFill
+from io import BytesIO
+
+
+@item_bp.route("/item/export", methods=["GET"])
+@login_required
+def export_items_excel():
+    args = request.args
+
+    field_mapping = {
+        "property_code": Item.property_code,
+        "category": Item.category,
+        "model": Item.model,
+        "user": Item.user,
+        "current_location": Item.current_location,
+    }
+
+    query = Item.query
+
+    for arg_key, model_field in field_mapping.items():
+        value = args.get(arg_key)
+        if value:
+            query = query.filter(model_field.ilike(f"%{value}%"))
+
+    items = query.order_by(Item.property_code.desc()).all()
+
+    # ---------------- Excel ----------------
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "اقلام"
+
+    # ✅ راست به چپ
+    ws.sheet_view.rightToLeft = True
+
+    # ✅ هدرها (به ترتیب خواسته‌شده)
+    headers = [
+        "کد اموال",
+        "دسته‌بندی",
+        "مدل",
+        "کاربر",
+        "محل استقرار",
+    ]
+    ws.append(headers)
+
+    # 🎨 استایل‌ها
+    header_fill = PatternFill(start_color="808080", end_color="808080", fill_type="solid")
+    center_alignment = Alignment(horizontal="center", vertical="center")
+
+    # استایل هدر
+    for cell in ws[1]:
+        cell.fill = header_fill
+        cell.alignment = center_alignment
+
+    # ✅ داده‌ها (دقیقاً به همان ترتیب)
+    for item in items:
+        ws.append([
+            item.property_code,
+            item.category,
+            item.model,
+            item.user,
+            item.current_location,
+        ])
+
+    # ✅ وسط‌چین همه سلول‌ها
+    for row in ws.iter_rows():
+        for cell in row:
+            cell.alignment = center_alignment
+
+    # ✅ AutoFit واقعی ستون‌ها
+    for column_cells in ws.columns:
+        max_length = 0
+        column_letter = column_cells[0].column_letter
+
+        for cell in column_cells:
+            try:
+                cell_value = str(cell.value) if cell.value else ""
+                max_length = max(max_length, len(cell_value))
+            except:
+                pass
+
+        ws.column_dimensions[column_letter].width = max_length + 4
+
+    # ذخیره در حافظه
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    return send_file(
+        output,
+        download_name="items.xlsx",
+        as_attachment=True
+    )
 
 
 
@@ -548,3 +648,15 @@ def suggest_all():
     )
 
     return {"suggestions": [s[0] for s in suggestions if s[0]]}
+
+
+
+
+
+
+
+
+
+
+
+
