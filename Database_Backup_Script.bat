@@ -8,8 +8,8 @@ set DB_USER=postgres
 set DB_PASSWORD=Aass13579
 set HOST=localhost
 set PORT=5002
-set BACKUP_DIR=N:\A.Abbaspour\Database
-set LOG_FILE=N:\A.Abbaspour\Database\logs.txt
+set BACKUP_DIR=D:\
+set LOG_FILE=D:\logs.txt
 REM =====================
 
 REM تاریخ و ساعت
