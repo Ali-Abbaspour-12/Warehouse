@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,request,redirect,url_for,flash,session,send_file
+from flask import Blueprint, render_template,request,redirect,url_for,flash,session,send_file,jsonify
 from models import Item,ItemHistory,Repair,ItemLog
 from extensions import db
 from .login import admin_required
@@ -406,8 +406,46 @@ def add_multy_item_to_database():
 @item_bp.route("/repair_item", methods=["GET"])
 @login_required
 def repair_item():
-    repairs = Repair.query.all()
+    query = Repair.query
+
+    filters = {
+        "device_type": request.args.get("device_type", "").strip(),
+        "model": request.args.get("model", "").strip(),
+        "serial_number": request.args.get("serial_number", "").strip(),
+        "property_code": request.args.get("property_code", "").strip(),
+        "status": request.args.get("status", "").strip(),
+        "current_location": request.args.get("current_location", "").strip(),
+    }
+
+    for field, value in filters.items():
+        if value:
+            query = query.filter(getattr(Repair, field).ilike(f"%{value}%"))
+
+    repairs = query.all()
     return render_template("item_panel/repair/repair_item.html", repairs=repairs)
+
+
+@item_bp.route("/repair_item/suggest")
+@login_required
+def repair_item_suggest():
+    fields = {
+        "device_type": Repair.device_type,
+        "model": Repair.model,
+        "serial_number": Repair.serial_number,
+        "property_code": Repair.property_code,
+        "status": Repair.status,
+        "current_location": Repair.current_location,
+    }
+
+    result = {}
+
+    for name, col in fields.items():
+        values = Repair.query.with_entities(col).distinct().all()
+        result[name] = sorted({v[0] for v in values if v and v[0]})
+
+    return jsonify(result)
+
+
 
 
 
