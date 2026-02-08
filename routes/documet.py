@@ -1,11 +1,11 @@
-import os
+﻿import os
 from flask import Blueprint, render_template, request, redirect, url_for, send_from_directory, flash
 from flask_login import login_required
 from .login import admin_required
 
 document_bp = Blueprint("document_bp", __name__, url_prefix="/document")
 
-UPLOAD_FOLDER = "D:\\ALLAH\\Warehouse\\uploads"
+UPLOAD_FOLDER = "E:\\ALLAH\\Warehouse\\uploads"
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
