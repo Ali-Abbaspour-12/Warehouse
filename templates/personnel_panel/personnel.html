@@ -22,29 +22,28 @@
         <!-- فرم جستجو در بالای صفحه -->
         <div class="col-12">
             <div class="card shadow-lg border-primary w-100 d-flex flex-column">
-                
 
-                <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
 
-    <span class="ms-auto">جستجو پرسنل</span>
+                <div
+                    class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
 
-    
-    <div class="d-flex gap-2">
+                    <span class="ms-auto">جستجو پرسنل</span>
 
-        <!-- افزودن پرسنل -->
-        <a href="{{ url_for('personnel_bp.add_personnel') }}" 
-           class="btn btn-light btn-sm">
-            ➕ افزودن پرسنل
-        </a>
 
-        <!-- افزودن دسته‌جمعی -->
-        <a href="{{ url_for('personnel_bp.add_multy_personnel') }}" 
-           class="btn btn-light btn-sm">
-            👥 افزودن دسته جمعی
-        </a>
+                    <div class="d-flex gap-2">
 
-    </div>
-    </div>
+                        <!-- افزودن پرسنل -->
+                        <a href="{{ url_for('personnel_bp.add_personnel') }}" class="btn btn-light btn-sm">
+                            ➕ افزودن پرسنل
+                        </a>
+
+                        <!-- افزودن دسته‌جمعی -->
+                        <a href="{{ url_for('personnel_bp.add_multy_personnel') }}" class="btn btn-light btn-sm">
+                            👥 افزودن دسته جمعی
+                        </a>
+
+                    </div>
+                </div>
 
                 <div class="card-body text-end p-3">
                     <form method="get" autocomplete="off" class="text-end">
@@ -71,7 +70,11 @@
                             </div>
                             {% endfor %}
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 btn-lg mx-2 px-4">جستجو</button>
+                        <div class="col-12 mt-3 d-flex gap-2 justify-content-center">
+                            <button type="submit" class="btn btn-primary btn-sm px-4">
+                                🔎 جستجو
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -111,10 +114,11 @@
                                     <td>
                                         <a class="btn btn-primary btn-sm"
                                             href="{{url_for('personnel_bp.edit_personnel', personnel_id=personnel.id, **request.args)}}">ویرایش</a>
-                                        
+
                                         <a class="btn btn-warning btn-sm"
-                                            href="{{url_for('personnel_bp.delete_personnel', personnel_id=personnel.id, **request.args)}}" onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">حذف</a>
-                                        
+                                            href="{{url_for('personnel_bp.delete_personnel', personnel_id=personnel.id, **request.args)}}"
+                                            onclick="return confirm('آیا از حذف این پرسنل مطمئن هستید؟');">حذف</a>
+
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -221,7 +225,7 @@
 <!-- اسکریپت پیشنهاددهی و دکمه بالا -->
 <script>
     function getAllFieldsExcept(target) {
-        const keys = ["username", "personnel_code", "company", "unit","national_code","current_location"];
+        const keys = ["username", "personnel_code", "company", "unit", "national_code", "current_location"];
         const params = {};
         keys.forEach(k => {
             if (k !== target) {

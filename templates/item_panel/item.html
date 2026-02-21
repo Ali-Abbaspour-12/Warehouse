@@ -30,9 +30,16 @@
                     <div class="d-flex gap-2">
 
 
-                        <a href="{{url_for('item_bp.export_items_excel', **request.args)}}" class="btn btn-light btn-sm">
-                           📗 خروجی اکسل  
+                        {% if request.args %}
+                        <a href="{{ url_for('item_bp.export_items_excel', **request.args) }}"
+                            class="btn btn-light btn-sm">
+                            📗 خروجی اکسل
                         </a>
+                        {% else %}
+                        <button class="btn btn-secondary btn-sm" disabled>
+                            📗 خروجی اکسل
+                        </button>
+                        {% endif %}
 
                         <a href="{{url_for('history_bp.history')}}" class="btn btn-light btn-sm">
                             📜 جستجو در تاریخچه اموال
@@ -96,7 +103,13 @@
                             </div>
                             {% endfor %}
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 btn-lg px-4">جستجو</button>
+                        <div class="col-12 mt-3 d-flex gap-2 justify-content-center">
+                            <button type="submit" class="btn btn-primary btn-sm px-4">
+                                🔎 جستجو
+                            </button>
+
+                            
+                        </div>
                     </form>
                 </div>
             </div>

@@ -90,10 +90,7 @@ def item():
 
 
 
-from flask import send_file, request
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, PatternFill
-from io import BytesIO
+
 
 
 @item_bp.route("/item/export", methods=["GET"])
@@ -101,90 +98,91 @@ from io import BytesIO
 def export_items_excel():
     args = request.args
 
-    field_mapping = {
-        "property_code": Item.property_code,
-        "category": Item.category,
-        "model": Item.model,
-        "user": Item.user,
-        "current_location": Item.current_location,
-    }
+    # ✅ فیلدها + هدر فارسی (به ترتیب دلخواه)
+    fields = [
+        ("property_code", "کد اموال"),
+        ("project_code", "کد پروژه"),
+        ("warehouse_location", "محل"),
+        ("row", "ردیف"),
+        ("user", "کاربر"),
+        ("company", "شرکت"),
+        ("unit", "واحد"),
+        ("category", "گروه بندی"),
+        ("personnel_code", "کد پرسنلی"),
+        ("current_location", "محل استقرار"),
+        ("system_identification_code", "کد شناسایی سیستم"),
+        ("model", "مدل"),
+        ("serial_number", "شماره سریال"),
+        ("recipient_delivery", "تحویل گیرنده"),
+        ("closed", "مختوم شده"),
+        ("closed_time", "زمان اختتام"),
+        ("description", "توضیحات"),
+    ]
 
     query = Item.query
+    has_filter = False
 
-    for arg_key, model_field in field_mapping.items():
-        value = args.get(arg_key)
+    # ✅ اعمال فیلترها
+    for field_name, _ in fields:
+        value = args.get(field_name)
         if value:
-            query = query.filter(model_field.ilike(f"%{value}%"))
+            has_filter = True
+            query = query.filter(
+                getattr(Item, field_name).ilike(f"%{value}%")
+            )
+
+    # ✅ جلوگیری از خروجی بدون فیلتر
+    if not has_filter:
+        flash("⚠️ ابتدا فیلتر اعمال کنید سپس خروجی اکسل بگیرید")
+        return redirect(url_for("item_bp.item"))
 
     items = query.order_by(Item.property_code.desc()).all()
 
-    # ---------------- Excel ----------------
+    # ------------------ Excel ------------------
     wb = Workbook()
     ws = wb.active
     ws.title = "اقلام"
-
-    # ✅ راست به چپ
     ws.sheet_view.rightToLeft = True
 
-    # ✅ هدرها (به ترتیب خواسته‌شده)
-    headers = [
-        "کد اموال",
-        "دسته‌بندی",
-        "مدل",
-        "کاربر",
-        "محل استقرار",
-    ]
+    # ✅ هدر فارسی
+    headers = [fa for _, fa in fields]
     ws.append(headers)
 
-    # 🎨 استایل‌ها
     header_fill = PatternFill(start_color="808080", end_color="808080", fill_type="solid")
     center_alignment = Alignment(horizontal="center", vertical="center")
 
-    # استایل هدر
     for cell in ws[1]:
         cell.fill = header_fill
         cell.alignment = center_alignment
 
-    # ✅ داده‌ها (دقیقاً به همان ترتیب)
+    # ✅ داده‌ها (تمام 17 فیلد)
     for item in items:
         ws.append([
-            item.property_code,
-            item.category,
-            item.model,
-            item.user,
-            item.current_location,
+            getattr(item, field_name) for field_name, _ in fields
         ])
 
-    # ✅ وسط‌چین همه سلول‌ها
+    # ✅ وسط‌چین کل شیت
     for row in ws.iter_rows():
         for cell in row:
             cell.alignment = center_alignment
 
-    # ✅ AutoFit واقعی ستون‌ها
+    # ✅ تنظیم عرض ستون‌ها
     for column_cells in ws.columns:
-        max_length = 0
-        column_letter = column_cells[0].column_letter
+        max_length = max(
+            len(str(cell.value)) if cell.value else 0
+            for cell in column_cells
+        )
+        ws.column_dimensions[column_cells[0].column_letter].width = max_length + 4
 
-        for cell in column_cells:
-            try:
-                cell_value = str(cell.value) if cell.value else ""
-                max_length = max(max_length, len(cell_value))
-            except:
-                pass
-
-        ws.column_dimensions[column_letter].width = max_length + 4
-
-    # ذخیره در حافظه
     output = BytesIO()
     wb.save(output)
     output.seek(0)
 
     return send_file(
         output,
-        download_name="items.xlsx",
+        download_name="items_filtered.xlsx",
         as_attachment=True
     )
-
 
 
 

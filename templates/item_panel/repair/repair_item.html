@@ -61,9 +61,8 @@
 
                                 <!-- ورودی با رویدادهای فیلتر -->
                                 <input type="text" class="form-control border-primary form-control-sm text-center"
-                                    name="{{id}}" id="{{id}}" value="{{request.args.get(id,'')}}"
-                                    placeholder="{{label}}" autocomplete="off" onfocus="showSuggestions('{{id}}')"
-                                    oninput="showSuggestions('{{id}}')">
+                                    name="{{id}}" id="{{id}}" value="{{request.args.get(id,'')}}" autocomplete="off"
+                                    onfocus="showSuggestions('{{id}}')" oninput="showSuggestions('{{id}}')">
 
                                 <!-- باکس پیشنهاد سفارشی (مثل کد دوم) -->
                                 <div class="suggest-box" id="{{id}}_box"></div>
@@ -73,8 +72,6 @@
 
                         <div class="col-12 mt-3 d-flex gap-2 justify-content-center">
                             <button class="btn btn-primary btn-sm px-3">🔎 جستجو</button>
-                            <a href="{{ url_for('item_bp.repair_item') }}" class="btn btn-secondary btn-sm px-3">❌
-                                پاک‌کردن فیلترها</a>
                         </div>
                     </form>
                 </div>
